@@ -19,7 +19,7 @@ final class WalkthroughTests: XCTestCase {
         pause()
 
         // 2. Scan tab: no camera in the simulator, so type #07's number.
-        tap(app.tabBars.buttons["Scan"])
+        tapTab("Scan")
         let number = app.textFields["scanNumber"]
         tap(number)
         number.typeText("07")
@@ -75,13 +75,13 @@ final class WalkthroughTests: XCTestCase {
         tap(button("Done"))
 
         // 9. Passport: the new stamps.
-        tap(app.tabBars.buttons["Passport"])
+        tapTab("Passport")
         pause(1.5)
         app.swipeUp(velocity: .slow)
         pause(2)
 
         // 10. Map: find #07 and see their journey, now ending in Boulder.
-        tap(app.tabBars.buttons["Map"])
+        tapTab("Map")
         pause(1.5)
         let search = app.textFields["mapSearch"]
         tap(search)
@@ -94,7 +94,7 @@ final class WalkthroughTests: XCTestCase {
         pause(2)
 
         // 11. Activity: the find shows up in the news.
-        tap(app.tabBars.buttons["Activity"])
+        tapTab("Activity")
         pause(3)
     }
 
@@ -111,6 +111,18 @@ final class WalkthroughTests: XCTestCase {
 
     private func buttonStarting(_ label: String) -> XCUIElement {
         app.buttons.matching(NSPredicate(format: "label BEGINSWITH[c] %@", label)).firstMatch
+    }
+
+    // Tabs are always on screen (unless a keyboard covers them), so no scrolling.
+    private func tapTab(_ name: String, file: StaticString = #filePath, line: UInt = #line) {
+        if app.keyboards.firstMatch.exists {
+            app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).tap()
+            pause(0.5)
+        }
+        let tab = app.tabBars.buttons[name]
+        XCTAssertTrue(tab.waitForExistence(timeout: 8), "Couldn’t find the \(name) tab", file: file, line: line)
+        tab.tap()
+        pause(0.8)
     }
 
     // Scrolls until the element is on screen and clear of the keyboard and tab bar, then taps it.

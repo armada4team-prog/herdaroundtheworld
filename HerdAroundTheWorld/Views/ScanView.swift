@@ -37,7 +37,7 @@ struct ScanView: View {
         .padding(20)
         .herdBackground()
         .toolbar(.hidden, for: .navigationBar)
-        .onDisappear { found = nil }
+        .onDisappear { found = nil; numberFocused = false }
     }
 
     private var camera: some View {
@@ -94,6 +94,7 @@ struct ScanView: View {
             Button("Find them →") {
                 if let c = model.companion(typed) {
                     notFound = false
+                    numberFocused = false
                     typed = ""
                     router.push(.companion(c.number, showHello: true))
                 } else {

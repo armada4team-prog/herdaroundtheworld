@@ -151,7 +151,7 @@ struct PassOnView: View {
                 grantedWish = true
                 // The automated walkthrough on GitHub can't use the photo library, so it gets a sample photo.
                 if wishImage == nil, ProcessInfo.processInfo.arguments.contains("-uiTestSamplePhoto") {
-                    wishImage = Image(systemName: "photo.on.rectangle")
+                    wishImage = PassOnView.samplePhoto()
                 }
             }
             ChoiceCard(title: "Not this time", detail: "That’s okay. The next traveler can try.", isOn: !grantedWish) { grantedWish = false }
@@ -190,6 +190,19 @@ struct PassOnView: View {
                 }
             }
         }
+    }
+
+    // Sample "photo" for the automated walkthrough: a Companion on a sunny mint background.
+    @MainActor static func samplePhoto() -> Image {
+        let scene = ZStack(alignment: .bottom) {
+            LinearGradient(colors: [Herd.butter, Herd.mintSoft], startPoint: .top, endPoint: .bottom)
+            Circle().fill(Herd.gold.opacity(0.6)).frame(width: 90).offset(x: 90, y: -120)
+            CompanionFigure(glaze: Herd.mint, waving: true, happy: true).frame(height: 150).padding(.bottom, 16)
+        }
+        .frame(width: 360, height: 260)
+        let renderer = ImageRenderer(content: scene)
+        renderer.scale = 2
+        return renderer.uiImage.map { Image(uiImage: $0) } ?? Image(systemName: "photo")
     }
 
     private func submit() {

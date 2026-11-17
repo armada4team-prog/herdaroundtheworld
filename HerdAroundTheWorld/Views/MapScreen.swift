@@ -13,7 +13,7 @@ struct MapScreen: View {
     // A phone is too narrow for the whole flat world, so start over the Atlantic:
     // the Americas, Europe and Africa, where most Companions are. Swipe for Asia and Australia.
     static let worldView = MapCameraPosition.region(MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 28, longitude: -45),
+        center: CLLocationCoordinate2D(latitude: 38, longitude: -42),
         span: MKCoordinateSpan(latitudeDelta: 120, longitudeDelta: 150)))
 
     private var visible: [Companion] { model.companions.filter { model.matches($0, filter: filter) } }
