@@ -213,9 +213,13 @@ struct PassOnView: View {
             place = String(trimmed[..<comma])
             city = String(trimmed[trimmed.index(after: comma)...]).trimmingCharacters(in: .whitespaces)
         }
-        model.passOn(number, city: city, place: place, handedToSomeone: handToSomeone, chapter: chapter, nickname: nickname, grantedWish: grantedWish)
-        if alertMe { model.following.insert(number) }
-        if !email.isEmpty { model.email = email }
-        router.replaceTop(with: grantedWish ? .wish(number) : .sent(number))
+        Task {
+            let coordinate = await LocationHelper.coordinate(for: city)
+            model.passOn(number, city: city, place: place, handedToSomeone: handToSomeone, chapter: chapter,
+                         nickname: nickname, grantedWish: grantedWish, coordinate: coordinate)
+            if alertMe { model.following.insert(number) }
+            if !email.isEmpty { model.email = email }
+            router.replaceTop(with: grantedWish ? .wish(number) : .sent(number))
+        }
     }
 }

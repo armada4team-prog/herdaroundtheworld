@@ -11,6 +11,12 @@ final class LocationHelper: NSObject, CLLocationManagerDelegate {
         manager.desiredAccuracy = kCLLocationAccuracyKilometer
     }
 
+    // Finds the map position of a typed city ("Boulder, CO"), so the dot lands in the right place.
+    static func coordinate(for city: String) async -> CLLocationCoordinate2D? {
+        let placemarks = try? await CLGeocoder().geocodeAddressString(city)
+        return placemarks?.first?.location?.coordinate
+    }
+
     @MainActor func currentCity() async -> String? {
         guard let location = await requestLocation() else { return nil }
         let placemarks = try? await CLGeocoder().reverseGeocodeLocation(location)

@@ -88,8 +88,12 @@ struct FoundView: View {
         }
 
         Button("Log my find →") {
-            model.logFind(number, city: city, nickname: nickname, checkIn: checkIn, email: checkIn == .email ? email : nil)
-            withAnimation { done = true }
+            Task {
+                let coordinate = await LocationHelper.coordinate(for: city)
+                model.logFind(number, city: city, nickname: nickname, checkIn: checkIn,
+                              email: checkIn == .email ? email : nil, coordinate: coordinate)
+                withAnimation { done = true }
+            }
         }
         .buttonStyle(.herdPrimary)
         .disabled(!canSubmit)

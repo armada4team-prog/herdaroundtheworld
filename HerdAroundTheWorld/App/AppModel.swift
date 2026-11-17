@@ -1,5 +1,6 @@
 import SwiftUI
 import Observation
+import CoreLocation
 
 // Everything the app knows. For testing it starts with the sample data from the designs and keeps
 // changes in memory. Swap the sample data for The Herd's database when it's ready (see README).
@@ -88,7 +89,7 @@ final class AppModel {
         if following.contains(number) { following.remove(number) } else { following.insert(number) }
     }
 
-    func logFind(_ number: String, city: String, nickname: String, checkIn: CheckIn, email: String?) {
+    func logFind(_ number: String, city: String, nickname: String, checkIn: CheckIn, email: String?, coordinate: CLLocationCoordinate2D? = nil) {
         self.nickname = nickname
         if let email, !email.isEmpty { self.email = email }
         holding.insert(number)
@@ -97,7 +98,8 @@ final class AppModel {
         companions[index].status = .moving
         let place = companions[index].current
         companions[index].stops.append(Stop(city: city.isEmpty ? (place?.city ?? "") : city,
-                                            latitude: place?.latitude ?? 0, longitude: place?.longitude ?? 0,
+                                            latitude: coordinate?.latitude ?? place?.latitude ?? 0,
+                                            longitude: coordinate?.longitude ?? place?.longitude ?? 0,
                                             leftBy: nickname, when: "Just now", note: "Found by \(nickname)."))
         companions[index].lastMoved = "Just now"
         companions[index].movedThisWeek = true
@@ -105,13 +107,14 @@ final class AppModel {
                                      background: "DDF0E8", foreground: "2F4A3D", route: .companion(number, showHello: false), isToday: true), at: 0)
     }
 
-    func passOn(_ number: String, city: String, place: String?, handedToSomeone: Bool, chapter: String, nickname: String, grantedWish: Bool) {
+    func passOn(_ number: String, city: String, place: String?, handedToSomeone: Bool, chapter: String, nickname: String, grantedWish: Bool, coordinate: CLLocationCoordinate2D? = nil) {
         if !nickname.isEmpty { self.nickname = nickname }
         holding.remove(number)
         guard let index = companions.firstIndex(where: { $0.number == number }) else { return }
         let last = companions[index].current
         companions[index].stops.append(Stop(city: city, place: handedToSomeone ? nil : place,
-                                            latitude: last?.latitude ?? 0, longitude: last?.longitude ?? 0,
+                                            latitude: coordinate?.latitude ?? last?.latitude ?? 0,
+                                            longitude: coordinate?.longitude ?? last?.longitude ?? 0,
                                             leftBy: nickname, when: "Just now", note: chapter.isEmpty ? nil : chapter))
         companions[index].status = handedToSomeone ? .moving : .waiting
         companions[index].lastMoved = "Just now"
