@@ -19,6 +19,7 @@ struct HerdAroundTheWorldApp: App {
             .environment(model)
             .environment(router)
             .tint(Herd.sageDark)
+            .onAppear(perform: openScreenFromLaunchArguments)
             .onOpenURL { url in
                 // A scanned QR code (theherdstudio.com/c/07) opens that Companion's page with the hello card.
                 if let number = AppModel.number(fromScan: url.absoluteString) {
@@ -26,6 +27,35 @@ struct HerdAroundTheWorldApp: App {
                     router.open(.companion(number, showHello: true), in: .scan)
                 }
             }
+        }
+    }
+
+    // Used by the automatic screenshot run on GitHub: `-uiScreen map` opens straight to that screen.
+    // Normal launches don't pass this, so they start on the welcome screen as usual.
+    private func openScreenFromLaunchArguments() {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "-uiScreen"), i + 1 < args.count else { return }
+        let screen = args[i + 1]
+        showSplash = screen == "splash"
+        switch screen {
+        case "map": router.tab = .map
+        case "scan": router.tab = .scan
+        case "passport": router.tab = .passport
+        case "activity": router.tab = .activity
+        case "companion": router.open(.companion("07", showHello: false), in: .home)
+        case "hello": router.open(.companion("07", showHello: true), in: .home)
+        case "found": router.open(.found("07"), in: .home)
+        case "passon": router.open(.passOn("07"), in: .home)
+        case "wish": router.open(.wish("07"), in: .home)
+        case "sent": router.open(.sent("07"), in: .home)
+        case "broke": router.open(.broke("07"), in: .home)
+        case "chat": router.open(.chat("07"), in: .home)
+        case "story": router.open(.story("07"), in: .home)
+        case "learn": router.open(.learn, in: .home)
+        case "settings": router.open(.notificationSettings, in: .activity)
+        case "signin": router.tab = .passport; router.showSignIn = true
+        case "language": router.showLanguage = true
+        default: router.tab = .home
         }
     }
 }

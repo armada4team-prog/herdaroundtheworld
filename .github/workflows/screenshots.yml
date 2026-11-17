@@ -1,0 +1,74 @@
+name: Screenshots
+
+# Builds the app, runs it in the iPhone simulator, screenshots each screen,
+# and saves the images to the "screenshots" branch.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  screenshots:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate the Xcode project
+        run: xcodegen generate
+
+      - name: Pick an iPhone simulator
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c "
+          import json, sys
+          devices = json.load(sys.stdin)['devices']
+          phones = [d for runtime, ds in devices.items() if 'iOS' in runtime for d in ds if d['name'].startswith('iPhone') and 'Pro' in d['name'] and 'Max' not in d['name']]
+          phones = phones or [d for runtime, ds in devices.items() if 'iOS' in runtime for d in ds if d['name'].startswith('iPhone')]
+          print(phones[-1]['udid'])
+          ")
+          echo "UDID=$UDID" >> "$GITHUB_ENV"
+          xcrun simctl list devices | grep "$UDID"
+
+      - name: Build for the simulator
+        run: |
+          set -o pipefail
+          xcodebuild -project HerdAroundTheWorld.xcodeproj -scheme HerdAroundTheWorld \
+            -destination "id=$UDID" -derivedDataPath build -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO build 2>&1 | tail -20
+
+      - name: Run the app and take screenshots
+        run: |
+          APP="build/Build/Products/Debug-iphonesimulator/Herd Around the World.app"
+          BUNDLE=com.theherdstudio.herdaroundtheworld
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
+          xcrun simctl install "$UDID" "$APP"
+          mkdir -p "$RUNNER_TEMP/shots"
+          i=0
+          for s in splash home map scan passport activity companion hello found passon wish sent broke chat story learn signin language settings; do
+            i=$((i+1))
+            xcrun simctl terminate "$UDID" "$BUNDLE" 2>/dev/null || true
+            xcrun simctl launch "$UDID" "$BUNDLE" -uiScreen "$s"
+            sleep 7
+            xcrun simctl io "$UDID" screenshot "$RUNNER_TEMP/shots/$(printf %02d $i)-$s.png"
+          done
+          ls -la "$RUNNER_TEMP/shots"
+
+      - name: Save screenshots to the screenshots branch
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git checkout --orphan screenshots
+          git rm -rfq --cached .
+          git clean -fdxq
+          cp "$RUNNER_TEMP"/shots/*.png .
+          echo "Screenshots for ${GITHUB_SHA}" > README.md
+          git add -A
+          git commit -qm "Screenshots for ${GITHUB_SHA}"
+          git push -fq origin screenshots
