@@ -75,7 +75,7 @@ struct MainTabView: View {
         }
         .sheet(isPresented: $router.showSignIn) { SignInView() }
         .sheet(isPresented: $router.showLanguage) {
-            LanguageView().presentationDetents([.medium])
+            LanguageView().presentationDetents([.fraction(0.72), .large])
         }
     }
 

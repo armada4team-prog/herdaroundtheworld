@@ -51,15 +51,17 @@ struct HomeView: View {
             Text(model.nickname.isEmpty ? "Hi there!" : "Hi, \(model.nickname)!")
                 .font(.script(40, relativeTo: .largeTitle))
                 .foregroundStyle(Herd.heading)
-            Text("Your herd is on the move. \(movedCount) Companions you follow moved this week.")
+            Text(movedSentence)
                 .font(.herdBody(16))
                 .foregroundStyle(Herd.body)
         }
     }
 
-    private var movedCount: String {
+    private var movedSentence: String {
         let n = model.followed.filter(\.movedThisWeek).count
-        return n == 2 ? "Two" : "\(n)"
+        let words = ["No", "One", "Two", "Three", "Four", "Five"]
+        let count = n < words.count ? words[n] : "\(n)"
+        return "Your herd is on the move. \(count) Companion\(n == 1 ? "" : "s") you follow moved this week."
     }
 
     private var stats: some View {

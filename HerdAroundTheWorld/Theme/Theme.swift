@@ -90,9 +90,11 @@ struct HerdButtonStyle: ButtonStyle {
             .tracking(0.6)
             .textCase(.uppercase)
             .multilineTextAlignment(.center)
+            .lineLimit(2)
+            .minimumScaleFactor(0.85)
             .foregroundStyle(foreground)
             .padding(.vertical, 16)
-            .padding(.horizontal, 22)
+            .padding(.horizontal, 14)
             .frame(maxWidth: .infinity)
             .background(background, in: Capsule())
             .overlay {

@@ -54,7 +54,7 @@ struct Companion: Identifiable, Hashable {
 
     var id: String { number }
     var displayName: String { name ?? "#\(number)" }
-    var label: String { "#\(number) · \(displayName)" }
+    var label: String { name.map { "#\(number) · \($0)" } ?? "#\(number)" }
     var glazeColor: Color { Color(hex: glaze) }
     var accentColor: Color { Color(hex: accent) }
     var blobColor: Color { Color(hex: blob) }

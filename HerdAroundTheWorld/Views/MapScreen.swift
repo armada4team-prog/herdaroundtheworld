@@ -7,7 +7,7 @@ struct MapScreen: View {
     @Environment(Router.self) private var router
     @State private var filter: MapFilter = .all
     @State private var selected: String? = nil
-    @State private var position: MapCameraPosition = .automatic
+    @State private var position: MapCameraPosition = .rect(.world)
     @State private var search = ""
 
     private var visible: [Companion] { model.companions.filter { model.matches($0, filter: filter) } }
@@ -77,7 +77,7 @@ struct MapScreen: View {
                 }
             }
         }
-        .mapStyle(.standard(elevation: .flat, pointsOfInterest: .excludingAll))
+        .mapStyle(.standard(elevation: .flat, emphasis: .muted, pointsOfInterest: .excludingAll))
         .onChange(of: selected) { _, number in
             guard let number, let c = model.companion(number) else { return }
             withAnimation(.easeInOut) { position = .region(region(for: c.stops.map(\.coordinate))) }
@@ -110,7 +110,7 @@ struct MapScreen: View {
 
     private func clearSelection() {
         selected = nil
-        withAnimation(.easeInOut) { position = .automatic }
+        withAnimation(.easeInOut) { position = .rect(.world) }
     }
 
     @ViewBuilder private var bottomCard: some View {

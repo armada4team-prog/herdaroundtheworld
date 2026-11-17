@@ -102,7 +102,7 @@ struct Postcard: View {
             }
             .frame(height: 200)
             Text("Greetings from \(companion.current?.city ?? "the road")!").font(.script(28)).foregroundStyle(Herd.heading)
-            Text("\(companion.displayName) · Companion #\(companion.number) · Stop \(companion.stops.count) · theherdstudio.com/c/\(companion.number)")
+            Text("\(companion.name.map { "\($0) · " } ?? "")Companion #\(companion.number) · Stop \(companion.stops.count) · theherdstudio.com/c/\(companion.number)")
                 .font(.herdBody(13)).foregroundStyle(Herd.body)
         }
         .padding(12)

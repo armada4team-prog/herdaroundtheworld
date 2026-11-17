@@ -132,7 +132,7 @@ struct CompanionView: View {
                     }
                 }
             }
-            .mapStyle(.standard(pointsOfInterest: .excludingAll))
+            .mapStyle(.standard(emphasis: .muted, pointsOfInterest: .excludingAll))
             .frame(height: 190)
             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .accessibilityLabel("Map of #\(c.number)’s journey, now in \(c.current?.city ?? "")")
