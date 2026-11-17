@@ -9,6 +9,7 @@ struct MapScreen: View {
     @State private var selected: String? = nil
     @State private var position: MapCameraPosition = MapScreen.worldView
     @State private var search = ""
+    @FocusState private var searchFocused: Bool
 
     // A phone is too narrow for the whole flat world, so start over the Atlantic:
     // the Americas, Europe and Africa, where most Companions are. Swipe for Asia and Australia.
@@ -99,6 +100,7 @@ struct MapScreen: View {
                 .submitLabel(.search)
                 .onSubmit(find)
                 .accessibilityIdentifier("mapSearch")
+                .focused($searchFocused)
             if !search.isEmpty {
                 Button("Go", action: find).font(.herdBody(15, weight: .medium))
             }
@@ -110,6 +112,7 @@ struct MapScreen: View {
 
     private func find() {
         guard let c = model.companion(search) else { return }
+        searchFocused = false
         filter = .all
         selected = c.number
         search = ""
