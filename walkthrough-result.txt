@@ -1,0 +1,48 @@
+UI test exit code: 0
+Test Case '-[HerdAroundTheWorldUITests.WalkthroughTests testFinderWalkthrough]' started.
+Test Case '-[HerdAroundTheWorldUITests.WalkthroughTests testFinderWalkthrough]' passed (196.337 seconds).
+Test Suite 'WalkthroughTests' passed at 2026-11-17 22:29:38.919.
+Test Suite 'HerdAroundTheWorldUITests.xctest' passed at 2026-11-17 22:29:38.922.
+Test Suite 'All tests' passed at 2026-11-17 22:29:38.922.
+** TEST EXECUTE SUCCEEDED **
+-----
+    t =   181.98s Tap "OPEN THEIR PAGE" Button
+    t =   181.99s     Wait for com.theherdstudio.herdaroundtheworld to idle
+    t =   182.00s     Find the "OPEN THEIR PAGE" Button
+    t =   182.10s     Check for interrupting elements affecting "OPEN THEIR PAGE" Button
+    t =   182.22s     Synthesize event
+    t =   182.59s     Wait for com.theherdstudio.herdaroundtheworld to idle
+    t =   184.97s Swipe up Target Application 'com.theherdstudio.herdaroundtheworld'
+    t =   184.97s     Wait for com.theherdstudio.herdaroundtheworld to idle
+    t =   184.98s     Find the Target Application 'com.theherdstudio.herdaroundtheworld'
+    t =   185.11s     Check for interrupting elements affecting "Herd Around the World" Application
+    t =   185.21s     Synthesize event
+    t =   185.72s     Wait for com.theherdstudio.herdaroundtheworld to idle
+    t =   189.75s Checking existence of `Keyboard (First Match)`
+    t =   190.04s Waiting 8.0s for "Activity" Button to exist
+    t =   191.05s     Checking `Expect predicate `existsNoRetry == 1` for object "Activity" Button`
+    t =   191.05s         Checking existence of `"Activity" Button`
+    t =   191.13s Tap "Activity" Button
+    t =   191.13s     Wait for com.theherdstudio.herdaroundtheworld to idle
+    t =   191.14s     Find the "Activity" Button
+    t =   191.24s     Check for interrupting elements affecting "bell" Button
+    t =   191.38s     Synthesize event
+    t =   191.69s     Wait for com.theherdstudio.herdaroundtheworld to idle
+    t =   195.67s Tear Down
+Test Case '-[HerdAroundTheWorldUITests.WalkthroughTests testFinderWalkthrough]' passed (196.337 seconds).
+Test Suite 'WalkthroughTests' passed at 2026-11-17 22:29:38.919.
+	 Executed 1 test, with 0 failures (0 unexpected) in 196.337 (196.337) seconds
+Test Suite 'HerdAroundTheWorldUITests.xctest' passed at 2026-11-17 22:29:38.922.
+	 Executed 1 test, with 0 failures (0 unexpected) in 196.337 (196.340) seconds
+Test Suite 'All tests' passed at 2026-11-17 22:29:38.922.
+	 Executed 1 test, with 0 failures (0 unexpected) in 196.337 (196.342) seconds
+2026-11-17 22:29:41.562 xcodebuild[22428:64683] [MT] IDETestOperationsObserverDebug: 249.111 elapsed -- Testing started completed.
+2026-11-17 22:29:41.563 xcodebuild[22428:64683] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-17 22:29:41.563 xcodebuild[22428:64683] [MT] IDETestOperationsObserverDebug: 249.112 sec, +249.112 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/runner/work/herdaroundtheworld/herdaroundtheworld/build/Logs/Test/Test-HerdAroundTheWorld-2026.11.17_22-25-31-+0000.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started
