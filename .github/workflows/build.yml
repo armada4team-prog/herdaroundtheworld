@@ -1,0 +1,43 @@
+name: Build iOS app
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate the Xcode project
+        run: xcodegen generate
+
+      - name: Build for the iOS Simulator
+        run: |
+          set -o pipefail
+          xcodebuild -project HerdAroundTheWorld.xcodeproj -scheme HerdAroundTheWorld \
+            -destination 'generic/platform=iOS Simulator' -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO build 2>&1 | tee "$RUNNER_TEMP/build.log"
+
+      - name: Save build errors to the ci-logs branch
+        if: failure()
+        run: |
+          { grep -E "error:" "$RUNNER_TEMP/build.log" | sort -u | head -150; echo "-----"; tail -60 "$RUNNER_TEMP/build.log"; } > "$RUNNER_TEMP/errors.txt" || true
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git checkout --orphan ci-logs
+          git rm -rfq --cached .
+          git clean -fdxq
+          cp "$RUNNER_TEMP/errors.txt" errors.txt
+          git add errors.txt
+          git commit -qm "Build errors for ${GITHUB_SHA}"
+          git push -fq origin ci-logs
