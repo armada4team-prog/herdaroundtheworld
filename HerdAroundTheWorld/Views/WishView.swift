@@ -91,6 +91,7 @@ struct WishView: View {
             }
             .padding(20)
         }
+        .scrollDismissesKeyboard(.immediately)
         .herdBackground()
         .herdTitle("Wish granted")
         .onAppear { if grantedWish.isEmpty { grantedWish = c.map { "I wanted to \($0.wish)." } ?? "" } }

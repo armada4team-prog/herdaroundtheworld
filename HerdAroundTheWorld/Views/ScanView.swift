@@ -83,6 +83,7 @@ struct ScanView: View {
                     .keyboardType(.numberPad)
                     .focused($numberFocused)
                     .accessibilityLabel("Companion number")
+                    .accessibilityIdentifier("scanNumber")
             }
             .padding(.horizontal, 16).frame(height: 60)
             .background(Herd.field, in: RoundedRectangle(cornerRadius: 14, style: .continuous))

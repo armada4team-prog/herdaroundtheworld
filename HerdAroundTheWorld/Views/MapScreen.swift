@@ -98,6 +98,7 @@ struct MapScreen: View {
                 .keyboardType(.numberPad)
                 .submitLabel(.search)
                 .onSubmit(find)
+                .accessibilityIdentifier("mapSearch")
             if !search.isEmpty {
                 Button("Go", action: find).font(.herdBody(15, weight: .medium))
             }

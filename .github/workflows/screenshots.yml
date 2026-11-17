@@ -60,6 +60,24 @@ jobs:
           done
           ls -la "$RUNNER_TEMP/shots"
 
+      - name: Record a real-use walkthrough video
+        run: |
+          xcrun simctl terminate "$UDID" com.theherdstudio.herdaroundtheworld 2>/dev/null || true
+          xcrun simctl io "$UDID" recordVideo --codec h264 --force "$RUNNER_TEMP/shots/walkthrough.mp4" &
+          REC=$!
+          sleep 3
+          set +e
+          xcodebuild -project HerdAroundTheWorld.xcodeproj -scheme HerdAroundTheWorld \
+            -destination "id=$UDID" -derivedDataPath build -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=NO test > "$RUNNER_TEMP/uitest.log" 2>&1
+          RESULT=$?
+          set -e
+          sleep 2
+          kill -INT $REC || true
+          wait $REC || true
+          { echo "UI test exit code: $RESULT"; grep -E "error:|failed|passed|Couldn’t find|Test Case|\*\* TEST" "$RUNNER_TEMP/uitest.log" | tail -80; echo "-----"; tail -40 "$RUNNER_TEMP/uitest.log"; } > "$RUNNER_TEMP/shots/walkthrough-result.txt"
+          ls -la "$RUNNER_TEMP/shots"
+
       - name: Save screenshots to the screenshots branch
         run: |
           git config user.name "github-actions"
@@ -67,7 +85,7 @@ jobs:
           git checkout --orphan screenshots
           git rm -rfq --cached .
           git clean -fdxq
-          cp "$RUNNER_TEMP"/shots/*.png .
+          cp "$RUNNER_TEMP"/shots/* .
           echo "Screenshots for ${GITHUB_SHA}" > README.md
           git add -A
           git commit -qm "Screenshots for ${GITHUB_SHA}"

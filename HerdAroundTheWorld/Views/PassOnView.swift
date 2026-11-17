@@ -59,6 +59,7 @@ struct PassOnView: View {
                     FieldLabel(text: "Where? *")
                     TextField(handToSomeone ? "A city, like Santa Fe, NM" : "A city and a public place, like a café", text: $whereText)
                         .textFieldStyle(HerdFieldStyle())
+                        .accessibilityIdentifier("passWhere")
                     Text("Please never use a home address. We only ever show a place name and city, never a street address.")
                         .font(.herdBody(13)).foregroundStyle(Herd.body)
                     Button {
@@ -100,6 +101,7 @@ struct PassOnView: View {
                     TextField("Where did you go together? Who are you passing them to, and why?", text: $chapter, axis: .vertical)
                         .lineLimit(4...8)
                         .textFieldStyle(HerdFieldStyle())
+                        .accessibilityIdentifier("passChapter")
                 }
 
                 if let c, !c.wishGranted {
@@ -109,6 +111,7 @@ struct PassOnView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     FieldLabel(text: "Your name or nickname *")
                     TextField("Shown on their page", text: $nickname).textFieldStyle(HerdFieldStyle())
+                        .accessibilityIdentifier("passNickname")
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
@@ -132,6 +135,7 @@ struct PassOnView: View {
             }
             .padding(20)
         }
+        .scrollDismissesKeyboard(.immediately)
         .herdBackground()
         .herdTitle("Pass them on")
         .onAppear { if nickname.isEmpty { nickname = model.nickname } }
@@ -143,7 +147,13 @@ struct PassOnView: View {
                 .font(.herdBody(16, weight: .semibold)).foregroundStyle(Color(hex: "4F4320"))
             Text("“\(c.wishSentence)”").font(.script(24)).foregroundStyle(Color(hex: "4F4320"))
             ChoiceCard(title: "Yes, we did it!", detail: "Add a photo of the moment below. You’ll choose their next wish and earn a Wish Granted stamp.",
-                       isOn: grantedWish) { grantedWish = true }
+                       isOn: grantedWish) {
+                grantedWish = true
+                // The automated walkthrough on GitHub can't use the photo library, so it gets a sample photo.
+                if wishImage == nil, ProcessInfo.processInfo.arguments.contains("-uiTestSamplePhoto") {
+                    wishImage = Image(systemName: "photo.on.rectangle")
+                }
+            }
             ChoiceCard(title: "Not this time", detail: "That’s okay. The next traveler can try.", isOn: !grantedWish) { grantedWish = false }
             if grantedWish {
                 Text("A photo of the wish coming true *").font(.herdBody(15, weight: .semibold)).foregroundStyle(Color(hex: "4F4320"))

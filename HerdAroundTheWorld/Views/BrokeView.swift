@@ -89,6 +89,7 @@ struct BrokeView: View {
             }
             .padding(20)
         }
+        .scrollDismissesKeyboard(.immediately)
         .herdBackground()
         .herdTitle("Something happened")
         .onAppear { if nickname.isEmpty { nickname = model.nickname } }

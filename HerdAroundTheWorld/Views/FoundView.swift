@@ -27,6 +27,7 @@ struct FoundView: View {
             }
             .padding(20)
         }
+        .scrollDismissesKeyboard(.immediately)
         .herdBackground()
         .herdTitle("I found them")
         .onAppear { if nickname.isEmpty { nickname = model.nickname } }
@@ -44,6 +45,7 @@ struct FoundView: View {
         VStack(alignment: .leading, spacing: 8) {
             FieldLabel(text: "Where are you? *")
             TextField("City, like Santa Fe, NM", text: $city).textFieldStyle(HerdFieldStyle()).textContentType(.addressCity)
+                .accessibilityIdentifier("foundCity")
             Button {
                 locating = true
                 Task {
@@ -62,6 +64,7 @@ struct FoundView: View {
         VStack(alignment: .leading, spacing: 8) {
             FieldLabel(text: "Your name or nickname *")
             TextField("Shown on their page", text: $nickname).textFieldStyle(HerdFieldStyle()).textContentType(.nickname)
+                .accessibilityIdentifier("foundNickname")
         }
 
         VStack(alignment: .leading, spacing: 10) {

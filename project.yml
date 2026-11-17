@@ -42,3 +42,29 @@ targets:
         NSCameraUsageDescription: "Scan the code on a Companion’s bottom to see who they are and where they’ve been."
         NSLocationWhenInUseUsageDescription: "Fill in the city where you found or left a Companion. Only the city is ever shown."
         ITSAppUsesNonExemptEncryption: false
+
+  HerdAroundTheWorldUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: HerdAroundTheWorldUITests
+    dependencies:
+      - target: HerdAroundTheWorld
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.theherdstudio.herdaroundtheworld.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: HerdAroundTheWorld
+
+schemes:
+  HerdAroundTheWorld:
+    build:
+      targets:
+        HerdAroundTheWorld: all
+        HerdAroundTheWorldUITests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - HerdAroundTheWorldUITests
