@@ -7,8 +7,14 @@ struct MapScreen: View {
     @Environment(Router.self) private var router
     @State private var filter: MapFilter = .all
     @State private var selected: String? = nil
-    @State private var position: MapCameraPosition = .rect(.world)
+    @State private var position: MapCameraPosition = MapScreen.worldView
     @State private var search = ""
+
+    // A phone is too narrow for the whole flat world, so start over the Atlantic:
+    // the Americas, Europe and Africa, where most Companions are. Swipe for Asia and Australia.
+    static let worldView = MapCameraPosition.region(MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 28, longitude: -45),
+        span: MKCoordinateSpan(latitudeDelta: 120, longitudeDelta: 150)))
 
     private var visible: [Companion] { model.companions.filter { model.matches($0, filter: filter) } }
     private var selectedCompanion: Companion? { selected.flatMap { model.companion($0) } }
@@ -110,7 +116,7 @@ struct MapScreen: View {
 
     private func clearSelection() {
         selected = nil
-        withAnimation(.easeInOut) { position = .rect(.world) }
+        withAnimation(.easeInOut) { position = MapScreen.worldView }
     }
 
     @ViewBuilder private var bottomCard: some View {
