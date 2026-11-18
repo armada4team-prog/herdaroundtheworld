@@ -26,6 +26,7 @@ class _FoundScreenState extends State<FoundScreen> {
   bool alsoTellMe = true;
   bool done = false;
   bool? alreadyHolding; // checked once when the screen opens
+  bool? needsCode;
   bool locating = false;
   bool saving = false;
   String? cityError;
@@ -37,6 +38,7 @@ class _FoundScreenState extends State<FoundScreen> {
     super.didChangeDependencies();
     if (nickname.text.isEmpty) nickname.text = context.model.nickname;
     alreadyHolding ??= !context.model.canLogFind(widget.number);
+    needsCode ??= !context.model.hasFindCode(widget.number);
   }
 
   @override
@@ -88,7 +90,19 @@ class _FoundScreenState extends State<FoundScreen> {
     final name = c?.displayName ?? '#${widget.number}';
     return Scaffold(
       appBar: herdAppBar(title: 'I found them'),
-      body: alreadyHolding == true && !done
+      body: needsCode == true && alreadyHolding != true && !done
+          ? OutOfOrderView(
+              companion: c,
+              title: 'Scan {0}’s code first'.replaceAll('{0}', name),
+              message: 'To log a find, scan the code on {0}’s bottom, or type their number and the 4-letter code printed under it. That’s how we know they’re really with you.'
+                  .replaceAll('{0}', name),
+              buttonLabel: 'Go to Scan →',
+              onPressed: () {
+                context.router.popToRoot();
+                context.router.select(AppTab.scan);
+              },
+            )
+          : alreadyHolding == true && !done
           ? OutOfOrderView(
               companion: c,
               title: '{0} is already with you'.replaceAll('{0}', name),

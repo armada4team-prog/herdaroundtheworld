@@ -1,6 +1,7 @@
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'find_codes.dart';
 import 'models.dart';
 import 'sample_data.dart';
 
@@ -10,6 +11,9 @@ class AppModel extends ChangeNotifier {
   final List<Companion> companions = sampleCompanions();
   final Set<String> following = {'07', '2'};
   final Set<String> holding = {}; // found and not passed on yet
+  final Set<String> unlocked = {}; // find code checked, find not logged yet
+  int _wrongCodes = 0;
+  DateTime? _codesLockedUntil;
   String nickname = '';
   String? email;
   String language = 'en';
@@ -144,10 +148,34 @@ class AppModel extends ChangeNotifier {
   /// A Companion's journey always goes found → left → found → left. You can only log a find
   /// for a Companion you aren't already holding, and only pass on one you've logged finding.
   bool canLogFind(String number) => !holding.contains(number);
+
+  /// True once the Companion's secret find code has been scanned or typed (see find_codes.dart).
+  bool hasFindCode(String number) => unlocked.contains(number);
+
+  /// Checks a typed or scanned find code. After 5 wrong codes, typing codes pauses for 10 minutes,
+  /// so nobody can guess their way in.
+  CodeCheck tryFindCode(String number, String code) {
+    final locked = _codesLockedUntil;
+    if (locked != null && DateTime.now().isBefore(locked)) return CodeCheck.tooManyTries;
+    if (isRightFindCode(number, code)) {
+      _wrongCodes = 0;
+      unlocked.add(number);
+      notifyListeners();
+      return CodeCheck.right;
+    }
+    _wrongCodes++;
+    if (_wrongCodes >= 5) {
+      _wrongCodes = 0;
+      _codesLockedUntil = DateTime.now().add(const Duration(minutes: 10));
+      return CodeCheck.tooManyTries;
+    }
+    return CodeCheck.wrong;
+  }
   bool canPassOn(String number) => holding.contains(number);
 
   void logFind(String number, {required String city, required String nickname, required CheckIn checkIn, String? email, LatLng? point}) {
-    if (!canLogFind(number)) return;
+    if (!canLogFind(number) || !hasFindCode(number)) return;
+    unlocked.remove(number); // each scan logs one find
     this.nickname = nickname;
     if (email != null && email.isNotEmpty) this.email = email;
     holding.add(number);
@@ -365,3 +393,5 @@ class ModelBuilder extends StatelessWidget {
     return ListenableBuilder(listenable: model, builder: (context, _) => builder(context, model));
   }
 }
+
+enum CodeCheck { right, wrong, tooManyTries }

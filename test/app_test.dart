@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:herd_around_the_world/app_state.dart';
+import 'package:herd_around_the_world/find_codes.dart';
 import 'package:herd_around_the_world/main.dart';
 import 'package:herd_around_the_world/models.dart';
 
@@ -21,6 +22,7 @@ void main() {
     final stampsBefore = model.stamps.length;
     final c = model.companion('07')!;
     final stopsBefore = c.stops.length;
+    model.tryFindCode('07', findCodeFor('07'));
     model.logFind('07', city: 'Denver, CO', nickname: 'Sam', checkIn: CheckIn.appAlert);
     model.passOn('07', city: 'Boulder, CO', handedToSomeone: true, chapter: 'Hi', nickname: 'Sam', grantedWish: true);
     expect(c.stops.length, stopsBefore + 2);
@@ -37,6 +39,7 @@ void main() {
     expect(model.canPassOn('07'), isFalse);
     model.passOn('07', city: 'Boulder, CO', handedToSomeone: false, chapter: '', nickname: 'Sam', grantedWish: false);
     expect(c.stops.length, stopsBefore, reason: 'cannot leave before finding');
+    model.tryFindCode('07', findCodeFor('07'));
     model.logFind('07', city: 'Denver, CO', nickname: 'Sam', checkIn: CheckIn.none);
     expect(model.canLogFind('07'), isFalse);
     model.logFind('07', city: 'Denver, CO', nickname: 'Sam', checkIn: CheckIn.none);
@@ -45,6 +48,35 @@ void main() {
     model.passOn('07', city: 'Golden, CO', handedToSomeone: false, chapter: '', nickname: 'Sam', grantedWish: false);
     expect(c.stops.length, stopsBefore + 2, reason: 'cannot leave twice in a row');
     expect(model.canLogFind('07'), isTrue);
+  });
+
+  test('a find needs the secret code from their bottom', () {
+    final model = AppModel();
+    final c = model.companion('07')!;
+    final stopsBefore = c.stops.length;
+    model.logFind('07', city: 'Denver, CO', nickname: 'Sam', checkIn: CheckIn.none);
+    expect(c.stops.length, stopsBefore, reason: 'typing the number alone is not enough');
+    expect(model.tryFindCode('07', 'AAAA' == findCodeFor('07') ? 'CCCC' : 'AAAA'), CodeCheck.wrong);
+    expect(model.hasFindCode('07'), isFalse);
+    final code = findCodeFor('07');
+    expect(code.length, 4);
+    expect(findCodeFor('7'), code, reason: '07 and 7 are the same Companion');
+    expect(findCodeFor('08'), isNot(code));
+    expect(model.tryFindCode('07', ' ${code.toLowerCase()} '), CodeCheck.right);
+    model.logFind('07', city: 'Denver, CO', nickname: 'Sam', checkIn: CheckIn.none);
+    expect(c.stops.length, stopsBefore + 1);
+    expect(codeFromScan(qrAddressFor('07')), code);
+    expect(AppModel.numberFromScan(qrAddressFor('07')), '07');
+  });
+
+  test('guessing codes pauses after 5 wrong tries', () {
+    final model = AppModel();
+    final wrong = findCodeFor('07') == 'AAAA' ? 'CCCC' : 'AAAA';
+    for (var i = 0; i < 4; i++) {
+      expect(model.tryFindCode('07', wrong), CodeCheck.wrong);
+    }
+    expect(model.tryFindCode('07', wrong), CodeCheck.tooManyTries);
+    expect(model.tryFindCode('07', findCodeFor('07')), CodeCheck.tooManyTries);
   });
 
   testWidgets('opens on the welcome screen and comes in', (tester) async {

@@ -91,3 +91,18 @@ Each Companion’s QR code should point to `https://theherdstudio.com/c/<number>
 
 Fira Sans, Baloo 2 and Shadows Into Light Two, all under the SIL Open Font License
 (see `Licenses/`).
+
+## Find codes (stops fake finds)
+
+Logging a find needs the Companion's secret 4-letter code. It's hidden in the QR code on their
+bottom (`https://theherdstudio.com/c/07?k=KCVT`) and printed small under their number, for when the
+camera won't scan. Typing a number alone only shows the Companion's page.
+
+List every code and QR address for printing labels (keep this list private):
+
+```bash
+dart run tool/print_codes.dart 52
+```
+
+For now the codes are worked out inside the app. Once the app is connected to the website, they
+should move to the website's server so nobody can dig them out of the app.
