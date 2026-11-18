@@ -56,7 +56,7 @@ class _HereCardState extends State<HereCard> {
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = widget.errorText != null && here == null ? Herd.pinkInk : Colors.transparent;
+    final borderColor = widget.errorText != null ? Herd.pinkInk : Colors.transparent;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 8,
@@ -114,7 +114,7 @@ class _HereCardState extends State<HereCard> {
                 ),
         ),
         Text(tr('We use your phone’s location so travelers know where to look. Only the city is shown.'), style: HerdText.body(13)),
-        if (widget.errorText != null && here == null) Text(tr(widget.errorText!), style: HerdText.body(14, color: Herd.pinkInk)),
+        if (widget.errorText != null) Text(tr(widget.errorText!), style: HerdText.body(14, color: Herd.pinkInk)),
       ],
     );
   }

@@ -65,6 +65,19 @@ class _PassOnScreenState extends State<PassOnScreen> {
     super.dispose();
   }
 
+  /// The 5-mile rule: a message if they're still too close to where they found this Companion.
+  String? tooCloseMessage(HerePlace place) {
+    final model = context.model;
+    // Handing them to someone is a gift: no minimum distance.
+    if (handToSomeone || model.farEnoughToPassOn(widget.number, place.point)) return null;
+    final miles = model.milesFromFind(widget.number, place.point)!;
+    if (miles < 1) {
+      return 'To leave a Companion somewhere, take them at least 5 miles from where you found them. You’re still close to where you found them. (Handing them to someone is fine anywhere.)';
+    }
+    return 'To leave a Companion somewhere, take them at least 5 miles from where you found them. You’re about {0} miles away. (Handing them to someone is fine anywhere.)'
+        .replaceAll('{0}', miles.toStringAsFixed(0));
+  }
+
   bool get canSubmit => nickname.text.trim().isNotEmpty && !saving;
 
   Future<void> submit() async {
@@ -72,7 +85,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
     final where = here;
     final description = placeText.text.trim();
     setState(() {
-      whereError = where == null ? 'We need your location to pass them on.' : null;
+      whereError = where == null ? 'We need your location to pass them on.' : tooCloseMessage(where);
       placeError = handToSomeone ? null : checkPlaceDescription(description);
       chapterError = checkPublicText(chapter.text, maxLength: 500);
       nicknameError = checkNickname(nickname.text);
@@ -100,6 +113,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
       grantedWish: grantedWish,
       photo: photo ?? (grantedWish ? wishPhoto : null),
       point: point,
+      exactPoint: where.point,
     );
     if (alertMe) model.following.add(widget.number);
     if (email.text.trim().isNotEmpty) model.setEmail(email.text.trim());
@@ -182,20 +196,24 @@ class _PassOnScreenState extends State<PassOnScreen> {
                       const SizedBox(height: 10),
                       ChoiceCard(
                         title: 'Handing them to someone',
-                        detail: 'Give them to a fellow traveler: a new friend, a host, someone heading somewhere fun.',
+                        detail: 'Give them to a fellow traveler: a new friend, a host, someone heading somewhere fun. Works anywhere, no distance needed.',
                         badge: 'Most personal',
                         selected: handToSomeone,
                         onTap: () => setState(() {
                           handToSomeone = true;
                           publicPlace = false;
+                          if (here != null) whereError = tooCloseMessage(here!);
                         }),
                       ),
                       const SizedBox(height: 10),
                       ChoiceCard(
                         title: 'Leaving them somewhere',
-                        detail: 'A café shelf, a hostel lobby, a little free library. Somewhere they’ll be found.',
+                        detail: 'A café shelf, a hostel lobby, a little free library. Somewhere they’ll be found, at least 5 miles from where you found them.',
                         selected: !handToSomeone,
-                        onTap: () => setState(() => handToSomeone = false),
+                        onTap: () => setState(() {
+                          handToSomeone = false;
+                          if (here != null) whereError = tooCloseMessage(here!);
+                        }),
                       ),
                       const SizedBox(height: 20),
                       const FieldLabel('Where are you? *'),
@@ -204,7 +222,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
                         errorText: whereError,
                         onChanged: (place) => setState(() {
                           here = place;
-                          if (place != null) whereError = null;
+                          whereError = place == null ? null : tooCloseMessage(place);
                         }),
                       ),
                       const SizedBox(height: 6),

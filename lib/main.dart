@@ -36,17 +36,17 @@ void main() {
 }
 
 Widget pageFor(AppRoute route) => switch (route) {
-      CompanionRoute(:final number, :final showHello) => CompanionScreen(number: number, startWithHello: showHello),
-      FoundRoute(:final number) => FoundScreen(number: number),
+  CompanionRoute(:final number, :final showHello) => CompanionScreen(number: number, startWithHello: showHello),
+  FoundRoute(:final number) => FoundScreen(number: number),
       PassOnRoute(:final number) => PassOnScreen(number: number),
-      WishRoute(:final number) => WishScreen(number: number),
-      SentRoute(:final number) => SentScreen(number: number),
-      BrokeRoute(:final number) => BrokeScreen(number: number),
-      ChatRoute(:final number) => ChatScreen(number: number),
-      StoryRoute(:final number) => StoryScreen(number: number),
-      LearnRoute() => const LearnScreen(),
-      NotificationSettingsRoute() => const NotificationSettingsScreen(),
-    };
+  WishRoute(:final number) => WishScreen(number: number),
+  SentRoute(:final number) => SentScreen(number: number),
+  BrokeRoute(:final number) => BrokeScreen(number: number),
+  ChatRoute(:final number) => ChatScreen(number: number),
+  StoryRoute(:final number) => StoryScreen(number: number),
+  LearnRoute() => const LearnScreen(),
+  NotificationSettingsRoute() => const NotificationSettingsScreen(),
+};
 
 class HerdApp extends StatefulWidget {
   const HerdApp({super.key});
@@ -97,6 +97,10 @@ class _HerdAppState extends State<HerdApp> {
       case 'found':
         model.unlocked.add('07'); // preview as someone who scanned #07
         router.open(const FoundRoute('07'), inTab: AppTab.home);
+      case 'passon-near': // preview the 5-mile rule: found #07 right here
+        model.holding.add('07');
+        model.foundAt['07'] = const LatLng(39.74, -104.84);
+        router.open(const PassOnRoute('07'), inTab: AppTab.home);
       case 'passon':
         model.holding.add('07'); // preview as someone who has found #07
         router.open(const PassOnRoute('07'), inTab: AppTab.home);
@@ -131,11 +135,12 @@ class _HerdAppState extends State<HerdApp> {
         title: 'Herd Around the World',
         debugShowCheckedModeBanner: false,
         theme: herdTheme(),
-        home: Stack(children: [
-          const MainShell(),
-          if (showSplash)
-            Positioned.fill(child: SplashScreen(onEnter: () => setState(() => showSplash = false))),
-        ]),
+        home: Stack(
+          children: [
+            const MainShell(),
+            if (showSplash) Positioned.fill(child: SplashScreen(onEnter: () => setState(() => showSplash = false))),
+          ],
+        ),
       ),
     );
   }
@@ -154,12 +159,12 @@ class MainShell extends StatelessWidget {
   ];
 
   Widget _root(AppTab tab) => switch (tab) {
-        AppTab.home => const HomeScreen(),
-        AppTab.map => const MapScreen(),
-        AppTab.scan => const ScanScreen(),
-        AppTab.passport => const PassportScreen(),
-        AppTab.activity => const ActivityScreen(),
-      };
+    AppTab.home => const HomeScreen(),
+    AppTab.map => const MapScreen(),
+    AppTab.scan => const ScanScreen(),
+    AppTab.passport => const PassportScreen(),
+    AppTab.activity => const ActivityScreen(),
+  };
 
   @override
   Widget build(BuildContext context) {

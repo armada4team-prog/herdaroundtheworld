@@ -66,6 +66,7 @@ class _FoundScreenState extends State<FoundScreen> {
       checkIn: checkIn,
       email: checkIn == CheckIn.email ? email.text.trim() : null,
       point: where.blurred(exactish: false),
+      exactPoint: where.point,
     );
     setState(() {
       saving = false;
@@ -182,6 +183,12 @@ class _FoundScreenState extends State<FoundScreen> {
     const SizedBox(height: 6),
     Text(
       tr('Take $name along for your trip. When you’re ready, scan them again and tap “I’m passing them on.”'),
+      textAlign: TextAlign.center,
+      style: HerdText.body(16),
+    ),
+    const SizedBox(height: 8),
+    Text(
+      tr('Leaving them somewhere? Take them at least 5 miles from here first. Handing them to someone is fine anywhere.'),
       textAlign: TextAlign.center,
       style: HerdText.body(16),
     ),

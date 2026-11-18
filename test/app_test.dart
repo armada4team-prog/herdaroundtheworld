@@ -95,6 +95,37 @@ void main() {
     expect(here.blurred(exactish: true), const LatLng(39.729, -104.832));
   });
 
+  test('a Companion must travel 5 miles before it is left somewhere (gifts are fine anywhere)', () {
+    final model = AppModel();
+    final c = model.companion('3')!;
+    const aurora = LatLng(39.7294, -104.8319);
+    const stillAurora = LatLng(39.72, -104.79); // about 2 miles away
+    const boulder = LatLng(40.0150, -105.2705); // about 30 miles away
+    model.tryFindCode('3', findCodeFor('3'));
+    model.logFind('3', city: 'Aurora, CO', nickname: 'Sam', checkIn: CheckIn.none, exactPoint: aurora);
+    final stops = c.stops.length;
+    expect(model.farEnoughToPassOn('3', stillAurora), isFalse);
+    model.passOn(
+      '3',
+      city: 'Aurora, CO',
+      handedToSomeone: false,
+      chapter: '',
+      nickname: 'Sam',
+      grantedWish: false,
+      exactPoint: stillAurora,
+    );
+    expect(c.stops.length, stops, reason: 'only about 2 miles: cannot be left somewhere yet');
+    expect(model.farEnoughToPassOn('3', boulder), isTrue);
+    model.passOn('3', city: 'Boulder, CO', handedToSomeone: false, chapter: '', nickname: 'Sam', grantedWish: false, exactPoint: boulder);
+    expect(c.stops.length, stops + 1);
+
+    // Handing a Companion to someone is a gift: fine right where it was found.
+    model.tryFindCode('3', findCodeFor('3'));
+    model.logFind('3', city: 'Boulder, CO', nickname: 'Sam', checkIn: CheckIn.none, exactPoint: boulder);
+    model.passOn('3', city: 'Boulder, CO', handedToSomeone: true, chapter: '', nickname: 'Sam', grantedWish: false, exactPoint: boulder);
+    expect(c.stops.length, stops + 3);
+  });
+
   testWidgets('opens on the welcome screen and comes in', (tester) async {
     await tester.pumpWidget(const HerdApp());
     await tester.pump(const Duration(milliseconds: 300));

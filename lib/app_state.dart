@@ -14,6 +14,9 @@ class AppModel extends ChangeNotifier {
   final Set<String> following = {'07', '2'};
   final Set<String> holding = {}; // found and not passed on yet
   final Set<String> unlocked = {}; // find code checked, find not logged yet
+  /// Exactly where each Companion was found. Private: only used to check the 5-mile rule, never shown.
+  final Map<String, LatLng> foundAt = {};
+  static const minMilesToPassOn = 5;
   int _wrongCodes = 0;
   DateTime? _codesLockedUntil;
   String nickname = '';
@@ -23,61 +26,91 @@ class AppModel extends ChangeNotifier {
   final Map<String, List<ChatMessage>> chats = {
     '07': [
       ChatMessage(
-          who: 'The Herd · made them in Aurora, CO',
-          text: 'Welcome to #07’s chat! Everyone who carries them can talk here. Say hi to the travelers before you.',
-          kind: ChatKind.herd),
-      ChatMessage(who: '[TRAVELER 2] · Traveler 4 · Boise, ID', text: 'I miss this little one already! Where are they headed next?', kind: ChatKind.traveler),
-      ChatMessage(who: 'Sam R. · Traveler 5 · Moab, UT', text: 'They loved the arches. Somewhere with mountains, please!', kind: ChatKind.traveler),
+        who: 'The Herd · made them in Aurora, CO',
+        text: 'Welcome to #07’s chat! Everyone who carries them can talk here. Say hi to the travelers before you.',
+        kind: ChatKind.herd,
+      ),
+      ChatMessage(
+        who: '[TRAVELER 2] · Traveler 4 · Boise, ID',
+        text: 'I miss this little one already! Where are they headed next?',
+        kind: ChatKind.traveler,
+      ),
+      ChatMessage(
+        who: 'Sam R. · Traveler 5 · Moab, UT',
+        text: 'They loved the arches. Somewhere with mountains, please!',
+        kind: ChatKind.traveler,
+      ),
     ],
   };
 
   final List<Stamp> stamps = [
     const Stamp(big: '#07', small: 'Santa Fe', label: 'Carried #07 · Oct', background: 'DDF0E8', ring: '5B7869', ink: '2F4A3D', tilt: -6),
     const Stamp(big: '#3', small: 'Tokyo', label: 'Carried #3 · Aug', background: 'FBE4E2', ring: 'D98C86', ink: '6B3F3A', tilt: 5),
-    const Stamp(big: 'Wish', small: 'Granted', label: 'Helped #2 see the ocean', background: 'F9EBB5', ring: 'E0B94A', ink: '5A4C1E', tilt: -3),
-    const Stamp(big: '1st', small: 'Hand-off', label: 'Handed one to a stranger', background: 'E7ECE5', ring: '6E8B7D', ink: '3F5A4C', tilt: 4),
+    const Stamp(
+      big: 'Wish',
+      small: 'Granted',
+      label: 'Helped #2 see the ocean',
+      background: 'F9EBB5',
+      ring: 'E0B94A',
+      ink: '5A4C1E',
+      tilt: -3,
+    ),
+    const Stamp(
+      big: '1st',
+      small: 'Hand-off',
+      label: 'Handed one to a stranger',
+      background: 'E7ECE5',
+      ring: '6E8B7D',
+      ink: '3F5A4C',
+      tilt: 4,
+    ),
   ];
 
   final List<ActivityItem> activity = [
     ActivityItem(
-        title: '#07 just arrived in Santa Fe, NM!',
-        meta: 'Left by [TRAVELER] · 2 hours ago',
-        icon: Icons.place_outlined,
-        background: 'DDF0E8',
-        foreground: '2F4A3D',
-        route: const CompanionRoute('07'),
-        isToday: true),
+      title: '#07 just arrived in Santa Fe, NM!',
+      meta: 'Left by [TRAVELER] · 2 hours ago',
+      icon: Icons.place_outlined,
+      background: 'DDF0E8',
+      foreground: '2F4A3D',
+      route: const CompanionRoute('07'),
+      isToday: true,
+    ),
     ActivityItem(
-        title: '[TRAVELER 2] replied in #07’s traveler chat',
-        meta: '“Somewhere with mountains, please!” · 4 hours ago',
-        icon: Icons.chat_bubble_outline,
-        background: 'F6EFE7',
-        foreground: '3F5A4C',
-        route: const ChatRoute('07'),
-        isToday: true),
+      title: '[TRAVELER 2] replied in #07’s traveler chat',
+      meta: '“Somewhere with mountains, please!” · 4 hours ago',
+      icon: Icons.chat_bubble_outline,
+      background: 'F6EFE7',
+      foreground: '3F5A4C',
+      route: const ChatRoute('07'),
+      isToday: true,
+    ),
     ActivityItem(
-        title: 'Two new stamps: Passed on #3 and Wish granted',
-        meta: 'Added to your Passport after a quick look',
-        icon: Icons.star_outline,
-        background: 'FBE4E2',
-        foreground: '6B3F3A',
-        isToday: true),
+      title: 'Two new stamps: Passed on #3 and Wish granted',
+      meta: 'Added to your Passport after a quick look',
+      icon: Icons.star_outline,
+      background: 'FBE4E2',
+      foreground: '6B3F3A',
+      isToday: true,
+    ),
     ActivityItem(
-        title: '#2’s wish came true: they saw the ocean!',
-        meta: 'Lisbon, Portugal · 5 days ago',
-        icon: Icons.star_outline,
-        background: 'F9EBB5',
-        foreground: '5A4C1E',
-        route: const CompanionRoute('2'),
-        isToday: false),
+      title: '#2’s wish came true: they saw the ocean!',
+      meta: 'Lisbon, Portugal · 5 days ago',
+      icon: Icons.star_outline,
+      background: 'F9EBB5',
+      foreground: '5A4C1E',
+      route: const CompanionRoute('2'),
+      isToday: false,
+    ),
     ActivityItem(
-        title: '#07 passed 1,000 miles',
-        meta: 'A new milestone for the herd · 6 days ago',
-        icon: Icons.flag_outlined,
-        background: 'E7ECE5',
-        foreground: '3F5A4C',
-        route: const CompanionRoute('07'),
-        isToday: false),
+      title: '#07 passed 1,000 miles',
+      meta: 'A new milestone for the herd · 6 days ago',
+      icon: Icons.flag_outlined,
+      background: 'E7ECE5',
+      foreground: '3F5A4C',
+      route: const CompanionRoute('07'),
+      isToday: false,
+    ),
   ];
 
   /// The one gentle reminder from a Companion you're holding, shown at the top of Activity.
@@ -99,7 +132,8 @@ class AppModel extends ChangeNotifier {
 
   /// The 10 Companions with the most stops, most recently moved first when tied.
   List<Companion> get mostActive {
-    final sorted = [...companions]..sort((a, b) {
+    final sorted = [...companions]
+      ..sort((a, b) {
         if (a.stopCount != b.stopCount) return b.stopCount.compareTo(a.stopCount);
         return daysAgo(a.lastMoved).compareTo(daysAgo(b.lastMoved));
       });
@@ -112,16 +146,16 @@ class AppModel extends ChangeNotifier {
   int get herdSize => 14;
 
   bool matches(Companion c, MapFilter filter) => switch (filter) {
-        MapFilter.all || MapFilter.nearMe => true,
-        MapFilter.following => following.contains(c.number),
-        MapFilter.originals => c.isOriginal,
-        MapFilter.movedThisWeek => c.movedThisWeek,
-        MapFilter.waiting => c.status == CompanionStatus.waiting,
-        MapFilter.quiet => c.status == CompanionStatus.quiet,
-        MapFilter.adopted => c.status == CompanionStatus.adopted,
-        MapFilter.retired => c.status == CompanionStatus.retired,
-        MapFilter.wishesGranted => c.wishGranted,
-      };
+    MapFilter.all || MapFilter.nearMe => true,
+    MapFilter.following => following.contains(c.number),
+    MapFilter.originals => c.isOriginal,
+    MapFilter.movedThisWeek => c.movedThisWeek,
+    MapFilter.waiting => c.status == CompanionStatus.waiting,
+    MapFilter.quiet => c.status == CompanionStatus.quiet,
+    MapFilter.adopted => c.status == CompanionStatus.adopted,
+    MapFilter.retired => c.status == CompanionStatus.retired,
+    MapFilter.wishesGranted => c.wishGranted,
+  };
 
   // Actions
 
@@ -173,11 +207,30 @@ class AppModel extends ChangeNotifier {
     }
     return CodeCheck.wrong;
   }
+
   bool canPassOn(String number) => holding.contains(number);
 
-  void logFind(String number, {required String city, required String nickname, required CheckIn checkIn, String? email, LatLng? point}) {
+  /// How far (in miles) someone is from where they found this Companion, or null if unknown.
+  double? milesFromFind(String number, LatLng here) {
+    final found = foundAt[number];
+    return found == null ? null : const Distance().as(LengthUnit.Meter, found, here) / 1609.344;
+  }
+
+  /// A Companion has to travel at least 5 miles from where it was found before it's left somewhere.
+  bool farEnoughToPassOn(String number, LatLng here) => (milesFromFind(number, here) ?? minMilesToPassOn) >= minMilesToPassOn;
+
+  void logFind(
+    String number, {
+    required String city,
+    required String nickname,
+    required CheckIn checkIn,
+    String? email,
+    LatLng? point,
+    LatLng? exactPoint,
+  }) {
     if (!canLogFind(number) || !hasFindCode(number)) return;
     unlocked.remove(number); // each scan logs one find
+    if (exactPoint != null) foundAt[number] = exactPoint;
     this.nickname = nickname;
     if (email != null && email.isNotEmpty) this.email = email;
     holding.add(number);
@@ -186,63 +239,89 @@ class AppModel extends ChangeNotifier {
     if (c != null) {
       final last = c.current;
       c.status = CompanionStatus.moving;
-      c.stops.add(Stop(
-        city: city.isEmpty ? (last?.city ?? '') : city,
-        latitude: point?.latitude ?? last?.latitude ?? 0,
-        longitude: point?.longitude ?? last?.longitude ?? 0,
-        leftBy: nickname,
-        when: 'Just now',
-        note: 'Found by $nickname.',
-      ));
+      c.stops.add(
+        Stop(
+          city: city.isEmpty ? (last?.city ?? '') : city,
+          latitude: point?.latitude ?? last?.latitude ?? 0,
+          longitude: point?.longitude ?? last?.longitude ?? 0,
+          leftBy: nickname,
+          when: 'Just now',
+          note: 'Found by $nickname.',
+        ),
+      );
       c.lastMoved = 'Just now';
       c.movedThisWeek = true;
       activity.insert(
-          0,
-          ActivityItem(
-              title: 'You found #$number!',
-              meta: '$city · just now',
-              icon: Icons.place_outlined,
-              background: 'DDF0E8',
-              foreground: '2F4A3D',
-              route: CompanionRoute(number),
-              isToday: true));
+        0,
+        ActivityItem(
+          title: 'You found #$number!',
+          meta: '$city · just now',
+          icon: Icons.place_outlined,
+          background: 'DDF0E8',
+          foreground: '2F4A3D',
+          route: CompanionRoute(number),
+          isToday: true,
+        ),
+      );
     }
     notifyListeners();
   }
 
-  void passOn(String number,
-      {required String city,
-      String? place,
-      required bool handedToSomeone,
-      required String chapter,
-      required String nickname,
-      required bool grantedWish,
-      Uint8List? photo,
-      LatLng? point}) {
+  void passOn(
+    String number, {
+    required String city,
+    String? place,
+    required bool handedToSomeone,
+    required String chapter,
+    required String nickname,
+    required bool grantedWish,
+    Uint8List? photo,
+    LatLng? point,
+    LatLng? exactPoint,
+  }) {
     if (!canPassOn(number)) return;
+    // Leaving them somewhere needs 5+ miles from the find; handing them to someone doesn't.
+    if (!handedToSomeone && exactPoint != null && !farEnoughToPassOn(number, exactPoint)) return;
+    foundAt.remove(number);
     if (nickname.isNotEmpty) this.nickname = nickname;
     holding.remove(number);
     final c = companion(number);
     if (c != null) {
       final last = c.current;
-      c.stops.add(Stop(
-        city: city,
-        place: handedToSomeone ? null : place,
-        latitude: point?.latitude ?? last?.latitude ?? 0,
-        longitude: point?.longitude ?? last?.longitude ?? 0,
-        leftBy: nickname,
-        when: 'Just now',
-        note: chapter.isEmpty ? null : chapter,
-        photo: photo,
-      ));
+      c.stops.add(
+        Stop(
+          city: city,
+          place: handedToSomeone ? null : place,
+          latitude: point?.latitude ?? last?.latitude ?? 0,
+          longitude: point?.longitude ?? last?.longitude ?? 0,
+          leftBy: nickname,
+          when: 'Just now',
+          note: chapter.isEmpty ? null : chapter,
+          photo: photo,
+        ),
+      );
       c.status = handedToSomeone ? CompanionStatus.moving : CompanionStatus.waiting;
       c.lastMoved = 'Just now';
       c.movedThisWeek = true;
       c.travelers += 1;
-      stamps.insert(0, Stamp(big: '#$number', small: city, label: 'Passed on #$number', background: 'DDF0E8', ring: '5B7869', ink: '2F4A3D', tilt: -4));
+      stamps.insert(
+        0,
+        Stamp(big: '#$number', small: city, label: 'Passed on #$number', background: 'DDF0E8', ring: '5B7869', ink: '2F4A3D', tilt: -4),
+      );
       if (grantedWish) {
         c.wishGranted = true;
-        stamps.insert(0, Stamp(big: 'Wish', small: 'Granted', label: 'Helped #$number ${c.wish}', background: 'F9EBB5', ring: 'E0B94A', ink: '5A4C1E', tilt: 3));
+        stamps.insert(
+          0,
+          Stamp(
+            big: 'Wish',
+            small: 'Granted',
+            label: 'Helped #$number ${c.wish}',
+            background: 'F9EBB5',
+            ring: 'E0B94A',
+            ink: '5A4C1E',
+            tilt: 3,
+          ),
+        );
       }
     }
     if (reminderFrom == number) reminderFrom = null;
@@ -275,7 +354,9 @@ class AppModel extends ChangeNotifier {
   void sendChat(String number, String text) {
     final trimmed = text.trim();
     if (trimmed.isEmpty) return;
-    chats.putIfAbsent(number, () => []).add(ChatMessage(who: nickname.isEmpty ? 'You' : nickname, text: hideContactDetails(trimmed), kind: ChatKind.me));
+    chats
+        .putIfAbsent(number, () => [])
+        .add(ChatMessage(who: nickname.isEmpty ? 'You' : nickname, text: hideContactDetails(trimmed), kind: ChatKind.me));
     notifyListeners();
   }
 
