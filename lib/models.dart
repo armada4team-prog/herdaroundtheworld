@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
@@ -15,6 +16,7 @@ class Stop {
     this.leftBy,
     this.when = '',
     this.note,
+    this.photo,
   });
 
   final String city;
@@ -24,6 +26,9 @@ class Stop {
   final String? leftBy;
   final String when;
   final String? note;
+
+  /// The traveler's photo. Waits for The Herd's quick look before others see it.
+  final Uint8List? photo;
 
   LatLng get point => LatLng(latitude, longitude);
 }

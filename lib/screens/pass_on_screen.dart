@@ -105,6 +105,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
       chapter: chapter.text.trim(),
       nickname: nickname.text.trim(),
       grantedWish: grantedWish,
+      photo: photo ?? (grantedWish ? wishPhoto : null),
       point: point,
     );
     if (alertMe) model.following.add(widget.number);
@@ -270,7 +271,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
                       const FieldLabel('Add a photo (optional)'),
                       const SizedBox(height: 8),
                       _photoBox(photo, 'A photo from your time together, or their new spot', Herd.stepDot, () async {
-                        final p = await Services.pickPhoto();
+                        final p = await Services.choosePhoto(context);
                         if (p != null && mounted) setState(() => photo = p);
                       }),
                       const SizedBox(height: 8),
@@ -402,7 +403,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
           style: HerdText.body(15, weight: FontWeight.w600, color: Herd.wishInk),
         ),
         _photoBox(wishPhoto, 'Add the photo', Herd.gold, () async {
-          final p = await Services.pickPhoto();
+          final p = await Services.choosePhoto(context);
           if (p != null && mounted) {
             setState(() {
               wishPhoto = p;

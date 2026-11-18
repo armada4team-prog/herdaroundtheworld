@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -215,6 +217,7 @@ class AppModel extends ChangeNotifier {
       required String chapter,
       required String nickname,
       required bool grantedWish,
+      Uint8List? photo,
       LatLng? point}) {
     if (!canPassOn(number)) return;
     if (nickname.isNotEmpty) this.nickname = nickname;
@@ -230,6 +233,7 @@ class AppModel extends ChangeNotifier {
         leftBy: nickname,
         when: 'Just now',
         note: chapter.isEmpty ? null : chapter,
+        photo: photo,
       ));
       c.status = handedToSomeone ? CompanionStatus.moving : CompanionStatus.waiting;
       c.lastMoved = 'Just now';

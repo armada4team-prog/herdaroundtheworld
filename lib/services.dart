@@ -1,10 +1,16 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'l10n.dart';
+import 'theme.dart';
 
 /// Location, photos and links, working the same way on Android and iPhone.
 class Services {
@@ -20,7 +26,8 @@ class Services {
       final places = await Geocoding().placemarkFromCoordinates(position.latitude, position.longitude);
       if (places.isEmpty) return null;
       final p = places.first;
-      final city = <String?>[p.locality, p.subAdministrativeArea, p.name].firstWhere((s) => s != null && s.isNotEmpty, orElse: () => '') ?? '';
+      final city =
+          <String?>[p.locality, p.subAdministrativeArea, p.name].firstWhere((s) => s != null && s.isNotEmpty, orElse: () => '') ?? '';
       final region = p.isoCountryCode == 'US' ? (p.administrativeArea ?? '') : (p.country ?? '');
       return [city, region].where((s) => s.isNotEmpty).join(', ');
     } catch (_) {
@@ -48,10 +55,55 @@ class Services {
   }
 
   /// Picks a photo from the phone's library.
-  static Future<Uint8List?> pickPhoto() async {
+  /// Asks "Take a photo" or "Choose from your photos", then gets the photo.
+  static Future<Uint8List?> choosePhoto(BuildContext context) async {
+    final canUseCamera = !kIsWeb && (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS);
+    if (!canUseCamera) return pickPhoto();
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      useRootNavigator: true,
+      backgroundColor: Herd.cream,
+      builder: (sheet) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_camera_outlined, color: Herd.sageDark),
+              title: Text(tr('Take a photo'), style: HerdText.body(16, color: Herd.ink)),
+              onTap: () => Navigator.pop(sheet, ImageSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined, color: Herd.sageDark),
+              title: Text(tr('Choose from your photos'), style: HerdText.body(16, color: Herd.ink)),
+              onTap: () => Navigator.pop(sheet, ImageSource.gallery),
+            ),
+          ],
+        ),
+      ),
+    );
+    return source == null ? null : pickPhoto(source: source);
+  }
+
+  /// Gets a photo, shrunk and re-saved (which also drops the hidden location data).
+  static Future<Uint8List?> pickPhoto({ImageSource source = ImageSource.gallery}) async {
     try {
-      final file = await ImagePicker().pickImage(source: ImageSource.gallery, maxWidth: 1600, imageQuality: 85);
-      return file == null ? null : await file.readAsBytes();
+      final file = await ImagePicker().pickImage(source: source, maxWidth: 1600, imageQuality: 85);
+      if (file == null) return null;
+      return await withoutHiddenData(await file.readAsBytes());
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Redraws a photo into a fresh picture, so none of the hidden data inside the original
+  /// (GPS location, phone model, date) comes along.
+  static Future<Uint8List?> withoutHiddenData(Uint8List original) async {
+    try {
+      final codec = await ui.instantiateImageCodec(original, targetWidth: 1200);
+      final frame = await codec.getNextFrame();
+      final png = await frame.image.toByteData(format: ui.ImageByteFormat.png);
+      frame.image.dispose();
+      return png?.buffer.asUint8List();
     } catch (_) {
       return null;
     }
