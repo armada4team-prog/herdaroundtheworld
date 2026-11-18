@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../app_state.dart';
+import '../l10n.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../widgets/companion_figure.dart';
@@ -32,7 +33,7 @@ class _CompanionScreenState extends State<CompanionScreen> {
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(24),
-              child: Text('We couldn’t find #${widget.number}. Check the number on their bottom and try again.',
+              child: Text(tr('We couldn’t find #${widget.number}. Check the number on their bottom and try again.'),
                   textAlign: TextAlign.center, style: HerdText.body(16)),
             ),
           );
@@ -75,10 +76,10 @@ class _CompanionScreenState extends State<CompanionScreen> {
             JourneyMap(companion: c),
             const SizedBox(height: 6),
             Row(children: [
-              Expanded(child: Text('Live · updated ${c.lastMoved}', style: HerdText.body(13))),
+              Expanded(child: Text(tr('Live · updated ${c.lastMoved}'), style: HerdText.body(13))),
               TextButton(
                 onPressed: () => router.select(AppTab.map),
-                child: Text('World map →', style: HerdText.body(13, weight: FontWeight.w500, color: Herd.sageDark)),
+                child: Text(tr('World map →'), style: HerdText.body(13, weight: FontWeight.w500, color: Herd.sageDark)),
               ),
             ]),
             const SizedBox(height: 10),
@@ -107,13 +108,13 @@ class _CompanionScreenState extends State<CompanionScreen> {
             Row(children: [
               TextButton(
                 onPressed: () => setState(() => showHello = true),
-                child: Text('About #${c.number}', style: HerdText.body(14, color: Herd.sageDark)),
+                child: Text(tr('About #${c.number}'), style: HerdText.body(14, color: Herd.sageDark)),
               ),
               const Spacer(),
               if (!retired)
                 TextButton(
                   onPressed: () => router.push(BrokeRoute(c.number)),
-                  child: Text('Something happened to them?', style: HerdText.body(14, color: Herd.sageDark)),
+                  child: Text(tr('Something happened to them?'), style: HerdText.body(14, color: Herd.sageDark)),
                 ),
             ]),
           ]),
@@ -139,7 +140,7 @@ class _CompanionScreenState extends State<CompanionScreen> {
             height: 28,
             alignment: Alignment.center,
             decoration: BoxDecoration(color: isNow ? Herd.rose : Herd.mintSoft, shape: BoxShape.circle),
-            child: Text('$number', style: HerdText.chunky(14, extraBold: false, color: isNow ? Colors.white : Herd.ink)),
+            child: Text(tr('$number'), style: HerdText.chunky(14, extraBold: false, color: isNow ? Colors.white : Herd.ink)),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -176,7 +177,7 @@ class HelloCard extends StatelessWidget {
                 Align(alignment: Alignment.centerRight, child: CircleIconButton(icon: Icons.close, label: 'Close', color: Herd.field, size: 36, onTap: onClose)),
                 CompanionBadge(companion: c, size: 104, waving: true, happy: true),
                 Eyebrow('Art in Transit · No. ${c.number}'),
-                Text('Hi, I’m ${c.displayName}!', textAlign: TextAlign.center, style: HerdText.script(38)),
+                Text(tr('Hi, I’m ${c.displayName}!'), textAlign: TextAlign.center, style: HerdText.script(38)),
                 Text(c.blurb, textAlign: TextAlign.center, style: HerdText.body(15)),
                 Container(
                   width: double.infinity,
@@ -184,7 +185,7 @@ class HelloCard extends StatelessWidget {
                   decoration: BoxDecoration(color: Herd.butter, borderRadius: BorderRadius.circular(16)),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 2, children: [
                     const Eyebrow('My wish', color: Herd.butterInk),
-                    Text('“${c.wishSentence}”', style: HerdText.script(22, color: Herd.wishInk)),
+                    Text(tr('“${c.wishSentence}”'), style: HerdText.script(22, color: Herd.wishInk)),
                   ]),
                 ),
                 Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
@@ -200,15 +201,15 @@ class HelloCard extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(color: Herd.pinkSoft, borderRadius: BorderRadius.circular(12)),
-                    child: Text('Log where you leave me and earn a stamp in your Passport.', style: HerdText.body(14, color: Herd.pinkInk)),
+                    child: Text(tr('Log where you leave me and earn a stamp in your Passport.'), style: HerdText.body(14, color: Herd.pinkInk)),
                   ),
                 ]),
                 HerdButton('See where I’ve been ↓', onPressed: onClose),
                 Text.rich(
                   TextSpan(style: HerdText.body(13), children: [
-                    const TextSpan(text: 'You’ve found a piece of '),
-                    TextSpan(text: 'Art in Transit', style: HerdText.body(13, weight: FontWeight.w600)),
-                    const TextSpan(text: ', a traveling art project by The Herd. No app, no sign-up, no cost.'),
+                    TextSpan(text: tr('You’ve found a piece of ')),
+                    TextSpan(text: tr('Art in Transit'), style: HerdText.body(13, weight: FontWeight.w600)),
+                    TextSpan(text: tr(', a traveling art project by The Herd. No app, no sign-up, no cost.')),
                   ]),
                   textAlign: TextAlign.center,
                 ),

@@ -6,6 +6,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../app_state.dart';
+import '../l10n.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../widgets/companion_figure.dart';
@@ -46,13 +47,13 @@ class _SentScreenState extends State<SentScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Sent on their way', style: HerdText.chunky(17, extraBold: false)),
-        actions: [TextButton(onPressed: router.popToRoot, child: Text('Done', style: HerdText.body(16, weight: FontWeight.w500, color: Herd.sageDark)))],
+        title: Text(tr('Sent on their way'), style: HerdText.chunky(17, extraBold: false)),
+        actions: [TextButton(onPressed: router.popToRoot, child: Text(tr('Done'), style: HerdText.body(16, weight: FontWeight.w500, color: Herd.sageDark)))],
       ),
       body: ListView(padding: const EdgeInsets.all(20), children: [
-        Text('Thank you! They’re on their way.', textAlign: TextAlign.center, style: HerdText.script(40)),
+        Text(tr('Thank you! They’re on their way.'), textAlign: TextAlign.center, style: HerdText.script(40)),
         const SizedBox(height: 6),
-        Text('Your chapter is on their map now. Photos appear after a quick look, usually within a few days.',
+        Text(tr('Your chapter is on their map now. Photos appear after a quick look, usually within a few days.'),
             textAlign: TextAlign.center, style: HerdText.body(16)),
         if (c != null && c.miles > 0) ...[
           const SizedBox(height: 10),
@@ -74,7 +75,7 @@ class _SentScreenState extends State<SentScreen> {
         ],
         const SizedBox(height: 16),
         HerdCard(padding: 18, spacing: 12, children: [
-          Text('Share it on Instagram', style: HerdText.chunky(22, extraBold: false)),
+          Text(tr('Share it on Instagram'), style: HerdText.chunky(22, extraBold: false)),
           const NumberedRow('1', 'Posting? Tap Tag people → Invite collaborator → @growtheherdstudio. It shows on both our pages, and it stays yours.'),
           const NumberedRow('2', 'Story? Mention @growtheherdstudio and we’ll reshare it.'),
           Container(
@@ -86,8 +87,8 @@ class _SentScreenState extends State<SentScreen> {
         ]),
         const SizedBox(height: 16),
         HerdCard(color: Herd.pinkSoft, children: [
-          Text('New stamp: Passed on #${widget.number}', style: HerdText.chunky(22, color: Herd.pinkInk)),
-          Text('Added to your Passport after a quick review.', style: HerdText.body(15, color: Herd.pinkInk)),
+          Text(tr('New stamp: Passed on #${widget.number}'), style: HerdText.chunky(22, color: Herd.pinkInk)),
+          Text(tr('Added to your Passport after a quick review.'), style: HerdText.body(15, color: Herd.pinkInk)),
         ]),
         const SizedBox(height: 16),
         HerdButton('See their journey', onPressed: () => router.replaceTop(CompanionRoute(widget.number))),
@@ -97,7 +98,7 @@ class _SentScreenState extends State<SentScreen> {
               router.popToRoot();
               router.select(AppTab.passport);
             },
-            child: Text('See my Passport', style: HerdText.body(15, color: Herd.sageDark)),
+            child: Text(tr('See my Passport'), style: HerdText.body(15, color: Herd.sageDark)),
           ),
         ),
       ]),
@@ -136,15 +137,15 @@ class Postcard extends StatelessWidget {
                     height: 68,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(border: Border.all(color: Herd.stepDot, width: 2)),
-                    child: Text('#${companion.number}', style: HerdText.chunky(18, color: Herd.sageDark)),
+                    child: Text(tr('#${companion.number}'), style: HerdText.chunky(18, color: Herd.sageDark)),
                   ),
                 ),
               ),
             ]),
           ),
-          Text('Greetings from ${companion.current?.city ?? 'the road'}!', style: HerdText.script(28)),
+          Text(tr('Greetings from ${companion.current?.city ?? 'the road'}!'), style: HerdText.script(28)),
           Text(
-            '${companion.name != null ? '${companion.name} · ' : ''}Companion #${companion.number} · Stop ${companion.stops.length} · theherdstudio.com/c/${companion.number}',
+            tr('${companion.name != null ? '${companion.name} · ' : ''}Companion #${companion.number} · Stop ${companion.stops.length} · theherdstudio.com/c/${companion.number}'),
             style: HerdText.body(13),
           ),
         ]),

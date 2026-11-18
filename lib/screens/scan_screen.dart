@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../app_state.dart';
+import '../l10n.dart';
 import '../models.dart';
 import '../theme.dart';
 
@@ -73,9 +74,9 @@ class _ScanScreenState extends State<ScanScreen> {
         child: ListView(padding: const EdgeInsets.all(20), children: [
           const Align(alignment: Alignment.centerLeft, child: Wordmark()),
           const SizedBox(height: 18),
-          Text('Found a Companion?', textAlign: TextAlign.center, style: HerdText.script(38)),
+          Text(tr('Found a Companion?'), textAlign: TextAlign.center, style: HerdText.script(38)),
           const SizedBox(height: 6),
-          Text('Flip them over and point your camera at the code on their bottom.', textAlign: TextAlign.center, style: HerdText.body(16)),
+          Text(tr('Flip them over and point your camera at the code on their bottom.'), textAlign: TextAlign.center, style: HerdText.body(16)),
           const SizedBox(height: 18),
           if (showTyping) _typePanel() else ...[
             _camera(),
@@ -86,7 +87,7 @@ class _ScanScreenState extends State<ScanScreen> {
                   setState(() => typing = true);
                   numberFocus.requestFocus();
                 },
-                child: Text('Or type their number instead', style: HerdText.body(15, weight: FontWeight.w500, color: Herd.sageDark)),
+                child: Text(tr('Or type their number instead'), style: HerdText.body(15, weight: FontWeight.w500, color: Herd.sageDark)),
               ),
             ),
           ],
@@ -125,8 +126,8 @@ class _ScanScreenState extends State<ScanScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                     decoration: BoxDecoration(color: Herd.mintSoft, borderRadius: BorderRadius.circular(999)),
                     child: Column(children: [
-                      Text('Hi! It’s #${found!.number}, ${found!.displayName}', style: HerdText.chunky(17, extraBold: false, color: Herd.mintInk)),
-                      Text('Opening their page…', style: HerdText.body(13, color: Herd.mintInk)),
+                      Text(tr('Hi! It’s #${found!.number}, ${found!.displayName}'), style: HerdText.chunky(17, extraBold: false, color: Herd.mintInk)),
+                      Text(tr('Opening their page…'), style: HerdText.body(13, color: Herd.mintInk)),
                     ]),
                   ),
                 ),
@@ -136,13 +137,13 @@ class _ScanScreenState extends State<ScanScreen> {
       );
 
   Widget _typePanel() => HerdCard(radius: 24, padding: 18, spacing: 12, children: [
-        Text('Type their number', style: HerdText.chunky(20, extraBold: false)),
-        Text('It’s printed on their bottom, under the code: “No. 07”.', style: HerdText.body(14)),
+        Text(tr('Type their number'), style: HerdText.chunky(20, extraBold: false)),
+        Text(tr('It’s printed on their bottom, under the code: “No. 07”.'), style: HerdText.body(14)),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(color: Herd.field, borderRadius: BorderRadius.circular(14)),
           child: Row(children: [
-            Text('No.', style: HerdText.chunky(24, color: Herd.sageDark)),
+            Text(tr('No.'), style: HerdText.chunky(24, color: Herd.sageDark)),
             const SizedBox(width: 8),
             Expanded(
               child: TextField(
@@ -164,7 +165,7 @@ class _ScanScreenState extends State<ScanScreen> {
             ),
           ]),
         ),
-        if (notFound) Text('We couldn’t find that number. Check their bottom and try again.', style: HerdText.body(14, color: Herd.pinkInk)),
+        if (notFound) Text(tr('We couldn’t find that number. Check their bottom and try again.'), style: HerdText.body(14, color: Herd.pinkInk)),
         HerdButton('Find them →', onPressed: number.text.isEmpty ? null : findTyped),
         if (!cameraFailed && (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) && !kIsWeb)
           Center(
@@ -176,10 +177,10 @@ class _ScanScreenState extends State<ScanScreen> {
                   notFound = false;
                 });
               },
-              child: Text('Back to the camera', style: HerdText.body(15, color: Herd.sageDark)),
+              child: Text(tr('Back to the camera'), style: HerdText.body(15, color: Herd.sageDark)),
             ),
           )
         else
-          Text('The camera isn’t available here, so type their number instead.', style: HerdText.body(13)),
+          Text(tr('The camera isn’t available here, so type their number instead.'), style: HerdText.body(13)),
       ]);
 }

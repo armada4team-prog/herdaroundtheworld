@@ -1,6 +1,8 @@
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models.dart';
@@ -35,7 +37,7 @@ Widget herdAttribution({Alignment alignment = Alignment.bottomRight, EdgeInsets 
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(color: Herd.cream.withValues(alpha: 0.85), borderRadius: BorderRadius.circular(6)),
-            child: Text('© OpenStreetMap contributors', style: HerdText.body(10, color: Herd.body)),
+            child: Text(tr('© OpenStreetMap contributors'), style: HerdText.body(10, color: Herd.body)),
           ),
         ),
       ),

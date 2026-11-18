@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../app_state.dart';
+import '../l10n.dart';
 import '../services.dart';
 import '../theme.dart';
 import '../validation.dart';
@@ -27,8 +28,8 @@ class LearnScreen extends StatelessWidget {
       body: ListView(padding: const EdgeInsets.all(20), children: [
         const Eyebrow('Art in Transit · Children of the clay'),
         const SizedBox(height: 6),
-        Text('Find one. Carry one. Watch them go.', style: HerdText.script(38)),
-        Text('Companions are tiny travelers handmade by The Herd. Every traveler they meet becomes part of their story.', style: HerdText.body(16)),
+        Text(tr('Find one. Carry one. Watch them go.'), style: HerdText.script(38)),
+        Text(tr('Companions are tiny travelers handmade by The Herd. Every traveler they meet becomes part of their story.'), style: HerdText.body(16)),
         const SizedBox(height: 20),
         for (final (title, icon, color, body) in _steps)
           Padding(
@@ -38,8 +39,8 @@ class LearnScreen extends StatelessWidget {
               const SizedBox(width: 14),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 2, children: [
-                  Text(title, style: HerdText.chunky(18, extraBold: false, color: Herd.sageDark)),
-                  Text(body, style: HerdText.body(15, color: Herd.ink)),
+                  Text(tr(title), style: HerdText.chunky(18, extraBold: false, color: Herd.sageDark)),
+                  Text(tr(body), style: HerdText.body(15, color: Herd.ink)),
                 ]),
               ),
             ]),
@@ -47,36 +48,36 @@ class LearnScreen extends StatelessWidget {
         const ScriptHeading('How to pass one on', size: 32),
         const SizedBox(height: 10),
         HerdCard(children: [
-          Text('Best of all: hand them on', style: HerdText.chunky(18, extraBold: false)),
-          Text('Give your Companion to a fellow traveler: a new friend, a host, someone heading somewhere fun.', style: HerdText.body(15)),
+          Text(tr('Best of all: hand them on'), style: HerdText.chunky(18, extraBold: false)),
+          Text(tr('Give your Companion to a fellow traveler: a new friend, a host, someone heading somewhere fun.'), style: HerdText.body(15)),
         ]),
         const SizedBox(height: 10),
         HerdCard(color: Herd.mintSoft, children: [
-          Text('Or leave them somewhere', style: HerdText.chunky(18, extraBold: false, color: Herd.mintInk)),
-          Text('Cafés, hostels, hotel lobbies, bookstores, libraries, or near a monument.', style: HerdText.body(15, color: Herd.mintInk)),
+          Text(tr('Or leave them somewhere'), style: HerdText.chunky(18, extraBold: false, color: Herd.mintInk)),
+          Text(tr('Cafés, hostels, hotel lobbies, bookstores, libraries, or near a monument.'), style: HerdText.body(15, color: Herd.mintInk)),
         ]),
         const SizedBox(height: 10),
         HerdCard(color: Herd.pinkSoft, children: [
-          Text('Please don’t', style: HerdText.chunky(18, extraBold: false, color: Herd.pinkInk)),
-          Text('Airport security areas, trails and parks (leave no trace), private property, or anywhere they could fall or block a path.',
+          Text(tr('Please don’t'), style: HerdText.chunky(18, extraBold: false, color: Herd.pinkInk)),
+          Text(tr('Airport security areas, trails and parks (leave no trace), private property, or anywhere they could fall or block a path.'),
               style: HerdText.body(15, color: Herd.pinkInk)),
         ]),
         const SizedBox(height: 10),
         HerdCard(color: Herd.butter, children: [
-          Text('Wishes and stamps', style: HerdText.chunky(18, extraBold: false, color: Herd.butterInk)),
+          Text(tr('Wishes and stamps'), style: HerdText.chunky(18, extraBold: false, color: Herd.butterInk)),
           Text(
-              'Every Companion carries a wish. Pass one on to earn a stamp in your Passport, and grant their wish to earn a special Wish Granted stamp. Stamps are yours to keep.',
+              tr('Every Companion carries a wish. Pass one on to earn a stamp in your Passport, and grant their wish to earn a special Wish Granted stamp. Stamps are yours to keep.'),
               style: HerdText.body(15, color: Herd.butterInk)),
         ]),
         const SizedBox(height: 20),
         const ScriptHeading('Share on Instagram'),
         const SizedBox(height: 8),
-        Text('Add @growtheherdstudio as a collaborator on your post, or mention us in your story, and use #TheHerdCompanions.',
+        Text(tr('Add @growtheherdstudio as a collaborator on your post, or mention us in your story, and use #TheHerdCompanions.'),
             style: HerdText.body(15, color: Herd.ink)),
         const SizedBox(height: 10),
         HerdButton('Follow @growtheherdstudio', kind: HerdButtonKind.soft, onPressed: () => Services.open('https://www.instagram.com/growtheherdstudio/')),
         const SizedBox(height: 14),
-        Text('No app needed to take part. Anyone can scan a Companion with their phone camera.', style: HerdText.body(14)),
+        Text(tr('No app needed to take part. Anyone can scan a Companion with their phone camera.'), style: HerdText.body(14)),
       ]),
     );
   }
@@ -119,18 +120,18 @@ class _SignInSheetState extends State<_SignInSheet> {
         padding: const EdgeInsets.fromLTRB(22, 12, 22, 28),
         child: Column(mainAxisSize: MainAxisSize.min, spacing: 16, children: [
           Container(width: 40, height: 5, decoration: BoxDecoration(color: hex('DCDDD6'), borderRadius: BorderRadius.circular(999))),
-          Text('Save your Passport', style: HerdText.chunky(17, extraBold: false)),
+          Text(tr('Save your Passport'), style: HerdText.chunky(17, extraBold: false)),
           if (sent) ...[
             const Blob(color: Herd.butter, width: 120, height: 110, child: Icon(Icons.mail_outline, size: 40, color: Herd.butterInk)),
-            Text('Check your email', textAlign: TextAlign.center, style: HerdText.script(38)),
-            Text('We sent a link to ${email.text}. Tap it on this phone and you’re in. Your stamps are saved.',
+            Text(tr('Check your email'), textAlign: TextAlign.center, style: HerdText.script(38)),
+            Text(tr('We sent a link to ${email.text}. Tap it on this phone and you’re in. Your stamps are saved.'),
                 textAlign: TextAlign.center, style: HerdText.body(16)),
-            TextButton(onPressed: () => setState(() => sent = false), child: Text('Use a different email', style: HerdText.body(15, color: Herd.sageDark))),
+            TextButton(onPressed: () => setState(() => sent = false), child: Text(tr('Use a different email'), style: HerdText.body(15, color: Herd.sageDark))),
             HerdButton('Done', onPressed: () => Navigator.of(context).pop()),
           ] else ...[
             const Blob(color: Herd.mintSoft, width: 120, height: 110, child: Icon(Icons.menu_book_outlined, size: 40, color: Herd.ink)),
-            Text('Keep your stamps safe', textAlign: TextAlign.center, style: HerdText.script(38)),
-            Text('Right now your Passport and stamps live only on this phone. Add your email to keep them if you change phones, and to see them on the website too.',
+            Text(tr('Keep your stamps safe'), textAlign: TextAlign.center, style: HerdText.script(38)),
+            Text(tr('Right now your Passport and stamps live only on this phone. Add your email to keep them if you change phones, and to see them on the website too.'),
                 textAlign: TextAlign.center, style: HerdText.body(16)),
             Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 8, children: [
               const FieldLabel('Your email'),
@@ -147,10 +148,10 @@ class _SignInSheetState extends State<_SignInSheet> {
                 Row(children: [
                   const Icon(Icons.check, size: 18, color: Herd.sageDark),
                   const SizedBox(width: 10),
-                  Expanded(child: Text(line, style: HerdText.body(14, color: Herd.ink))),
+                  Expanded(child: Text(tr(line), style: HerdText.body(14, color: Herd.ink))),
                 ]),
             ]),
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Not now', style: HerdText.body(15, color: Herd.sageDark))),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(tr('Not now'), style: HerdText.body(15, color: Herd.sageDark))),
           ],
         ]),
       ),
@@ -181,8 +182,8 @@ class _LanguageSheet extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, spacing: 12, children: [
           Center(child: Container(width: 40, height: 5, decoration: BoxDecoration(color: hex('DCDDD6'), borderRadius: BorderRadius.circular(999)))),
-          Center(child: Text('Language', style: HerdText.chunky(17, extraBold: false))),
-          Text('Choose your language', style: HerdText.script(32)),
+          Center(child: Text(tr('Language'), style: HerdText.chunky(17, extraBold: false))),
+          Text(tr('Choose your language'), style: HerdText.script(32)),
           for (final (code, name, english) in _languages)
             Semantics(
               button: true,
@@ -205,7 +206,7 @@ class _LanguageSheet extends StatelessWidget {
                     Expanded(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 2, children: [
                         Text(name, style: HerdText.body(17, weight: FontWeight.w500, color: Herd.ink)),
-                        Text(english, style: HerdText.body(13)),
+                        Text(tr(english), style: HerdText.body(13)),
                       ]),
                     ),
                     Icon(model.language == code ? Icons.check_circle : Icons.circle_outlined, color: model.language == code ? Herd.sageDark : Herd.border),
@@ -213,7 +214,7 @@ class _LanguageSheet extends StatelessWidget {
                 ),
               ),
             ),
-          Text('Travelers’ chapters and chat messages stay in the language they were written in.', style: HerdText.body(13)),
+          Text(tr('Travelers’ chapters and chat messages stay in the language they were written in.'), style: HerdText.body(13)),
         ]),
       ),
     );
@@ -258,17 +259,17 @@ class NotificationSettingsScreen extends StatelessWidget {
             LabeledSwitch(label: 'Quiet hours (10pm – 8am)', value: p.quietHours, onChanged: (v) => set(() => p.quietHours = v)),
           ]),
           const SizedBox(height: 6),
-          Text(model.email == null ? 'Add your email in Passport to get emails too.' : 'Emails go to ${model.email}.', style: HerdText.body(13)),
+          Text(tr(model.email == null ? 'Add your email in Passport to get emails too.' : 'Emails go to ${model.email}.'), style: HerdText.body(13)),
           const SizedBox(height: 20),
           HerdCard(color: Colors.white, children: [
             TextButton(
               style: TextButton.styleFrom(padding: EdgeInsets.zero, alignment: Alignment.centerLeft),
               onPressed: model.deleteMyData,
-              child: Text('Delete my data', style: HerdText.body(15, weight: FontWeight.w500, color: const Color(0xFFC0392B))),
+              child: Text(tr('Delete my data'), style: HerdText.body(15, weight: FontWeight.w500, color: const Color(0xFFC0392B))),
             ),
           ]),
           const SizedBox(height: 6),
-          Text('Removes your email and nickname from The Herd. Your chapters stay on the Companions’ pages without your name.', style: HerdText.body(13)),
+          Text(tr('Removes your email and nickname from The Herd. Your chapters stay on the Companions’ pages without your name.'), style: HerdText.body(13)),
         ]);
       }),
     );

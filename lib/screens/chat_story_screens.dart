@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../app_state.dart';
+import '../l10n.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../validation.dart';
@@ -52,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
         return Column(children: [
           Expanded(
             child: ListView(controller: scroll, padding: const EdgeInsets.all(20), children: [
-              Text('${c?.travelers ?? 0} travelers · everyone who’s carried ${c?.displayName ?? '#${widget.number}'}', style: HerdText.body(14)),
+              Text(tr('${c?.travelers ?? 0} travelers · everyone who’s carried ${c?.displayName ?? '#${widget.number}'}'), style: HerdText.body(14)),
               const SizedBox(height: 10),
               Container(
                 padding: const EdgeInsets.all(10),
@@ -60,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const Icon(Icons.lock_outline, size: 16, color: Herd.body),
                   const SizedBox(width: 8),
-                  Expanded(child: Text('Be kind. Phone numbers, emails and addresses are hidden automatically.', style: HerdText.body(13))),
+                  Expanded(child: Text(tr('Be kind. Phone numbers, emails and addresses are hidden automatically.'), style: HerdText.body(13))),
                 ]),
               ),
               const SizedBox(height: 12),
@@ -157,7 +158,7 @@ class StoryScreen extends StatelessWidget {
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Eyebrow(c.label),
-                Text('Their story', style: HerdText.script(40)),
+                Text(tr('Their story'), style: HerdText.script(40)),
               ]),
             ),
           ]),
@@ -174,7 +175,7 @@ class StoryScreen extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: TextButton(
                 onPressed: () => router.push(BrokeRoute(number)),
-                child: Text('Something happened to them?', style: HerdText.body(14, color: Herd.sageDark)),
+                child: Text(tr('Something happened to them?'), style: HerdText.body(14, color: Herd.sageDark)),
               ),
             ),
         ]);
@@ -195,7 +196,7 @@ class StoryScreen extends StatelessWidget {
         ]),
         if (stop.place != null) Text(stop.place!, style: HerdText.body(14, color: Herd.ink)),
         if (meta.isNotEmpty) Text(meta, style: HerdText.body(13)),
-        if (stop.note != null) Text('“${stop.note}”', style: HerdText.body(15, color: Herd.ink)),
+        if (stop.note != null) Text('“${tr(stop.note!)}”', style: HerdText.body(15, color: Herd.ink)),
       ]),
     );
   }

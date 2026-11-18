@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../app_state.dart';
+import '../l10n.dart';
 import '../models.dart';
 import '../services.dart';
 import '../theme.dart';
@@ -93,8 +94,8 @@ class _FoundScreenState extends State<FoundScreen> {
   List<Widget> _form(String name) => [
         Eyebrow('Step 1 of 2 · Companion #${widget.number}'),
         const SizedBox(height: 4),
-        Text('You found $name!', style: HerdText.script(40)),
-        Text('Let everyone know $name is safe with you. It takes a few seconds. You’ll log where they go next when you pass them on.',
+        Text(tr('You found $name!'), style: HerdText.script(40)),
+        Text(tr('Let everyone know $name is safe with you. It takes a few seconds. You’ll log where they go next when you pass them on.'),
             style: HerdText.body(16)),
         const SizedBox(height: 20),
         const FieldLabel('Where are you? *'),
@@ -136,7 +137,7 @@ class _FoundScreenState extends State<FoundScreen> {
         const SizedBox(height: 20),
         FieldLabel('Want $name to check in with you?'),
         const SizedBox(height: 6),
-        Text('In about a month, $name will send one friendly nudge to help you pass them on. Totally optional.', style: HerdText.body(14)),
+        Text(tr('In about a month, $name will send one friendly nudge to help you pass them on. Totally optional.'), style: HerdText.body(14)),
         const SizedBox(height: 10),
         PillPicker<CheckIn>(
           options: const [(CheckIn.appAlert, 'App alert'), (CheckIn.email, 'Email'), (CheckIn.none, 'No thanks')],
@@ -144,7 +145,7 @@ class _FoundScreenState extends State<FoundScreen> {
           onChanged: (v) => setState(() => checkIn = v),
         ),
         const SizedBox(height: 10),
-        if (checkIn == CheckIn.appAlert) Text('We’ll send one gentle app alert in about a month. Nothing else.', style: HerdText.body(13)),
+        if (checkIn == CheckIn.appAlert) Text(tr('We’ll send one gentle app alert in about a month. Nothing else.'), style: HerdText.body(13)),
         if (checkIn == CheckIn.email)
           HerdField(
               controller: email,
@@ -154,7 +155,7 @@ class _FoundScreenState extends State<FoundScreen> {
               onChanged: (_) => setState(() => emailError = null)),
         if (checkIn != CheckIn.none) ...[
           LabeledSwitch(label: 'Also tell me where #${widget.number} goes after me', value: alsoTellMe, onChanged: (v) => setState(() => alsoTellMe = v)),
-          Text('Never shown publicly. Never shared.', style: HerdText.body(13)),
+          Text(tr('Never shown publicly. Never shared.'), style: HerdText.body(13)),
         ],
         const SizedBox(height: 20),
         HerdButton(saving ? 'Logging…' : 'Log my find →', onPressed: canSubmit ? submit : null),
@@ -163,13 +164,13 @@ class _FoundScreenState extends State<FoundScreen> {
   List<Widget> _doneView(Companion? c, String name) => [
         if (c != null) Center(child: CompanionBadge(companion: c, size: 120, waving: true, happy: true)),
         const SizedBox(height: 10),
-        Text('Logged! Enjoy your time together.', textAlign: TextAlign.center, style: HerdText.script(36)),
+        Text(tr('Logged! Enjoy your time together.'), textAlign: TextAlign.center, style: HerdText.script(36)),
         const SizedBox(height: 6),
-        Text('Take $name along for your trip. When you’re ready, scan them again and tap “I’m passing them on.”',
+        Text(tr('Take $name along for your trip. When you’re ready, scan them again and tap “I’m passing them on.”'),
             textAlign: TextAlign.center, style: HerdText.body(16)),
         const SizedBox(height: 18),
         HerdCard(spacing: 10, children: [
-          Text('Travel tips from $name', style: HerdText.chunky(18, extraBold: false)),
+          Text(tr('Travel tips from $name'), style: HerdText.chunky(18, extraBold: false)),
           const NumberedRow('1', 'Snap a photo of me somewhere fun. It makes a great chapter.'),
           const NumberedRow('2', 'Keep me a little while, then send me on. A week or two is perfect.'),
         ]),

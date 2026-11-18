@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'l10n.dart';
+
 import 'app_state.dart';
 import 'models.dart';
 import 'screens/activity_screen.dart';
@@ -53,13 +55,25 @@ class HerdApp extends StatefulWidget {
 
 class _HerdAppState extends State<HerdApp> {
   final model = AppModel();
+  String _language = 'en';
   late final router = AppRouter(pageFor: pageFor);
   bool showSplash = startScreen.isEmpty || startScreen == 'splash';
 
   @override
   void initState() {
     super.initState();
+    // Switching language redraws every screen in the new language, keeping your place.
+    model.addListener(() {
+      if (model.language != _language) {
+        _language = model.language;
+        Lang.code = _language;
+        if (mounted) rebuildAllText(context);
+      }
+    });
     if (startScreen.isNotEmpty) WidgetsBinding.instance.addPostFrameCallback((_) => _openStartScreen());
+    // Testing aid on the web: ?lang=es opens the app in Spanish.
+    final startLang = kIsWeb ? Uri.base.queryParameters['lang'] : null;
+    if (startLang != null) model.setLanguage(startLang);
   }
 
   void _openStartScreen() {
@@ -169,7 +183,7 @@ class MainShell extends StatelessWidget {
             onDestinationSelected: (i) => router.select(AppTab.values[i]),
             destinations: [
               for (final (_, label, icon, selectedIcon) in _tabs)
-                NavigationDestination(icon: Icon(icon), selectedIcon: Icon(selectedIcon), label: label),
+                NavigationDestination(icon: Icon(icon), selectedIcon: Icon(selectedIcon), label: tr(label)),
             ],
           ),
         ),

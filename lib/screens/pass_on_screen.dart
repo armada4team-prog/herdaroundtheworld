@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../app_state.dart';
+import '../l10n.dart';
 import '../models.dart';
 import '../services.dart';
 import '../theme.dart';
@@ -78,7 +79,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
       wishPhotoError = grantedWish && wishPhoto == null ? 'Please add a photo of the wish coming true.' : null;
     });
     if ([whereError, placeError, chapterError, nicknameError, emailError, wishPhotoError].any((e) => e != null)) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('A few things need a quick fix. They’re marked in red.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr('A few things need a quick fix. They’re marked in red.'))));
       return;
     }
     setState(() => saving = true);
@@ -148,12 +149,12 @@ class _PassOnScreenState extends State<PassOnScreen> {
             children: [
               Eyebrow('Step 2 of 2 · Companion #${widget.number}'),
               const SizedBox(height: 4),
-              Text('Send $name on their way', style: HerdText.script(40)),
-              Text('Thanks for traveling together. Tell us where they’re headed next.', style: HerdText.body(16)),
+              Text(tr('Send $name on their way'), style: HerdText.script(40)),
+              Text(tr('Thanks for traveling together. Tell us where they’re headed next.'), style: HerdText.body(16)),
               const SizedBox(height: 18),
               if (model.nickname.isNotEmpty && model.holding.contains(widget.number)) ...[
                 HerdCard(color: Herd.mintSoft, children: [
-                  Text('Welcome back, ${model.nickname}! We filled in your details from last time.', style: HerdText.body(15, color: Herd.mintInk)),
+                  Text(tr('Welcome back, ${model.nickname}! We filled in your details from last time.'), style: HerdText.body(15, color: Herd.mintInk)),
                 ]),
                 const SizedBox(height: 18),
               ],
@@ -187,7 +188,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
                 onChanged: (_) => setState(() => whereError = null),
               ),
               const SizedBox(height: 6),
-              Text('Please never use a home address. We only ever show a place name and city, never a street address.', style: HerdText.body(13)),
+              Text(tr('Please never use a home address. We only ever show a place name and city, never a street address.'), style: HerdText.body(13)),
               const SizedBox(height: 8),
               Align(
                 alignment: Alignment.centerLeft,
@@ -243,7 +244,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
               Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const Icon(Icons.lock_outline, size: 16, color: Herd.sageDark),
                 const SizedBox(width: 8),
-                Expanded(child: Text('We remove the hidden location data from photos, so only the spot you choose above is shared.', style: HerdText.body(13))),
+                Expanded(child: Text(tr('We remove the hidden location data from photos, so only the spot you choose above is shared.'), style: HerdText.body(13))),
               ]),
               LabeledSwitch(label: 'It’s OK for The Herd to share my photo on their website and Instagram, with credit.', value: shareOK, onChanged: (v) => setState(() => shareOK = v)),
               const SizedBox(height: 16),
@@ -260,7 +261,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
                 errorText: chapterError,
                 onChanged: (_) => setState(() => chapterError = null),
               ),
-              Text('Keep it kind and family-friendly. Chapters are checked, and The Herd takes a quick look.', style: HerdText.body(13)),
+              Text(tr('Keep it kind and family-friendly. Chapters are checked, and The Herd takes a quick look.'), style: HerdText.body(13)),
               if (c != null && !c.wishGranted) ...[const SizedBox(height: 20), _wishSection(c)],
               const SizedBox(height: 20),
               const FieldLabel('Your name or nickname *'),
@@ -284,12 +285,12 @@ class _PassOnScreenState extends State<PassOnScreen> {
                 onChanged: (_) => setState(() => emailError = null),
               ),
               const SizedBox(height: 6),
-              Text('Optional. Your stamps are always saved in the app. Never shown publicly.', style: HerdText.body(13)),
+              Text(tr('Optional. Your stamps are always saved in the app. Never shown publicly.'), style: HerdText.body(13)),
               LabeledSwitch(label: 'Alert me each time #${widget.number} moves', value: alertMe, onChanged: (v) => setState(() => alertMe = v)),
               const SizedBox(height: 12),
               HerdCard(color: Herd.pinkSoft, children: [
                 Text(
-                  'Your sighting shows up right away. Photos and new wishes appear after a quick look, usually within a few days. Your new stamps appear in your Passport after that review.',
+                  tr('Your sighting shows up right away. Photos and new wishes appear after a quick look, usually within a few days. Your new stamps appear in your Passport after that review.'),
                   style: HerdText.body(14, color: Herd.pinkInk),
                 ),
               ]),
@@ -306,9 +307,9 @@ class _PassOnScreenState extends State<PassOnScreen> {
         Row(children: [
           const Icon(Icons.star_rounded, color: Herd.gold),
           const SizedBox(width: 8),
-          Text('Did you grant their wish?', style: HerdText.body(16, weight: FontWeight.w600, color: Herd.wishInk)),
+          Text(tr('Did you grant their wish?'), style: HerdText.body(16, weight: FontWeight.w600, color: Herd.wishInk)),
         ]),
-        Text('“${c.wishSentence}”', style: HerdText.script(24, color: Herd.wishInk)),
+        Text(tr('“${c.wishSentence}”'), style: HerdText.script(24, color: Herd.wishInk)),
         ChoiceCard(
           title: 'Yes, we did it!',
           detail: 'Add a photo of the moment below. You’ll choose their next wish and earn a Wish Granted stamp.',
@@ -323,7 +324,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
         ),
         ChoiceCard(title: 'Not this time', detail: 'That’s okay. The next traveler can try.', selected: !grantedWish, onTap: () => setState(() => grantedWish = false)),
         if (grantedWish) ...[
-          Text('A photo of the wish coming true *', style: HerdText.body(15, weight: FontWeight.w600, color: Herd.wishInk)),
+          Text(tr('A photo of the wish coming true *'), style: HerdText.body(15, weight: FontWeight.w600, color: Herd.wishInk)),
           _photoBox(wishPhoto, 'Add the photo', Herd.gold, () async {
             final p = await Services.pickPhoto();
             if (p != null && mounted) {
@@ -333,14 +334,14 @@ class _PassOnScreenState extends State<PassOnScreen> {
               });
             }
           }),
-          if (wishPhotoError != null) Text(wishPhotoError!, style: HerdText.body(13, color: const Color(0xFFB3261E))),
-          Text('Required for the Wish Granted stamp. It’s added once we see your photo.', style: HerdText.body(13, color: Herd.butterInk)),
+          if (wishPhotoError != null) Text(tr(wishPhotoError!), style: HerdText.body(13, color: const Color(0xFFB3261E))),
+          Text(tr('Required for the Wish Granted stamp. It’s added once we see your photo.'), style: HerdText.body(13, color: Herd.butterInk)),
         ],
       ]);
 
   Widget _photoBox(Uint8List? bytes, String prompt, Color tint, VoidCallback onTap) => Semantics(
         button: true,
-        label: bytes == null ? prompt : 'Photo added. Tap to change it.',
+        label: tr(bytes == null ? prompt : 'Photo added. Tap to change it.'),
         excludeSemantics: true,
         child: GestureDetector(
           onTap: onTap,
@@ -354,7 +355,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
                 : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                     const Icon(Icons.photo_camera_outlined, color: Herd.ink, size: 26),
                     const SizedBox(height: 6),
-                    Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text(prompt, textAlign: TextAlign.center, style: HerdText.body(14, color: Herd.ink))),
+                    Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text(tr(prompt), textAlign: TextAlign.center, style: HerdText.body(14, color: Herd.ink))),
                   ]),
           ),
         ),

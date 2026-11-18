@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../app_state.dart';
+import '../l10n.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../widgets/companion_figure.dart';
@@ -46,8 +47,8 @@ class PassportScreen extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 1, children: [
-                          Text('Save your Passport', style: HerdText.body(15, weight: FontWeight.w600, color: Herd.butterInk)),
-                          Text('Add your email so your stamps are never lost', style: HerdText.body(13, color: Herd.butterInk)),
+                          Text(tr('Save your Passport'), style: HerdText.body(15, weight: FontWeight.w600, color: Herd.butterInk)),
+                          Text(tr('Add your email so your stamps are never lost'), style: HerdText.body(13, color: Herd.butterInk)),
                         ]),
                       ),
                       const Icon(Icons.chevron_right, color: Herd.butterInk),
@@ -79,8 +80,8 @@ class PassportScreen extends StatelessWidget {
             }),
             const SizedBox(height: 18),
             HerdCard(children: [
-              Text('Your herd: ${model.herdSize} travelers in 5 countries', style: HerdText.chunky(18, extraBold: false)),
-              Text('Everyone who carried the same Companions as you. You’re connected, even if you’ve never met.', style: HerdText.body(14)),
+              Text(tr('Your herd: ${model.herdSize} travelers in 5 countries'), style: HerdText.chunky(18, extraBold: false)),
+              Text(tr('Everyone who carried the same Companions as you. You’re connected, even if you’ve never met.'), style: HerdText.body(14)),
             ]),
           ]),
         ),
@@ -97,7 +98,7 @@ class PassportScreen extends StatelessWidget {
             padding: const EdgeInsets.all(18),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 10, children: [
               const Eyebrow('Herd Around the World · Passport', color: Herd.mintSoft),
-              Text(model.nickname.isEmpty ? 'Your travels' : '${model.nickname}’s travels', style: HerdText.script(36, color: Colors.white)),
+              Text(tr(model.nickname.isEmpty ? 'Your travels' : '${model.nickname}’s travels'), style: HerdText.script(36, color: Colors.white)),
               Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 _coverStat('${model.companionsCarried}', 'Companions carried'),
                 _coverStat('${model.milesCarried}', 'Miles carried'),
@@ -112,7 +113,7 @@ class PassportScreen extends StatelessWidget {
         child: MergeSemantics(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(n, style: HerdText.chunky(24, color: Colors.white)),
-            Text(label, style: HerdText.body(12, color: Herd.mintSoft)),
+            Text(tr(label), style: HerdText.body(12, color: Herd.mintSoft)),
           ]),
         ),
       );
@@ -127,8 +128,8 @@ class PassportScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 2, children: [
-                Text(title, style: HerdText.chunky(16, extraBold: false, color: fg)),
-                Text(detail, style: HerdText.body(12, color: fg)),
+                Text(tr(title), style: HerdText.chunky(16, extraBold: false, color: fg)),
+                Text(tr(detail), style: HerdText.body(12, color: fg)),
               ]),
             ),
           ),

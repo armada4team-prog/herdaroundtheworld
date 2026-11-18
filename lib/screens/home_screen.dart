@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../app_state.dart';
+import '../l10n.dart';
 import '../models.dart';
 import '../services.dart';
 import '../theme.dart';
@@ -49,9 +50,9 @@ class HomeScreen extends StatelessWidget {
                 ),
               ]),
               const SizedBox(height: 18),
-              Text(model.nickname.isEmpty ? 'Hi there!' : 'Hi, ${model.nickname}!', style: HerdText.script(40)),
+              Text(tr(model.nickname.isEmpty ? 'Hi there!' : 'Hi, ${model.nickname}!'), style: HerdText.script(40)),
               const SizedBox(height: 4),
-              Text(_movedSentence(model), style: HerdText.body(16)),
+              Text(tr(_movedSentence(model)), style: HerdText.body(16)),
               const SizedBox(height: 18),
               Row(spacing: 10, children: [
                 _stat('${model.companionsCarried}', 'Companions carried', Herd.mintSoft, Herd.mintInk),
@@ -62,9 +63,9 @@ class HomeScreen extends StatelessWidget {
               Row(children: [
                 const ScriptHeading('Following'),
                 const Spacer(),
-                TextButton(onPressed: () => router.select(AppTab.map), child: Text('See map', style: HerdText.body(14, color: Herd.sageDark))),
+                TextButton(onPressed: () => router.select(AppTab.map), child: Text(tr('See map'), style: HerdText.body(14, color: Herd.sageDark))),
               ]),
-              if (model.followed.isEmpty) Text('Follow a Companion from their page to see their news here.', style: HerdText.body(14)),
+              if (model.followed.isEmpty) Text(tr('Follow a Companion from their page to see their news here.'), style: HerdText.body(14)),
               for (final c in model.followed) ...[_followedCard(context, c), const SizedBox(height: 10)],
               const SizedBox(height: 12),
               const ScriptHeading('Meet the Originals'),
@@ -103,8 +104,8 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 22),
               HerdCard(color: Herd.pinkSoft, children: [
-                Text('Two new stamps!', style: HerdText.chunky(22, color: Herd.pinkInk)),
-                Text('You passed #3 on and granted their wish. Both stamps are in your Passport now.', style: HerdText.body(14, color: Herd.pinkInk)),
+                Text(tr('Two new stamps!'), style: HerdText.chunky(22, color: Herd.pinkInk)),
+                Text(tr('You passed #3 on and granted their wish. Both stamps are in your Passport now.'), style: HerdText.body(14, color: Herd.pinkInk)),
                 HerdButton('See my Passport', expand: false, onPressed: () => router.select(AppTab.passport)),
               ]),
               const SizedBox(height: 22),
@@ -117,14 +118,14 @@ class HomeScreen extends StatelessWidget {
               ]),
               const SizedBox(height: 10),
               Text.rich(TextSpan(style: HerdText.body(14, color: Herd.ink), children: [
-                const TextSpan(text: 'Mention '),
-                TextSpan(text: '@growtheherdstudio', style: HerdText.body(14, weight: FontWeight.w600, color: Herd.ink)),
-                const TextSpan(text: ' in your story and we’ll reshare it.'),
+                TextSpan(text: tr('Mention ')),
+                TextSpan(text: tr('@growtheherdstudio'), style: HerdText.body(14, weight: FontWeight.w600, color: Herd.ink)),
+                TextSpan(text: tr(' in your story and we’ll reshare it.')),
               ])),
               TextButton(
                 style: TextButton.styleFrom(padding: EdgeInsets.zero, alignment: Alignment.centerLeft),
                 onPressed: () => Services.open('https://www.instagram.com/growtheherdstudio/'),
-                child: Text('Follow @growtheherdstudio', style: HerdText.body(14, weight: FontWeight.w500, color: Herd.sageDark)),
+                child: Text(tr('Follow @growtheherdstudio'), style: HerdText.body(14, weight: FontWeight.w500, color: Herd.sageDark)),
               ),
             ],
           ),
@@ -148,7 +149,7 @@ class HomeScreen extends StatelessWidget {
             decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(16)),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(number, style: HerdText.chunky(26, color: fg)),
-              Text(label, style: HerdText.body(12, color: fg)),
+              Text(tr(label), style: HerdText.body(12, color: fg)),
             ]),
           ),
         ),
@@ -168,12 +169,12 @@ class HomeScreen extends StatelessWidget {
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 2, children: [
                   Text(c.label, style: HerdText.chunky(17, extraBold: false, color: Herd.sageDark)),
-                  Text(c.wishGranted ? 'Wish granted!' : 'Just arrived in ${c.current?.city ?? 'somewhere new'}', style: HerdText.body(14, color: Herd.ink)),
-                  Text('${c.lastMoved} · ${c.stopCount} stops', style: HerdText.body(12)),
+                  Text(tr(c.wishGranted ? 'Wish granted!' : 'Just arrived in ${c.current?.city ?? 'somewhere new'}'), style: HerdText.body(14, color: Herd.ink)),
+                  Text(tr('${c.lastMoved} · ${c.stopCount} stops'), style: HerdText.body(12)),
                 ]),
               ),
               if (c.movedThisWeek)
-                Semantics(label: 'New', child: Container(width: 9, height: 9, decoration: const BoxDecoration(color: Herd.rose, shape: BoxShape.circle))),
+                Semantics(label: tr('New'), child: Container(width: 9, height: 9, decoration: const BoxDecoration(color: Herd.rose, shape: BoxShape.circle))),
             ]),
           ),
         ),
@@ -208,8 +209,8 @@ class HomeScreen extends StatelessWidget {
           decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Herd.sage, width: 2)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 6, children: [
             PhotoPlaceholder(color: color, height: 110),
-            Text(title, style: HerdText.chunky(15, extraBold: false, color: Herd.sageDark)),
-            Text(text, maxLines: 2, overflow: TextOverflow.ellipsis, style: HerdText.body(13, color: Herd.ink)),
+            Text(tr(title), style: HerdText.chunky(15, extraBold: false, color: Herd.sageDark)),
+            Text(tr(text), maxLines: 2, overflow: TextOverflow.ellipsis, style: HerdText.body(13, color: Herd.ink)),
           ]),
         ),
       );
@@ -220,7 +221,7 @@ class HomeScreen extends StatelessWidget {
           color: color,
           alignment: Alignment.center,
           padding: const EdgeInsets.all(6),
-          child: Text(text, textAlign: TextAlign.center, style: HerdText.body(12, color: Herd.ink)),
+          child: Text(tr(text), textAlign: TextAlign.center, style: HerdText.body(12, color: Herd.ink)),
         ),
       );
 }

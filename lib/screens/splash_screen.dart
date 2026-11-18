@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:material_ui/material_ui.dart';
 
+import '../l10n.dart';
+
 import '../theme.dart';
 import '../widgets/companion_figure.dart';
 
@@ -80,17 +82,17 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                     ]),
                   ),
                   const SizedBox(height: 14),
-                  Text('Tap me to say hi!', style: HerdText.body(15, weight: FontWeight.w500, color: Herd.sageDark)),
+                  Text(tr('Tap me to say hi!'), style: HerdText.body(15, weight: FontWeight.w500, color: Herd.sageDark)),
                 ]),
               ),
             ),
             const Spacer(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: FittedBox(fit: BoxFit.scaleDown, child: Text('Herd Around the World', textAlign: TextAlign.center, style: HerdText.script(40))),
+              child: FittedBox(fit: BoxFit.scaleDown, child: Text(tr('Herd Around the World'), textAlign: TextAlign.center, style: HerdText.script(40))),
             ),
             const SizedBox(height: 6),
-            Text('Children of the clay, on the move', style: HerdText.body(16)),
+            Text(tr('Children of the clay, on the move'), style: HerdText.body(16)),
             const SizedBox(height: 36),
           ]),
         ),

@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../app_state.dart';
+import '../l10n.dart';
 import '../models.dart';
 import '../services.dart';
 import '../theme.dart';
@@ -90,12 +91,12 @@ class _BrokeScreenState extends State<BrokeScreen> {
         const SizedBox(height: 20),
         const Icon(Icons.favorite, size: 36, color: Herd.rose),
         const SizedBox(height: 10),
-        Text('Thank you for telling us', textAlign: TextAlign.center, style: HerdText.script(36)),
+        Text(tr('Thank you for telling us'), textAlign: TextAlign.center, style: HerdText.script(36)),
         const SizedBox(height: 6),
         Text(
-          what == _What.chipped
+          tr(what == _What.chipped
               ? 'We’ve noted the chip. $name can keep traveling.'
-              : 'Everyone who followed $name will get a note, and their journey is kept safe on their page.',
+              : 'Everyone who followed $name will get a note, and their journey is kept safe on their page.'),
           textAlign: TextAlign.center,
           style: HerdText.body(16),
         ),
@@ -106,8 +107,8 @@ class _BrokeScreenState extends State<BrokeScreen> {
   List<Widget> _form(String name) => [
         Eyebrow('Companion #${widget.number}'),
         const SizedBox(height: 4),
-        Text('Oh no, did something happen to $name?', style: HerdText.script(36)),
-        Text('Clay is fragile, and accidents happen on the road. Thank you for letting everyone know. Every journey deserves an ending.',
+        Text(tr('Oh no, did something happen to $name?'), style: HerdText.script(36)),
+        Text(tr('Clay is fragile, and accidents happen on the road. Thank you for letting everyone know. Every journey deserves an ending.'),
             style: HerdText.body(16)),
         const SizedBox(height: 20),
         const FieldLabel('What happened? *'),
@@ -145,8 +146,8 @@ class _BrokeScreenState extends State<BrokeScreen> {
         if (what == _What.broke) ...[
           const SizedBox(height: 20),
           HerdCard(color: Herd.mintSoft, children: [
-            Text('Want to send the pieces home?', style: HerdText.chunky(18, extraBold: false, color: Herd.mintInk)),
-            Text('If you can, The Herd would love to have them back in the studio. We’ll email you how.', style: HerdText.body(14, color: Herd.mintInk)),
+            Text(tr('Want to send the pieces home?'), style: HerdText.chunky(18, extraBold: false, color: Herd.mintInk)),
+            Text(tr('If you can, The Herd would love to have them back in the studio. We’ll email you how.'), style: HerdText.body(14, color: Herd.mintInk)),
             LabeledSwitch(label: 'Yes, tell me how', value: sendHome, onChanged: (v) => setState(() => sendHome = v)),
           ]),
         ],
@@ -161,7 +162,7 @@ class _BrokeScreenState extends State<BrokeScreen> {
             onChanged: (_) => setState(() => nicknameError = null)),
         if (what != _What.chipped) ...[
           const SizedBox(height: 12),
-          Text('Everyone who followed $name will get a note, and their page will show a Retired badge with their whole journey kept safe.',
+          Text(tr('Everyone who followed $name will get a note, and their page will show a Retired badge with their whole journey kept safe.'),
               style: HerdText.body(14)),
         ],
         const SizedBox(height: 18),

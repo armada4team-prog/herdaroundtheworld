@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:material_ui/material_ui.dart';
 
+import '../l10n.dart';
+
 import '../models.dart';
 import '../theme.dart';
 
@@ -15,7 +17,7 @@ class StampView extends StatelessWidget {
   Widget build(BuildContext context) {
     final ink = hex(stamp.ink);
     return Semantics(
-      label: stamp.isEmpty ? 'Empty stamp: ${stamp.label}' : 'Stamp: ${stamp.label}',
+      label: tr(stamp.isEmpty ? 'Empty stamp: ${stamp.label}' : 'Stamp: ${stamp.label}'),
       excludeSemantics: true,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -35,8 +37,8 @@ class StampView extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(stamp.big, style: HerdText.chunky(size * 0.24, color: ink)),
-                  Text(stamp.small.toUpperCase(),
+                  Text(tr(stamp.big), style: HerdText.chunky(size * 0.24, color: ink)),
+                  Text(tr(stamp.small).toUpperCase(),
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -46,7 +48,7 @@ class StampView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(stamp.label, textAlign: TextAlign.center, style: HerdText.body(13, color: Herd.ink)),
+          Text(tr(stamp.label), textAlign: TextAlign.center, style: HerdText.body(13, color: Herd.ink)),
         ],
       ),
     );
@@ -95,7 +97,7 @@ class FilterPill extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: filter.label,
+      label: tr(filter.label),
       excludeSemantics: true,
       child: Material(
         color: selected ? Herd.sageDark : hex(filter.background),
@@ -112,7 +114,7 @@ class FilterPill extends StatelessWidget {
                 Container(width: 8, height: 8, decoration: BoxDecoration(color: hex(filter.dot!), shape: BoxShape.circle)),
                 const SizedBox(width: 6),
               ],
-              Text(filter.label, style: HerdText.body(14, color: fg)),
+              Text(tr(filter.label), style: HerdText.body(14, color: fg)),
             ]),
           ),
         ),
@@ -139,8 +141,8 @@ class WishCard extends StatelessWidget {
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 2, children: [
               Eyebrow(granted ? 'Their wish · granted!' : 'Their wish · not granted yet', color: Herd.butterInk),
-              Text('“$wish”', style: HerdText.script(26, color: Herd.wishInk)),
-              if (note != null) Text(note!, style: HerdText.body(14, color: Herd.butterInk)),
+              Text(tr('“$wish”'), style: HerdText.script(26, color: Herd.wishInk)),
+              if (note != null) Text(tr(note!), style: HerdText.body(14, color: Herd.butterInk)),
             ]),
           ),
         ]),
@@ -165,7 +167,7 @@ class NumberedRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        Expanded(child: Text(text, style: HerdText.body(15, color: Herd.ink))),
+        Expanded(child: Text(tr(text), style: HerdText.body(15, color: Herd.ink))),
       ]);
 }
 
@@ -187,7 +189,7 @@ class PillPicker<T> extends StatelessWidget {
                 child: Semantics(
                   button: true,
                   selected: value == selected,
-                  label: label,
+                  label: tr(label),
                   excludeSemantics: true,
                   child: GestureDetector(
                     onTap: () => onChanged(value),
@@ -195,7 +197,7 @@ class PillPicker<T> extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(color: value == selected ? Herd.sageDark : Colors.transparent, borderRadius: BorderRadius.circular(999)),
-                      child: Text(label, style: HerdText.body(14, weight: FontWeight.w500, color: value == selected ? Colors.white : Herd.ink)),
+                      child: Text(tr(label), style: HerdText.body(14, weight: FontWeight.w500, color: value == selected ? Colors.white : Herd.ink)),
                     ),
                   ),
                 ),
@@ -218,7 +220,7 @@ class ChoiceCard extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
         button: true,
         selected: selected,
-        label: '$title. $detail',
+        label: '${tr(title)}. ${tr(detail)}',
         excludeSemantics: true,
         child: GestureDetector(
           onTap: onTap,
@@ -236,15 +238,15 @@ class ChoiceCard extends StatelessWidget {
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 4, children: [
                   Wrap(spacing: 8, runSpacing: 4, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                    Text(title, style: HerdText.body(16, weight: FontWeight.w500, color: Herd.ink)),
+                    Text(tr(title), style: HerdText.body(16, weight: FontWeight.w500, color: Herd.ink)),
                     if (badge != null)
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
                         decoration: BoxDecoration(color: Herd.mintSoft, borderRadius: BorderRadius.circular(999)),
-                        child: Text(badge!, style: HerdText.body(12, color: Herd.mintInk)),
+                        child: Text(tr(badge!), style: HerdText.body(12, color: Herd.mintInk)),
                       ),
                   ]),
-                  Text(detail, style: HerdText.body(14)),
+                  Text(tr(detail), style: HerdText.body(14)),
                 ]),
               ),
             ]),
@@ -269,7 +271,7 @@ class PhotoPlaceholder extends StatelessWidget {
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             const Icon(Icons.photo_camera_outlined, color: Herd.body),
             const SizedBox(height: 6),
-            Text(label, style: HerdText.body(13)),
+            Text(tr(label), style: HerdText.body(13)),
           ]),
         ),
       );
@@ -285,7 +287,7 @@ class LabeledSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MergeSemantics(
         child: Row(children: [
-          Expanded(child: Text(label, style: HerdText.body(15, color: Herd.ink))),
+          Expanded(child: Text(tr(label), style: HerdText.body(15, color: Herd.ink))),
           Switch(value: value, onChanged: onChanged),
         ]),
       );
@@ -298,7 +300,7 @@ class ScriptHeading extends StatelessWidget {
   final double size;
 
   @override
-  Widget build(BuildContext context) => Semantics(header: true, child: Text(text, style: HerdText.script(size)));
+  Widget build(BuildContext context) => Semantics(header: true, child: Text(tr(text), style: HerdText.script(size)));
 }
 
 /// A row in a list that opens something (chevron on the right).
@@ -322,8 +324,8 @@ class LinkRow extends StatelessWidget {
               if (leading != null) ...[leading!, const SizedBox(width: 12)],
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 2, children: [
-                  Text(title, style: HerdText.chunky(16, extraBold: false)),
-                  Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis, style: HerdText.body(13)),
+                  Text(tr(title), style: HerdText.chunky(16, extraBold: false)),
+                  Text(tr(subtitle), maxLines: 1, overflow: TextOverflow.ellipsis, style: HerdText.body(13)),
                 ]),
               ),
               const Icon(Icons.chevron_right, color: Herd.sageDark),
@@ -345,7 +347,7 @@ Widget softChip(String label, IconData icon, VoidCallback? onTap) => Material(
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             Icon(icon, size: 18, color: Herd.mintInk),
             const SizedBox(width: 8),
-            Text(label, style: HerdText.body(15, color: Herd.mintInk)),
+            Text(tr(label), style: HerdText.body(15, color: Herd.mintInk)),
           ]),
         ),
       ),

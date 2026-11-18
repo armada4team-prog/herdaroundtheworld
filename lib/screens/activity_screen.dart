@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../app_state.dart';
+import '../l10n.dart';
 import '../models.dart';
 import '../theme.dart';
 
@@ -22,7 +23,7 @@ class ActivityScreen extends StatelessWidget {
               CircleIconButton(icon: Icons.tune, label: 'Notification settings', onTap: () => router.push(const NotificationSettingsRoute())),
             ]),
             const SizedBox(height: 12),
-            Text('Activity', style: HerdText.script(40)),
+            Text(tr('Activity'), style: HerdText.script(40)),
             const SizedBox(height: 12),
             if (reminder != null) ...[
               Container(
@@ -32,9 +33,9 @@ class ActivityScreen extends StatelessWidget {
                   Row(children: [
                     Container(width: 6, height: 6, decoration: const BoxDecoration(color: Herd.pinkInk, shape: BoxShape.circle)),
                     const SizedBox(width: 6),
-                    Text('From ${reminder.displayName}', style: HerdText.body(12, color: Herd.pinkInk)),
+                    Text(tr('From ${reminder.displayName}'), style: HerdText.body(12, color: Herd.pinkInk)),
                   ]),
-                  Text('Hi again! You found me in ${reminder.current?.city ?? 'your city'} about a month ago. Ready to send me on my next adventure?',
+                  Text(tr('Hi again! You found me in ${reminder.current?.city ?? 'your city'} about a month ago. Ready to send me on my next adventure?'),
                       style: HerdText.body(15, color: Herd.ink)),
                   Row(spacing: 10, children: [
                     Expanded(child: HerdButton('Pass me on', onPressed: () => router.push(PassOnRoute(reminder.number)))),
@@ -73,8 +74,8 @@ class ActivityScreen extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 2, children: [
-                  Text(item.title, style: HerdText.body(15, weight: FontWeight.w500, color: Herd.ink)),
-                  Text(item.meta, style: HerdText.body(13)),
+                  Text(tr(item.title), style: HerdText.body(15, weight: FontWeight.w500, color: Herd.ink)),
+                  Text(tr(item.meta), style: HerdText.body(13)),
                 ]),
               ),
             ]),

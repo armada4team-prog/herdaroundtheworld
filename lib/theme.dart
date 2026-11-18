@@ -1,5 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
+import 'l10n.dart';
+
 /// The Herd's colours, taken from the designs (cream + sage, pastel blobs).
 class Herd {
   static const cream = Color(0xFFFDF8F3);
@@ -81,7 +83,7 @@ class Eyebrow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      Text(text.toUpperCase(), style: HerdText.body(13, color: color).copyWith(letterSpacing: 1));
+      Text(tr(text).toUpperCase(), style: HerdText.body(13, color: color).copyWith(letterSpacing: 1));
 }
 
 /// "THE HERD" wordmark used in headers.
@@ -120,7 +122,7 @@ class HerdButton extends StatelessWidget {
     final text = FittedBox(
       fit: BoxFit.scaleDown,
       child: Text(
-        label.toUpperCase(),
+        tr(label).toUpperCase(),
         textAlign: TextAlign.center,
         maxLines: 1,
         style: HerdText.body(15, weight: FontWeight.w500, color: fg).copyWith(letterSpacing: 0.6),
@@ -128,7 +130,7 @@ class HerdButton extends StatelessWidget {
     );
     final button = Semantics(
       button: true,
-      label: label,
+      label: tr(label),
       enabled: enabled,
       excludeSemantics: true,
       child: Opacity(
@@ -185,7 +187,7 @@ class FieldLabel extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) => Text(text, style: HerdText.body(16, weight: FontWeight.w600, color: Herd.sageDark));
+  Widget build(BuildContext context) => Text(tr(text), style: HerdText.body(16, weight: FontWeight.w600, color: Herd.sageDark));
 }
 
 class HerdField extends StatelessWidget {
@@ -227,13 +229,13 @@ class HerdField extends StatelessWidget {
         autofillHints: autofillHints,
         style: HerdText.body(16, color: Herd.ink),
         decoration: InputDecoration(
-          hintText: hint,
+          hintText: tr(hint),
           hintStyle: HerdText.body(16, color: Herd.body.withValues(alpha: 0.7)),
           filled: true,
           fillColor: Herd.field,
           counterText: showCounter ? null : '',
           counterStyle: HerdText.body(12),
-          errorText: errorText,
+          errorText: errorText == null ? null : tr(errorText!),
           errorMaxLines: 3,
           errorStyle: HerdText.body(13, color: const Color(0xFFB3261E)),
           contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
@@ -253,7 +255,7 @@ class InfoPill extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 12),
         decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(999)),
-        child: Text(text, style: HerdText.body(14, color: foreground)),
+        child: Text(tr(text), style: HerdText.body(14, color: foreground)),
       );
 }
 
@@ -269,7 +271,7 @@ class CircleIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Semantics(
         button: true,
-        label: label,
+        label: tr(label),
         excludeSemantics: true,
         child: Material(
           color: color,
@@ -286,7 +288,7 @@ class CircleIconButton extends StatelessWidget {
 /// App bar for pushed screens: back arrow and the wordmark (or a title) in the middle.
 PreferredSizeWidget herdAppBar({String? title, List<Widget>? actions, bool showBack = true}) => AppBar(
       automaticallyImplyLeading: showBack,
-      title: title == null ? const Wordmark() : Text(title, style: HerdText.chunky(17, extraBold: false)),
+      title: title == null ? const Wordmark() : Text(tr(title), style: HerdText.chunky(17, extraBold: false)),
       actions: actions,
     );
 

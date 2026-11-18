@@ -3,6 +3,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../app_state.dart';
+import '../l10n.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../widgets/companion_figure.dart';
@@ -143,7 +144,7 @@ class _MapScreenState extends State<MapScreen> {
                           child: Row(children: [
                             const Icon(Icons.zoom_out_map, size: 16, color: Herd.ink),
                             const SizedBox(width: 6),
-                            Text('Whole world', style: HerdText.body(14, color: Herd.ink)),
+                            Text(tr('Whole world'), style: HerdText.body(14, color: Herd.ink)),
                           ]),
                         ),
                       ),
@@ -188,7 +189,7 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
             if (searching)
-              TextButton(onPressed: () => find(model), child: Text('Go', style: HerdText.body(15, weight: FontWeight.w500, color: Herd.sageDark))),
+              TextButton(onPressed: () => find(model), child: Text(tr('Go'), style: HerdText.body(15, weight: FontWeight.w500, color: Herd.sageDark))),
           ]),
         ),
       );
@@ -208,8 +209,8 @@ class _MapScreenState extends State<MapScreen> {
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 2, children: [
                 Text(c.label, style: HerdText.chunky(18, extraBold: false, color: Herd.sageDark)),
-                Text('${c.current?.city ?? ''} · ${c.lastMoved}', style: HerdText.body(13)),
-                Text('Wish: ${c.wish}', style: HerdText.body(13, color: Herd.butterInk)),
+                Text(tr('${c.current?.city ?? ''} · ${c.lastMoved}'), style: HerdText.body(13)),
+                Text(tr('Wish: ${c.wish}'), style: HerdText.body(13, color: Herd.butterInk)),
               ]),
             ),
           ]),
@@ -224,7 +225,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget _legend(Color color, String text) => Row(mainAxisSize: MainAxisSize.min, children: [
         Container(width: 9, height: 9, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
         const SizedBox(width: 6),
-        Text(text, style: HerdText.body(12, color: Herd.ink)),
+        Text(tr(text), style: HerdText.body(12, color: Herd.ink)),
       ]);
 
   Widget _mostActive(AppModel model) => Container(
@@ -241,7 +242,7 @@ class _MapScreenState extends State<MapScreen> {
           Row(crossAxisAlignment: CrossAxisAlignment.baseline, textBaseline: TextBaseline.alphabetic, children: [
             const ScriptHeading('Most active', size: 26),
             const Spacer(),
-            Text('${model.companions.length} Companions', style: HerdText.body(12)),
+            Text(tr('${model.companions.length} Companions'), style: HerdText.body(12)),
           ]),
           Flexible(
             child: ListView.separated(
@@ -256,13 +257,13 @@ class _MapScreenState extends State<MapScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 9),
                     child: Row(children: [
-                      SizedBox(width: 22, child: Text('${i + 1}', style: HerdText.chunky(13, extraBold: false, color: Herd.sage))),
+                      SizedBox(width: 22, child: Text(tr('${i + 1}'), style: HerdText.chunky(13, extraBold: false, color: Herd.sage))),
                       Container(width: 10, height: 10, decoration: BoxDecoration(color: c.accentColor, shape: BoxShape.circle)),
                       const SizedBox(width: 10),
-                      Text('#${c.number}', style: HerdText.chunky(14, extraBold: false, color: Herd.sageDark)),
+                      Text(tr('#${c.number}'), style: HerdText.chunky(14, extraBold: false, color: Herd.sageDark)),
                       const SizedBox(width: 8),
                       Expanded(child: Text(c.current?.city ?? '', overflow: TextOverflow.ellipsis, style: HerdText.body(14, color: Herd.ink))),
-                      Text('${c.stopCount} stops', style: HerdText.body(12)),
+                      Text(tr('${c.stopCount} stops'), style: HerdText.body(12)),
                     ]),
                   ),
                 );
