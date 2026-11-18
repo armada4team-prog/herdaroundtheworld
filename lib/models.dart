@@ -74,8 +74,8 @@ class Companion {
   bool movedThisWeek;
   final List<Stop> stops;
   int travelers;
-  String blurb = 'A short blurb about this Companion, the same words printed on the tiny scroll they carry.';
-  String originStory = 'Their origin story, written by The Herd: the same words on their tiny scroll.';
+  String blurb = 'A short blurb about this Companion, written by The Herd.';
+  String originStory = 'Their origin story, written by The Herd.';
 
   String get displayName => name ?? '#$number';
   String get label => name == null ? '#$number' : '#$number · $name';
