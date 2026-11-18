@@ -15,6 +15,38 @@ import 'theme.dart';
 /// Location, photos and links, working the same way on Android and iPhone.
 class Services {
   /// "Use my city": asks once for location, then turns it into a city name only (never a street address).
+  /// On the web preview only (never in the phone apps), pretend to be here so screens can be checked.
+  static HerePlace? previewHere;
+
+  /// Where the phone is right now, as a city ("Aurora, CO") and a map point. Finds and pass-ons
+  /// use this instead of a typed place, so nobody can log a Companion somewhere they aren't.
+  static Future<HereResult> whereAmI() async {
+    if (kIsWeb) return previewHere != null ? HereResult(place: previewHere) : const HereResult(problem: HereProblem.unavailable);
+    try {
+      if (!await Geolocator.isLocationServiceEnabled()) return const HereResult(problem: HereProblem.off);
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) return const HereResult(problem: HereProblem.blocked);
+      if (permission == LocationPermission.denied) return const HereResult(problem: HereProblem.notAllowed);
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium, timeLimit: Duration(seconds: 20)),
+      );
+      // Apps that fake your location are turned away.
+      if (position.isMocked) return const HereResult(problem: HereProblem.faked);
+      final places = await Geocoding().placemarkFromCoordinates(position.latitude, position.longitude);
+      if (places.isEmpty) return const HereResult(problem: HereProblem.unavailable);
+      final p = places.first;
+      final city =
+          <String?>[p.locality, p.subAdministrativeArea, p.name].firstWhere((s) => s != null && s.isNotEmpty, orElse: () => '') ?? '';
+      final region = p.isoCountryCode == 'US' ? (p.administrativeArea ?? '') : (p.country ?? '');
+      final label = [city, region].where((s) => s.isNotEmpty).join(', ');
+      if (label.isEmpty) return const HereResult(problem: HereProblem.unavailable);
+      return HereResult(place: HerePlace(label, LatLng(position.latitude, position.longitude)));
+    } catch (_) {
+      return const HereResult(problem: HereProblem.unavailable);
+    }
+  }
+
   /// Where the phone is, roughly (city level). Null if location is off or not allowed.
   static Future<LatLng?> currentPoint() async {
     try {
@@ -24,26 +56,6 @@ class Services {
       if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) return null;
       final position = await Geolocator.getCurrentPosition(locationSettings: const LocationSettings(accuracy: LocationAccuracy.low));
       return LatLng(position.latitude, position.longitude);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  static Future<String?> currentCity() async {
-    try {
-      if (!await Geolocator.isLocationServiceEnabled()) return null;
-      var permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) return null;
-      final position = await Geolocator.getCurrentPosition(locationSettings: const LocationSettings(accuracy: LocationAccuracy.low));
-      if (kIsWeb) return null;
-      final places = await Geocoding().placemarkFromCoordinates(position.latitude, position.longitude);
-      if (places.isEmpty) return null;
-      final p = places.first;
-      final city =
-          <String?>[p.locality, p.subAdministrativeArea, p.name].firstWhere((s) => s != null && s.isNotEmpty, orElse: () => '') ?? '';
-      final region = p.isoCountryCode == 'US' ? (p.administrativeArea ?? '') : (p.country ?? '');
-      return [city, region].where((s) => s.isNotEmpty).join(', ');
     } catch (_) {
       return null;
     }
@@ -129,6 +141,27 @@ class Services {
 }
 
 enum PlaceStatus { found, notFound, unavailable }
+
+class HerePlace {
+  const HerePlace(this.city, this.point);
+  final String city;
+  final LatLng point;
+
+  /// The map dot, blurred on purpose: about 10 km for "just the city", about 100 m for a public place.
+  LatLng blurred({required bool exactish}) {
+    double round(double v, int places) => double.parse(v.toStringAsFixed(places));
+    final digits = exactish ? 3 : 1;
+    return LatLng(round(point.latitude, digits), round(point.longitude, digits));
+  }
+}
+
+enum HereProblem { off, notAllowed, blocked, faked, unavailable }
+
+class HereResult {
+  const HereResult({this.place, this.problem});
+  final HerePlace? place;
+  final HereProblem? problem;
+}
 
 class PlaceLookup {
   const PlaceLookup(this.status, [this.point]);

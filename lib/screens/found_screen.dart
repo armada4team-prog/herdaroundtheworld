@@ -7,6 +7,7 @@ import '../services.dart';
 import '../theme.dart';
 import '../validation.dart';
 import '../widgets/companion_figure.dart';
+import '../widgets/here_card.dart';
 import '../widgets/pieces.dart';
 
 /// Step 1 of 2: "I found them" — a quick log so everyone knows the Companion is safe.
@@ -19,7 +20,7 @@ class FoundScreen extends StatefulWidget {
 }
 
 class _FoundScreenState extends State<FoundScreen> {
-  final city = TextEditingController();
+  HerePlace? here; // from the phone's location
   final nickname = TextEditingController();
   final email = TextEditingController();
   CheckIn checkIn = CheckIn.appAlert;
@@ -27,7 +28,6 @@ class _FoundScreenState extends State<FoundScreen> {
   bool done = false;
   bool? alreadyHolding; // checked once when the screen opens
   bool? needsCode;
-  bool locating = false;
   bool saving = false;
   String? cityError;
   String? nicknameError;
@@ -43,40 +43,29 @@ class _FoundScreenState extends State<FoundScreen> {
 
   @override
   void dispose() {
-    city.dispose();
     nickname.dispose();
     email.dispose();
     super.dispose();
   }
 
-  bool get canSubmit => city.text.trim().isNotEmpty && nickname.text.trim().isNotEmpty && !saving;
+  bool get canSubmit => nickname.text.trim().isNotEmpty && !saving;
 
   Future<void> submit() async {
     FocusScope.of(context).unfocus();
-    final place = city.text.trim();
+    final where = here;
     setState(() {
-      cityError = checkPlaceFormat(place);
+      cityError = where == null ? 'We need your location to log a find.' : null;
       nicknameError = checkNickname(nickname.text);
       emailError = checkIn == CheckIn.email && !isEmail(email.text) ? 'Please enter a valid email, or choose another option.' : null;
     });
-    if (cityError != null || nicknameError != null || emailError != null) return;
-    setState(() => saving = true);
-    final lookup = await Services.lookUpPlace(place);
-    if (!mounted) return;
-    if (lookup.status == PlaceStatus.notFound) {
-      setState(() {
-        saving = false;
-        cityError = 'We couldn’t find that place. Check the spelling, like Santa Fe, NM.';
-      });
-      return;
-    }
+    if (where == null || nicknameError != null || emailError != null) return;
     context.model.logFind(
       widget.number,
-      city: place,
+      city: where.city,
       nickname: nickname.text.trim(),
       checkIn: checkIn,
       email: checkIn == CheckIn.email ? email.text.trim() : null,
-      point: lookup.point,
+      point: where.blurred(exactish: false),
     );
     setState(() {
       saving = false;
@@ -135,32 +124,12 @@ class _FoundScreenState extends State<FoundScreen> {
     const SizedBox(height: 20),
     const FieldLabel('Where are you? *'),
     const SizedBox(height: 8),
-    HerdField(
-      fieldKey: const Key('foundCity'),
-      controller: city,
-      hint: 'City, State or Country, like Santa Fe, NM',
+    HereCard(
       errorText: cityError,
-      onChanged: (_) => setState(() => cityError = null),
-      autofillHints: const [AutofillHints.addressCity],
-    ),
-    const SizedBox(height: 8),
-    Align(
-      alignment: Alignment.centerLeft,
-      child: softChip(
-        locating ? 'Finding your city…' : 'Use my city',
-        Icons.near_me_outlined,
-        locating
-            ? null
-            : () async {
-                setState(() => locating = true);
-                final found = await Services.currentCity();
-                if (!mounted) return;
-                setState(() {
-                  if (found != null) city.text = found;
-                  locating = false;
-                });
-              },
-      ),
+      onChanged: (place) => setState(() {
+        here = place;
+        if (place != null) cityError = null;
+      }),
     ),
     const SizedBox(height: 20),
     const FieldLabel('Your name or nickname *'),

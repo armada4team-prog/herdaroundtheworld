@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:herd_around_the_world/services.dart';
 import 'package:herd_around_the_world/app_state.dart';
 import 'package:herd_around_the_world/find_codes.dart';
 import 'package:herd_around_the_world/main.dart';
@@ -83,6 +85,12 @@ void main() {
     }
     expect(model.tryFindCode('07', wrong), CodeCheck.tooManyTries);
     expect(model.tryFindCode('07', findCodeFor('07')), CodeCheck.tooManyTries);
+  });
+
+  test('map dots are blurred: about the city, or near a public place', () {
+    const here = HerePlace('Aurora, CO', LatLng(39.72946, -104.83191));
+    expect(here.blurred(exactish: false), const LatLng(39.7, -104.8));
+    expect(here.blurred(exactish: true), const LatLng(39.729, -104.832));
   });
 
   testWidgets('opens on the welcome screen and comes in', (tester) async {

@@ -11,6 +11,7 @@ import '../services.dart';
 import '../theme.dart';
 import '../validation.dart';
 import '../widgets/companion_figure.dart';
+import '../widgets/here_card.dart';
 import '../widgets/pieces.dart';
 
 /// Turned on for the automated walkthrough, which can't open the photo library.
@@ -26,7 +27,7 @@ class PassOnScreen extends StatefulWidget {
 }
 
 class _PassOnScreenState extends State<PassOnScreen> {
-  final whereText = TextEditingController();
+  HerePlace? here; // from the phone's location
   final placeText = TextEditingController();
   final chapter = TextEditingController();
   final nickname = TextEditingController();
@@ -37,7 +38,6 @@ class _PassOnScreenState extends State<PassOnScreen> {
   bool shareOK = true;
   bool grantedWish = false;
   bool alertMe = true;
-  bool locating = false;
   bool saving = false;
   Uint8List? photo;
   Uint8List? wishPhoto;
@@ -58,7 +58,6 @@ class _PassOnScreenState extends State<PassOnScreen> {
 
   @override
   void dispose() {
-    whereText.dispose();
     placeText.dispose();
     chapter.dispose();
     nickname.dispose();
@@ -66,14 +65,14 @@ class _PassOnScreenState extends State<PassOnScreen> {
     super.dispose();
   }
 
-  bool get canSubmit => whereText.text.trim().isNotEmpty && nickname.text.trim().isNotEmpty && !saving;
+  bool get canSubmit => nickname.text.trim().isNotEmpty && !saving;
 
   Future<void> submit() async {
     FocusScope.of(context).unfocus();
-    final city = whereText.text.trim();
+    final where = here;
     final description = placeText.text.trim();
     setState(() {
-      whereError = checkPlaceFormat(city);
+      whereError = where == null ? 'We need your location to pass them on.' : null;
       placeError = handToSomeone ? null : checkPlaceDescription(description);
       chapterError = checkPublicText(chapter.text, maxLength: 500);
       nicknameError = checkNickname(nickname.text);
@@ -84,17 +83,11 @@ class _PassOnScreenState extends State<PassOnScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr('A few things need a quick fix. They’re marked in red.'))));
       return;
     }
+    if (where == null) return;
     setState(() => saving = true);
-    final lookup = await Services.lookUpPlace(city);
-    if (!mounted) return;
-    if (lookup.status == PlaceStatus.notFound) {
-      setState(() {
-        saving = false;
-        whereError = 'We couldn’t find that place. Check the spelling, like Santa Fe, NM.';
-      });
-      return;
-    }
-    final point = lookup.point;
+    final city = where.city;
+    // A public place shows close to the spot (about 100 m); otherwise only roughly the city.
+    final point = where.blurred(exactish: !handToSomeone && publicPlace);
     final place = (!handToSomeone && publicPlace && description.isNotEmpty) ? description : null;
     final model = context.model;
     model.passOn(
@@ -205,38 +198,19 @@ class _PassOnScreenState extends State<PassOnScreen> {
                         onTap: () => setState(() => handToSomeone = false),
                       ),
                       const SizedBox(height: 20),
-                      const FieldLabel('Which city? *'),
+                      const FieldLabel('Where are you? *'),
                       const SizedBox(height: 8),
-                      HerdField(
-                        fieldKey: const Key('passWhere'),
-                        controller: whereText,
-                        hint: 'City, State or Country, like Santa Fe, NM',
+                      HereCard(
                         errorText: whereError,
-                        onChanged: (_) => setState(() => whereError = null),
+                        onChanged: (place) => setState(() {
+                          here = place;
+                          if (place != null) whereError = null;
+                        }),
                       ),
                       const SizedBox(height: 6),
                       Text(
                         tr('Please never use a home address. We only ever show a place name and city, never a street address.'),
                         style: HerdText.body(13),
-                      ),
-                      const SizedBox(height: 8),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: softChip(
-                          locating ? 'Finding your location…' : 'Use my location',
-                          Icons.near_me_outlined,
-                          locating
-                              ? null
-                              : () async {
-                                  setState(() => locating = true);
-                                  final found = await Services.currentCity();
-                                  if (!mounted) return;
-                                  setState(() {
-                                    if (found != null) whereText.text = found;
-                                    locating = false;
-                                  });
-                                },
-                        ),
                       ),
                       if (!handToSomeone) ...[
                         const SizedBox(height: 20),

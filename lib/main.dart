@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'l10n.dart';
@@ -20,6 +21,7 @@ import 'screens/scan_screen.dart';
 import 'screens/sent_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/wish_screen.dart';
+import 'services.dart';
 import 'theme.dart';
 
 /// Opens straight to one screen when built with `--dart-define=SCREEN=map`, or on the web with `?screen=map`
@@ -72,6 +74,7 @@ class _HerdAppState extends State<HerdApp> {
     });
     if (startScreen.isNotEmpty) WidgetsBinding.instance.addPostFrameCallback((_) => _openStartScreen());
     // Testing aid on the web: ?lang=es opens the app in Spanish.
+    if (kIsWeb && startScreen.isNotEmpty) Services.previewHere = const HerePlace('Aurora, CO', LatLng(39.7294, -104.8319));
     final startLang = kIsWeb ? Uri.base.queryParameters['lang'] : null;
     if (startLang != null) model.setLanguage(startLang);
   }
