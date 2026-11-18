@@ -256,5 +256,5 @@ String? checkPlaceDescription(String text) {
   ).hasMatch(t)) {
     return 'Please describe the spot instead of giving a street address.';
   }
-  return checkPublicText(t, maxLength: 60);
+  return checkPublicText(t, maxLength: 120);
 }

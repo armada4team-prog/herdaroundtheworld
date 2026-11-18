@@ -34,7 +34,6 @@ class _PassOnScreenState extends State<PassOnScreen> {
   final email = TextEditingController();
   final sampleKey = GlobalKey();
   bool handToSomeone = true;
-  bool publicPlace = false;
   bool shareOK = true;
   bool grantedWish = false;
   bool alertMe = true;
@@ -47,6 +46,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
   String? nicknameError;
   String? emailError;
   String? wishPhotoError;
+  String? photoError;
   bool? needsFindFirst; // checked once when the screen opens
 
   @override
@@ -86,13 +86,16 @@ class _PassOnScreenState extends State<PassOnScreen> {
     final description = placeText.text.trim();
     setState(() {
       whereError = where == null ? 'We need your location to pass them on.' : tooCloseMessage(where);
-      placeError = handToSomeone ? null : checkPlaceDescription(description);
+      placeError = handToSomeone
+          ? null
+          : (description.isEmpty ? 'Please add a hint so the next person can find them.' : checkPlaceDescription(description));
       chapterError = checkPublicText(chapter.text, maxLength: 500);
       nicknameError = checkNickname(nickname.text);
       emailError = email.text.trim().isNotEmpty && !isEmail(email.text) ? 'Please enter a valid email, or leave it empty.' : null;
       wishPhotoError = grantedWish && wishPhoto == null ? 'Please add a photo of the wish coming true.' : null;
+      photoError = photo == null ? 'Please add a photo.' : null;
     });
-    if ([whereError, placeError, chapterError, nicknameError, emailError, wishPhotoError].any((e) => e != null)) {
+    if ([whereError, placeError, chapterError, nicknameError, emailError, wishPhotoError, photoError].any((e) => e != null)) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr('A few things need a quick fix. They’re marked in red.'))));
       return;
     }
@@ -100,8 +103,10 @@ class _PassOnScreenState extends State<PassOnScreen> {
     setState(() => saving = true);
     final city = where.city;
     // A public place shows close to the spot (about 100 m); otherwise only roughly the city.
-    final point = where.blurred(exactish: !handToSomeone && publicPlace);
-    final place = (!handToSomeone && publicPlace && description.isNotEmpty) ? description : null;
+    // Left somewhere: the dot shows close to the spot (about 100 m), with their hint, so the next
+    // person can find them. Handed to someone: only roughly the city.
+    final point = where.blurred(exactish: !handToSomeone);
+    final place = handToSomeone ? null : description;
     final model = context.model;
     model.passOn(
       widget.number,
@@ -201,7 +206,6 @@ class _PassOnScreenState extends State<PassOnScreen> {
                         selected: handToSomeone,
                         onTap: () => setState(() {
                           handToSomeone = true;
-                          publicPlace = false;
                           if (here != null) whereError = tooCloseMessage(here!);
                         }),
                       ),
@@ -232,40 +236,47 @@ class _PassOnScreenState extends State<PassOnScreen> {
                       ),
                       if (!handToSomeone) ...[
                         const SizedBox(height: 20),
-                        const FieldLabel('Where in the city? (optional)'),
+                        const FieldLabel('Where in the city? *'),
                         const SizedBox(height: 8),
                         HerdField(
                           fieldKey: const Key('passPlace'),
                           controller: placeText,
                           hint: 'Like a café on the plaza, or a hostel lobby',
-                          maxLength: 60,
+                          maxLength: 120,
                           errorText: placeError,
                           onChanged: (_) => setState(() => placeError = null),
                         ),
-                        const SizedBox(height: 20),
-                        const FieldLabel('How exact should the map be?'),
-                        const SizedBox(height: 10),
-                        ChoiceCard(
-                          title: 'Public place',
-                          detail: 'Shows the place name, like “café on the plaza, Santa Fe,” so the next person can find them.',
-                          selected: publicPlace,
-                          onTap: () => setState(() => publicPlace = true),
-                        ),
-                        const SizedBox(height: 10),
-                        ChoiceCard(
-                          title: 'Just the city',
-                          detail: 'Shows “Santa Fe, NM” only. Always used when you hand them to someone.',
-                          selected: !publicPlace,
-                          onTap: () => setState(() => publicPlace = false),
+                        const SizedBox(height: 6),
+                        Text(
+                          tr(
+                            'This is the hint the next traveler uses to find them, and their dot on the map shows close to this spot. Be specific, like “bookshelf by the window at Bean Café.”',
+                          ),
+                          style: HerdText.body(13),
                         ),
                       ],
                       const SizedBox(height: 20),
-                      const FieldLabel('Add a photo (optional)'),
+                      const FieldLabel('Add a photo *'),
                       const SizedBox(height: 8),
-                      _photoBox(photo, 'A photo from your time together, or their new spot', Herd.stepDot, () async {
-                        final p = await Services.choosePhoto(context);
-                        if (p != null && mounted) setState(() => photo = p);
-                      }),
+                      _photoBox(
+                        photo,
+                        handToSomeone
+                            ? 'A photo from your time together, or their new spot'
+                            : 'A photo of the spot helps the next traveler find them',
+                        Herd.stepDot,
+                        () async {
+                          final p = await Services.choosePhoto(context);
+                          if (p != null && mounted) {
+                            setState(() {
+                              photo = p;
+                              photoError = null;
+                            });
+                          }
+                        },
+                      ),
+                      if (photoError != null) ...[
+                        const SizedBox(height: 6),
+                        Text(tr(photoError!), style: HerdText.body(14, color: Herd.pinkInk)),
+                      ],
                       const SizedBox(height: 8),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,

@@ -334,6 +334,8 @@ class _MapScreenState extends State<MapScreen> {
                 children: [
                   Text(c.label, style: HerdText.chunky(18, extraBold: false, color: Herd.sageDark)),
                   Text(tr('${c.current?.city ?? ''} · ${c.lastMoved}'), style: HerdText.body(13)),
+                if (c.current?.place != null)
+                  Text('“${c.current!.place!}”', style: HerdText.body(13, weight: FontWeight.w500, color: Herd.ink)),
                   Text(tr('Wish: ${c.wish}'), style: HerdText.body(13, color: Herd.butterInk)),
                 ],
               ),

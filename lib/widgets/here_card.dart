@@ -113,7 +113,7 @@ class _HereCardState extends State<HereCard> {
                   ],
                 ),
         ),
-        Text(tr('We use your phone’s location so travelers know where to look. Only the city is shown.'), style: HerdText.body(13)),
+        Text(tr('We use your phone’s location so travelers know where to look. A street address is never shown.'), style: HerdText.body(13)),
         if (widget.errorText != null) Text(tr(widget.errorText!), style: HerdText.body(14, color: Herd.pinkInk)),
       ],
     );
