@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import '../app_state.dart';
 import '../models.dart';
 import '../theme.dart';
+import '../validation.dart';
 import '../widgets/companion_figure.dart';
 
 /// "You made my wish come true!" — the traveler picks the next wish.
@@ -26,6 +27,7 @@ class _WishScreenState extends State<WishScreen> {
   String pick = ideas.first;
   final custom = TextEditingController();
   String? grantedWish;
+  String? customError;
 
   @override
   void didChangeDependencies() {
@@ -111,7 +113,7 @@ class _WishScreenState extends State<WishScreen> {
                 child: TextField(
                   controller: custom,
                   maxLength: 50,
-                  onChanged: (_) => setState(() {}),
+                  onChanged: (_) => setState(() => customError = null),
                   style: HerdText.body(16, color: Herd.ink),
                   decoration: const InputDecoration(border: InputBorder.none, counterText: '', hintText: '…'),
                 ),
@@ -119,6 +121,10 @@ class _WishScreenState extends State<WishScreen> {
               Text('${custom.text.length}/50', style: HerdText.body(13)),
             ]),
           ),
+          if (customError != null) ...[
+            const SizedBox(height: 6),
+            Text(customError!, style: HerdText.body(13, color: const Color(0xFFB3261E))),
+          ],
           const SizedBox(height: 6),
           Text('Keep it kind, safe and doable. Wishes are checked automatically, then The Herd gives them a quick look. Until it’s approved, their page shows a wish from the list.',
               style: HerdText.body(13)),
@@ -130,6 +136,13 @@ class _WishScreenState extends State<WishScreen> {
           ]),
           const SizedBox(height: 18),
           HerdButton('Set their next wish →', onPressed: () {
+            if (custom.text.trim().isNotEmpty) {
+              final error = checkPublicText(custom.text, maxLength: 50);
+              if (error != null) {
+                setState(() => customError = error);
+                return;
+              }
+            }
             // List wishes go live right away. A custom wish waits for The Herd's approval,
             // so the selected list wish shows on their page until then.
             model.setNextWish(widget.number, pick);

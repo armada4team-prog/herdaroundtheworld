@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import '../app_state.dart';
 import '../services.dart';
 import '../theme.dart';
+import '../validation.dart';
 import '../widgets/companion_figure.dart';
 import '../widgets/pieces.dart';
 
@@ -111,7 +112,7 @@ class _SignInSheetState extends State<_SignInSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final valid = email.text.contains('@');
+    final valid = isEmail(email.text);
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(

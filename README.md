@@ -78,9 +78,9 @@ from The Herd’s database, and send `logFind`, `passOn`, `setNextWish`, `sendCh
 
 ## Maps
 
-The maps use free tiles from CARTO, built on OpenStreetMap data (credited on the map). That’s fine
-for testing. Before a big public launch, check CARTO’s terms or switch to a provider with a free
-account tier.
+The maps use OpenStreetMap’s free tiles (credited on the map), with no account or key needed.
+That’s fine for testing. OpenStreetMap’s servers are meant for light use, so before a big public
+launch switch to a tile provider with a free account tier (for example MapTiler or Stadia Maps).
 
 ## Scanning a Companion
 

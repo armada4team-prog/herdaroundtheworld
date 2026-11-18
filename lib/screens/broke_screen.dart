@@ -2,7 +2,9 @@ import 'package:material_ui/material_ui.dart';
 
 import '../app_state.dart';
 import '../models.dart';
+import '../services.dart';
 import '../theme.dart';
+import '../validation.dart';
 import '../widgets/pieces.dart';
 
 enum _What { broke, chipped, lost }
@@ -23,6 +25,10 @@ class _BrokeScreenState extends State<BrokeScreen> {
   final nickname = TextEditingController();
   bool sendHome = true;
   bool sent = false;
+  bool saving = false;
+  String? whereError;
+  String? chapterError;
+  String? nicknameError;
 
   @override
   void didChangeDependencies() {
@@ -38,7 +44,33 @@ class _BrokeScreenState extends State<BrokeScreen> {
     super.dispose();
   }
 
-  bool get canSubmit => whereText.text.trim().isNotEmpty && nickname.text.trim().isNotEmpty;
+  bool get canSubmit => whereText.text.trim().isNotEmpty && nickname.text.trim().isNotEmpty && !saving;
+
+  Future<void> submit() async {
+    FocusScope.of(context).unfocus();
+    final place = whereText.text.trim();
+    setState(() {
+      whereError = checkPlaceFormat(place);
+      chapterError = checkPublicText(chapter.text, maxLength: 500);
+      nicknameError = checkNickname(nickname.text);
+    });
+    if (whereError != null || chapterError != null || nicknameError != null) return;
+    setState(() => saving = true);
+    final lookup = await Services.lookUpPlace(place);
+    if (!mounted) return;
+    if (lookup.status == PlaceStatus.notFound) {
+      setState(() {
+        saving = false;
+        whereError = 'We couldn’t find that place. Check the spelling, like Lisbon, Portugal.';
+      });
+      return;
+    }
+    context.model.reportBroken(widget.number, chipped: what == _What.chipped);
+    setState(() {
+      saving = false;
+      sent = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,11 +125,23 @@ class _BrokeScreenState extends State<BrokeScreen> {
         const SizedBox(height: 20),
         const FieldLabel('Where? *'),
         const SizedBox(height: 8),
-        HerdField(controller: whereText, hint: 'A city, like Lisbon, Portugal', onChanged: (_) => setState(() {})),
+        HerdField(
+            controller: whereText,
+            hint: 'City, State or Country, like Lisbon, Portugal',
+            errorText: whereError,
+            onChanged: (_) => setState(() => whereError = null)),
         const SizedBox(height: 20),
         FieldLabel(what == _What.chipped ? 'Add a note (optional)' : 'Write their last chapter'),
         const SizedBox(height: 8),
-        HerdField(controller: chapter, hint: 'What happened, and what did they mean to you?', minLines: 3, maxLines: 6),
+        HerdField(
+            controller: chapter,
+            hint: 'What happened, and what did they mean to you?',
+            minLines: 3,
+            maxLines: 6,
+            maxLength: 500,
+            showCounter: true,
+            errorText: chapterError,
+            onChanged: (_) => setState(() => chapterError = null)),
         if (what == _What.broke) ...[
           const SizedBox(height: 20),
           HerdCard(color: Herd.mintSoft, children: [
@@ -109,7 +153,12 @@ class _BrokeScreenState extends State<BrokeScreen> {
         const SizedBox(height: 20),
         const FieldLabel('Your name or nickname *'),
         const SizedBox(height: 8),
-        HerdField(controller: nickname, hint: 'Shown on their page', onChanged: (_) => setState(() {})),
+        HerdField(
+            controller: nickname,
+            hint: 'Shown on their page',
+            maxLength: 30,
+            errorText: nicknameError,
+            onChanged: (_) => setState(() => nicknameError = null)),
         if (what != _What.chipped) ...[
           const SizedBox(height: 12),
           Text('Everyone who followed $name will get a note, and their page will show a Retired badge with their whole journey kept safe.',
@@ -118,12 +167,7 @@ class _BrokeScreenState extends State<BrokeScreen> {
         const SizedBox(height: 18),
         HerdButton(
           what == _What.chipped ? 'Send the note' : 'Share their last chapter',
-          onPressed: canSubmit
-              ? () {
-                  context.model.reportBroken(widget.number, chipped: what == _What.chipped);
-                  setState(() => sent = true);
-                }
-              : null,
+          onPressed: canSubmit ? submit : null,
         ),
       ];
 }

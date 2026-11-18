@@ -200,6 +200,8 @@ class HerdField extends StatelessWidget {
     this.onChanged,
     this.maxLength,
     this.autofillHints,
+    this.errorText,
+    this.showCounter = false,
   });
   final TextEditingController controller;
   final String hint;
@@ -210,6 +212,8 @@ class HerdField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final int? maxLength;
   final Iterable<String>? autofillHints;
+  final String? errorText;
+  final bool showCounter;
 
   @override
   Widget build(BuildContext context) => TextField(
@@ -227,7 +231,11 @@ class HerdField extends StatelessWidget {
           hintStyle: HerdText.body(16, color: Herd.body.withValues(alpha: 0.7)),
           filled: true,
           fillColor: Herd.field,
-          counterText: '',
+          counterText: showCounter ? null : '',
+          counterStyle: HerdText.body(12),
+          errorText: errorText,
+          errorMaxLines: 3,
+          errorStyle: HerdText.body(13, color: const Color(0xFFB3261E)),
           contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
         ),

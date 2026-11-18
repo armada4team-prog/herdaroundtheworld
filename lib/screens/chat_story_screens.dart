@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import '../app_state.dart';
 import '../models.dart';
 import '../theme.dart';
+import '../validation.dart';
 import '../widgets/companion_figure.dart';
 import '../widgets/pieces.dart';
 
@@ -18,6 +19,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final draft = TextEditingController();
   final scroll = ScrollController();
+  String? error;
 
   @override
   void dispose() {
@@ -27,6 +29,11 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void send() {
+    final problem = checkPublicText(draft.text, maxLength: 500);
+    if (problem != null) {
+      setState(() => error = problem);
+      return;
+    }
     context.model.sendChat(widget.number, draft.text);
     draft.clear();
     setState(() {});
@@ -65,9 +72,17 @@ class _ChatScreenState extends State<ChatScreen> {
             decoration: const BoxDecoration(color: Herd.cream, border: Border(top: BorderSide(color: Herd.line))),
             child: SafeArea(
               top: false,
-              child: Row(children: [
+              child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                 Expanded(
-                  child: HerdField(controller: draft, hint: 'Message the travelers of #${widget.number}', minLines: 1, maxLines: 4, onChanged: (_) => setState(() {})),
+                  child: HerdField(
+                    controller: draft,
+                    hint: 'Message the travelers of #${widget.number}',
+                    minLines: 1,
+                    maxLines: 4,
+                    maxLength: 500,
+                    errorText: error,
+                    onChanged: (_) => setState(() => error = null),
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Semantics(

@@ -6,15 +6,24 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models.dart';
 import '../theme.dart';
 
-/// Free map tiles (CARTO Voyager, built on OpenStreetMap). Light and soft, to sit with The Herd's colours.
-/// Before a big public launch, check CARTO's terms or switch to a free-tier provider with an account.
+/// Free map tiles from OpenStreetMap (no account or key needed). The app identifies itself, as
+/// OpenStreetMap asks. The colours are softened a little to sit with The Herd's palette.
+/// For a big public launch, move to a tile provider with a free account tier (OpenStreetMap's own
+/// servers are meant for light use).
 TileLayer herdTiles() => TileLayer(
-      urlTemplate: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-      subdomains: const ['a', 'b', 'c', 'd'],
-      retinaMode: true,
+      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
       userAgentPackageName: 'com.theherdstudio.herd_around_the_world',
-      maxZoom: 18,
+      maxZoom: 19,
+      tileBuilder: (context, tile, _) => ColorFiltered(colorFilter: _soften, child: tile),
     );
+
+// Slightly less saturated and a touch warmer than standard OpenStreetMap colours.
+const _soften = ColorFilter.matrix(<double>[
+  0.82, 0.14, 0.04, 0, 8, //
+  0.06, 0.86, 0.08, 0, 8,
+  0.06, 0.12, 0.76, 0, 6,
+  0, 0, 0, 1, 0,
+]);
 
 /// The map credit both map providers ask for. Tapping it opens OpenStreetMap's copyright page.
 Widget herdAttribution({Alignment alignment = Alignment.bottomRight, EdgeInsets margin = EdgeInsets.zero}) => Align(
@@ -26,7 +35,7 @@ Widget herdAttribution({Alignment alignment = Alignment.bottomRight, EdgeInsets 
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(color: Herd.cream.withValues(alpha: 0.85), borderRadius: BorderRadius.circular(6)),
-            child: Text('© OpenStreetMap contributors © CARTO', style: HerdText.body(10, color: Herd.body)),
+            child: Text('© OpenStreetMap contributors', style: HerdText.body(10, color: Herd.body)),
           ),
         ),
       ),

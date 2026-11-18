@@ -8,6 +8,7 @@ import '../app_state.dart';
 import '../models.dart';
 import '../services.dart';
 import '../theme.dart';
+import '../validation.dart';
 import '../widgets/companion_figure.dart';
 import '../widgets/pieces.dart';
 
@@ -25,6 +26,7 @@ class PassOnScreen extends StatefulWidget {
 
 class _PassOnScreenState extends State<PassOnScreen> {
   final whereText = TextEditingController();
+  final placeText = TextEditingController();
   final chapter = TextEditingController();
   final nickname = TextEditingController();
   final email = TextEditingController();
@@ -38,6 +40,12 @@ class _PassOnScreenState extends State<PassOnScreen> {
   bool saving = false;
   Uint8List? photo;
   Uint8List? wishPhoto;
+  String? whereError;
+  String? placeError;
+  String? chapterError;
+  String? nicknameError;
+  String? emailError;
+  String? wishPhotoError;
 
   @override
   void didChangeDependencies() {
@@ -48,28 +56,43 @@ class _PassOnScreenState extends State<PassOnScreen> {
   @override
   void dispose() {
     whereText.dispose();
+    placeText.dispose();
     chapter.dispose();
     nickname.dispose();
     email.dispose();
     super.dispose();
   }
 
-  bool get canSubmit =>
-      whereText.text.trim().isNotEmpty && nickname.text.trim().isNotEmpty && (!grantedWish || wishPhoto != null) && !saving;
+  bool get canSubmit => whereText.text.trim().isNotEmpty && nickname.text.trim().isNotEmpty && !saving;
 
   Future<void> submit() async {
     FocusScope.of(context).unfocus();
-    setState(() => saving = true);
-    final trimmed = whereText.text.trim();
-    var city = trimmed;
-    String? place;
-    if (!handToSomeone && publicPlace && trimmed.contains(',')) {
-      final comma = trimmed.indexOf(',');
-      place = trimmed.substring(0, comma).trim();
-      city = trimmed.substring(comma + 1).trim();
+    final city = whereText.text.trim();
+    final description = placeText.text.trim();
+    setState(() {
+      whereError = checkPlaceFormat(city);
+      placeError = handToSomeone ? null : checkPlaceDescription(description);
+      chapterError = checkPublicText(chapter.text, maxLength: 500);
+      nicknameError = checkNickname(nickname.text);
+      emailError = email.text.trim().isNotEmpty && !isEmail(email.text) ? 'Please enter a valid email, or leave it empty.' : null;
+      wishPhotoError = grantedWish && wishPhoto == null ? 'Please add a photo of the wish coming true.' : null;
+    });
+    if ([whereError, placeError, chapterError, nicknameError, emailError, wishPhotoError].any((e) => e != null)) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('A few things need a quick fix. They’re marked in red.')));
+      return;
     }
-    final point = await Services.pointFor(city);
+    setState(() => saving = true);
+    final lookup = await Services.lookUpPlace(city);
     if (!mounted) return;
+    if (lookup.status == PlaceStatus.notFound) {
+      setState(() {
+        saving = false;
+        whereError = 'We couldn’t find that place. Check the spelling, like Santa Fe, NM.';
+      });
+      return;
+    }
+    final point = lookup.point;
+    final place = (!handToSomeone && publicPlace && description.isNotEmpty) ? description : null;
     final model = context.model;
     model.passOn(widget.number,
         city: city,
@@ -154,13 +177,14 @@ class _PassOnScreenState extends State<PassOnScreen> {
                 onTap: () => setState(() => handToSomeone = false),
               ),
               const SizedBox(height: 20),
-              const FieldLabel('Where? *'),
+              const FieldLabel('Which city? *'),
               const SizedBox(height: 8),
               HerdField(
                 fieldKey: const Key('passWhere'),
                 controller: whereText,
-                hint: handToSomeone ? 'A city, like Santa Fe, NM' : 'A city and a public place, like a café',
-                onChanged: (_) => setState(() {}),
+                hint: 'City, State or Country, like Santa Fe, NM',
+                errorText: whereError,
+                onChanged: (_) => setState(() => whereError = null),
               ),
               const SizedBox(height: 6),
               Text('Please never use a home address. We only ever show a place name and city, never a street address.', style: HerdText.body(13)),
@@ -180,6 +204,17 @@ class _PassOnScreenState extends State<PassOnScreen> {
                       }),
               ),
               if (!handToSomeone) ...[
+                const SizedBox(height: 20),
+                const FieldLabel('Where in the city? (optional)'),
+                const SizedBox(height: 8),
+                HerdField(
+                  fieldKey: const Key('passPlace'),
+                  controller: placeText,
+                  hint: 'Like a café on the plaza, or a hostel lobby',
+                  maxLength: 60,
+                  errorText: placeError,
+                  onChanged: (_) => setState(() => placeError = null),
+                ),
                 const SizedBox(height: 20),
                 const FieldLabel('How exact should the map be?'),
                 const SizedBox(height: 10),
@@ -220,16 +255,34 @@ class _PassOnScreenState extends State<PassOnScreen> {
                 hint: 'Where did you go together? Who are you passing them to, and why?',
                 minLines: 4,
                 maxLines: 8,
+                maxLength: 500,
+                showCounter: true,
+                errorText: chapterError,
+                onChanged: (_) => setState(() => chapterError = null),
               ),
+              Text('Keep it kind and family-friendly. Chapters are checked, and The Herd takes a quick look.', style: HerdText.body(13)),
               if (c != null && !c.wishGranted) ...[const SizedBox(height: 20), _wishSection(c)],
               const SizedBox(height: 20),
               const FieldLabel('Your name or nickname *'),
               const SizedBox(height: 8),
-              HerdField(fieldKey: const Key('passNickname'), controller: nickname, hint: 'Shown on their page', onChanged: (_) => setState(() {})),
+              HerdField(
+                fieldKey: const Key('passNickname'),
+                controller: nickname,
+                hint: 'Shown on their page',
+                maxLength: 30,
+                errorText: nicknameError,
+                onChanged: (_) => setState(() => nicknameError = null),
+              ),
               const SizedBox(height: 20),
               const FieldLabel('Email (optional)'),
               const SizedBox(height: 8),
-              HerdField(controller: email, hint: 'you@email.com', keyboardType: TextInputType.emailAddress),
+              HerdField(
+                controller: email,
+                hint: 'you@email.com',
+                keyboardType: TextInputType.emailAddress,
+                errorText: emailError,
+                onChanged: (_) => setState(() => emailError = null),
+              ),
               const SizedBox(height: 6),
               Text('Optional. Your stamps are always saved in the app. Never shown publicly.', style: HerdText.body(13)),
               LabeledSwitch(label: 'Alert me each time #${widget.number} moves', value: alertMe, onChanged: (v) => setState(() => alertMe = v)),
@@ -273,8 +326,14 @@ class _PassOnScreenState extends State<PassOnScreen> {
           Text('A photo of the wish coming true *', style: HerdText.body(15, weight: FontWeight.w600, color: Herd.wishInk)),
           _photoBox(wishPhoto, 'Add the photo', Herd.gold, () async {
             final p = await Services.pickPhoto();
-            if (p != null && mounted) setState(() => wishPhoto = p);
+            if (p != null && mounted) {
+              setState(() {
+                wishPhoto = p;
+                wishPhotoError = null;
+              });
+            }
           }),
+          if (wishPhotoError != null) Text(wishPhotoError!, style: HerdText.body(13, color: const Color(0xFFB3261E))),
           Text('Required for the Wish Granted stamp. It’s added once we see your photo.', style: HerdText.body(13, color: Herd.butterInk)),
         ],
       ]);

@@ -4,6 +4,7 @@ import '../app_state.dart';
 import '../models.dart';
 import '../services.dart';
 import '../theme.dart';
+import '../validation.dart';
 import '../widgets/companion_figure.dart';
 import '../widgets/pieces.dart';
 
@@ -25,6 +26,9 @@ class _FoundScreenState extends State<FoundScreen> {
   bool done = false;
   bool locating = false;
   bool saving = false;
+  String? cityError;
+  String? nicknameError;
+  String? emailError;
 
   @override
   void didChangeDependencies() {
@@ -44,11 +48,25 @@ class _FoundScreenState extends State<FoundScreen> {
 
   Future<void> submit() async {
     FocusScope.of(context).unfocus();
+    final place = city.text.trim();
+    setState(() {
+      cityError = checkPlaceFormat(place);
+      nicknameError = checkNickname(nickname.text);
+      emailError = checkIn == CheckIn.email && !isEmail(email.text) ? 'Please enter a valid email, or choose another option.' : null;
+    });
+    if (cityError != null || nicknameError != null || emailError != null) return;
     setState(() => saving = true);
-    final point = await Services.pointFor(city.text.trim());
+    final lookup = await Services.lookUpPlace(place);
     if (!mounted) return;
+    if (lookup.status == PlaceStatus.notFound) {
+      setState(() {
+        saving = false;
+        cityError = 'We couldn’t find that place. Check the spelling, like Santa Fe, NM.';
+      });
+      return;
+    }
     context.model.logFind(widget.number,
-        city: city.text.trim(), nickname: nickname.text.trim(), checkIn: checkIn, email: checkIn == CheckIn.email ? email.text.trim() : null, point: point);
+        city: place, nickname: nickname.text.trim(), checkIn: checkIn, email: checkIn == CheckIn.email ? email.text.trim() : null, point: lookup.point);
     setState(() {
       saving = false;
       done = true;
@@ -84,8 +102,9 @@ class _FoundScreenState extends State<FoundScreen> {
         HerdField(
           fieldKey: const Key('foundCity'),
           controller: city,
-          hint: 'City, like Santa Fe, NM',
-          onChanged: (_) => setState(() {}),
+          hint: 'City, State or Country, like Santa Fe, NM',
+          errorText: cityError,
+          onChanged: (_) => setState(() => cityError = null),
           autofillHints: const [AutofillHints.addressCity],
         ),
         const SizedBox(height: 8),
@@ -110,7 +129,9 @@ class _FoundScreenState extends State<FoundScreen> {
             fieldKey: const Key('foundNickname'),
             controller: nickname,
             hint: 'Shown on their page',
-            onChanged: (_) => setState(() {}),
+            maxLength: 30,
+            errorText: nicknameError,
+            onChanged: (_) => setState(() => nicknameError = null),
             autofillHints: const [AutofillHints.nickname]),
         const SizedBox(height: 20),
         FieldLabel('Want $name to check in with you?'),
@@ -124,7 +145,13 @@ class _FoundScreenState extends State<FoundScreen> {
         ),
         const SizedBox(height: 10),
         if (checkIn == CheckIn.appAlert) Text('We’ll send one gentle app alert in about a month. Nothing else.', style: HerdText.body(13)),
-        if (checkIn == CheckIn.email) HerdField(controller: email, hint: 'you@email.com', keyboardType: TextInputType.emailAddress),
+        if (checkIn == CheckIn.email)
+          HerdField(
+              controller: email,
+              hint: 'you@email.com',
+              keyboardType: TextInputType.emailAddress,
+              errorText: emailError,
+              onChanged: (_) => setState(() => emailError = null)),
         if (checkIn != CheckIn.none) ...[
           LabeledSwitch(label: 'Also tell me where #${widget.number} goes after me', value: alsoTellMe, onChanged: (v) => setState(() => alsoTellMe = v)),
           Text('Never shown publicly. Never shared.', style: HerdText.body(13)),
