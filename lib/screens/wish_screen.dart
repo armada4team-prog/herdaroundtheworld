@@ -127,7 +127,7 @@ class _WishScreenState extends State<WishScreen> {
             Text(tr(customError!), style: HerdText.body(13, color: const Color(0xFFB3261E))),
           ],
           const SizedBox(height: 6),
-          Text(tr('Keep it kind, safe and doable. Wishes are checked automatically, then The Herd gives them a quick look. Until it’s approved, their page shows a wish from the list.'),
+          Text(tr('Keep it kind, safe and doable. Wishes are checked automatically, and The Herd takes a quick look.'),
               style: HerdText.body(13)),
           const SizedBox(height: 16),
           HerdCard(children: [
@@ -138,15 +138,14 @@ class _WishScreenState extends State<WishScreen> {
           const SizedBox(height: 18),
           HerdButton('Set their next wish →', onPressed: () {
             if (custom.text.trim().isNotEmpty) {
-              final error = checkPublicText(custom.text, maxLength: 50);
+              final error = checkWish(custom.text);
               if (error != null) {
                 setState(() => customError = error);
                 return;
               }
             }
-            // List wishes go live right away. A custom wish waits for The Herd's approval,
-            // so the selected list wish shows on their page until then.
-            model.setNextWish(widget.number, pick);
+            // The wish they typed (or picked) goes on the Companion's page.
+            model.setNextWish(widget.number, chosen);
             context.router.replaceTop(SentRoute(widget.number));
           }),
         ],

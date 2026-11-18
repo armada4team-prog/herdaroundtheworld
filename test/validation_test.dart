@@ -54,4 +54,17 @@ void main() {
     expect(checkNickname('12345'), isNotNull);
     expect(checkNickname('Sh1thead'), isNotNull);
   });
+
+  test('wishes must be kind and safe, and self-harm gets a gentle note', () {
+    expect(checkWish('ride a train'), isNull);
+    expect(checkWish('see the Dead Sea'), isNull);
+    expect(checkWish('meet a dog'), isNull);
+    expect(checkWish('die'), isNotNull);
+    expect(checkWish('d1e'), isNotNull);
+    expect(checkWish('kill a bear'), isNotNull);
+    expect(checkWish('die'), selfHarmMessage);
+    expect(checkWish('Die.'), selfHarmMessage);
+    expect(checkPublicText('I want to die'), selfHarmMessage);
+    expect(checkPublicText('We laughed so hard today'), isNull);
+  });
 }

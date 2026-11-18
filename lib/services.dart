@@ -17,6 +17,7 @@ class Services {
   /// "Use my city": asks once for location, then turns it into a city name only (never a street address).
   /// On the web preview only (never in the phone apps), pretend to be here so screens can be checked.
   static HerePlace? previewHere;
+  static HerePlace? _lastHere; // the last city found, reused nearby
 
   /// Where the phone is right now, as a city ("Aurora, CO") and a map point. Finds and pass-ons
   /// use this instead of a typed place, so nobody can log a Companion somewhere they aren't.
@@ -28,20 +29,47 @@ class Services {
       if (permission == LocationPermission.denied) permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.deniedForever) return const HereResult(problem: HereProblem.blocked);
       if (permission == LocationPermission.denied) return const HereResult(problem: HereProblem.notAllowed);
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium, timeLimit: Duration(seconds: 20)),
-      );
+      // A fresh position, or one the phone found in the last few minutes (much faster indoors).
+      Position? position;
+      try {
+        position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(accuracy: LocationAccuracy.low, timeLimit: Duration(seconds: 25)),
+        );
+      } catch (_) {
+        final last = await Geolocator.getLastKnownPosition();
+        if (last != null && DateTime.now().difference(last.timestamp) < const Duration(minutes: 30)) position = last;
+      }
+      if (position == null) return const HereResult(problem: HereProblem.unavailable);
       // Apps that fake your location are turned away.
       if (position.isMocked) return const HereResult(problem: HereProblem.faked);
-      final places = await Geocoding().placemarkFromCoordinates(position.latitude, position.longitude);
-      if (places.isEmpty) return const HereResult(problem: HereProblem.unavailable);
+      final point = LatLng(position.latitude, position.longitude);
+
+      // Same area as last time? Reuse the city name instead of asking the map service again
+      // (it can refuse quick repeat requests).
+      final cached = _lastHere;
+      if (cached != null && const Distance().as(LengthUnit.Kilometer, cached.point, point) < 5) {
+        return HereResult(place: HerePlace(cached.city, point));
+      }
+      List<Placemark> places;
+      try {
+        places = await Geocoding().placemarkFromCoordinates(position.latitude, position.longitude).timeout(const Duration(seconds: 12));
+      } catch (_) {
+        places = const [];
+      }
+      if (places.isEmpty) {
+        if (cached != null && const Distance().as(LengthUnit.Kilometer, cached.point, point) < 30) {
+          return HereResult(place: HerePlace(cached.city, point));
+        }
+        return const HereResult(problem: HereProblem.unavailable);
+      }
       final p = places.first;
       final city =
           <String?>[p.locality, p.subAdministrativeArea, p.name].firstWhere((s) => s != null && s.isNotEmpty, orElse: () => '') ?? '';
       final region = p.isoCountryCode == 'US' ? (p.administrativeArea ?? '') : (p.country ?? '');
       final label = [city, region].where((s) => s.isNotEmpty).join(', ');
       if (label.isEmpty) return const HereResult(problem: HereProblem.unavailable);
-      return HereResult(place: HerePlace(label, LatLng(position.latitude, position.longitude)));
+      _lastHere = HerePlace(label, point);
+      return HereResult(place: _lastHere);
     } catch (_) {
       return const HereResult(problem: HereProblem.unavailable);
     }

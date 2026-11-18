@@ -29,14 +29,48 @@ const _blockedWords = <String>{
 
 /// Word starts that are blocked (catches slurs and their variants).
 const _blockedStarts = <String>[
-  'fuck', 'shit', 'bitch', 'cunt', 'whore', 'slut', 'motherf', 'nigg', 'nigga', 'niga', 'fagg', 'faggot', 'retard',
-  'spic', 'chink', 'kike', 'wetback', 'tranny', 'dyke', 'gook', 'beaner', 'raghead', 'towelhead', 'coon',
-  'pornh', 'xxx', 'dickh', 'cocks', 'pussi', 'asshol',
+  'fuck',
+  'shit',
+  'bitch',
+  'cunt',
+  'whore',
+  'slut',
+  'motherf',
+  'nigg',
+  'nigga',
+  'niga',
+  'fagg',
+  'faggot',
+  'retard',
+  'spic',
+  'chink',
+  'kike',
+  'wetback',
+  'tranny',
+  'dyke',
+  'gook',
+  'beaner',
+  'raghead',
+  'towelhead',
+  'coon',
+  'pornh',
+  'xxx',
+  'dickh',
+  'cocks',
+  'pussi',
+  'asshol',
 ];
 
 /// Phrases that are blocked anywhere in the text.
 const _blockedPhrases = <String>[
-  'kill yourself', 'kill your self', 'kill myself', 'go die', 'hope you die', 'blow job', 'hand job', 'son of a bitch',
+  'kill yourself',
+  'kill your self',
+  'kill myself',
+  'go die',
+  'hope you die',
+  'blow job',
+  'hand job',
+  'son of a bitch',
 ];
 
 const _leet = {'0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't', '8': 'b', '@': 'a', r'$': 's', '!': 'i', '|': 'l', '+': 't'};
@@ -98,9 +132,89 @@ final _phone = RegExp(r'\+?\d[\d\s().-]{7,}\d');
 String? checkPublicText(String text, {int? maxLength}) {
   final t = text.trim();
   if (maxLength != null && t.length > maxLength) return 'Please keep it under $maxLength characters.';
+  if (mentionsSelfHarm(t)) return selfHarmMessage;
   if (containsBlockedLanguage(t)) return 'Please keep it kind. Some words aren’t allowed here.';
   if (_link.hasMatch(t)) return 'Links can’t be added here.';
   if (_email.hasMatch(t) || _phone.hasMatch(t)) return 'Please don’t share phone numbers, emails or addresses.';
+  return null;
+}
+
+// Words about hurting yourself. Anywhere in the app, these get a gentle message with where to find help.
+const _selfHarmPhrases = <String>[
+  'want to die',
+  'wanna die',
+  'wish i was dead',
+  'wish i were dead',
+  'kill myself',
+  'kill my self',
+  'end my life',
+  'take my life',
+  'suicide',
+  'suicidal',
+  'hurt myself',
+  'harm myself',
+  'cut myself',
+  'self harm',
+  'not be alive',
+];
+
+// Wishes are read by kids too, so they get a stricter list of words about harm or danger.
+const _harmfulWishWords = <String>{
+  'die',
+  'dies',
+  'dying',
+  'kill',
+  'kills',
+  'killing',
+  'murder',
+  'suicide',
+  'suicidal',
+  'hurt',
+  'harm',
+  'shoot',
+  'stab',
+  'bomb',
+  'gun',
+  'guns',
+  'weapon',
+  'weapons',
+  'poison',
+  'overdose',
+  'drug',
+  'drugs',
+  'steal',
+  'rob',
+  'punch',
+  'fight',
+  'beat',
+  'drown',
+  'hang',
+  'blood',
+  'torture',
+  'attack',
+};
+
+const selfHarmMessage =
+    'Please choose different words. If you’re going through a hard time, you’re not alone: in the US you can call or text 988 any time to talk to someone.';
+
+/// Lowercase words with look-alike characters fixed ("k1ll" → "kill").
+String _spacedWords(String text) => ' ${_clean(text).replaceAll(RegExp(r'[^a-z ]+'), ' ').replaceAll(RegExp(r'\s+'), ' ').trim()} ';
+
+bool mentionsSelfHarm(String text) {
+  final spaced = _spacedWords(text);
+  return _selfHarmPhrases.any((p) => spaced.contains(' $p '));
+}
+
+/// A wish for a Companion: short, kind, and safe ("I want to … die" is turned away with a note to reword it).
+String? checkWish(String text) {
+  // The box only holds what comes after "I want to", so check the whole sentence.
+  if (mentionsSelfHarm('I want to $text')) return selfHarmMessage;
+  final general = checkPublicText(text, maxLength: 50);
+  if (general != null) return general;
+  final words = _spacedWords(text).trim().split(' ');
+  if (words.any((w) => _harmfulWishWords.contains(w) || _harmfulWishWords.contains(_squash(w)))) {
+    return 'Wishes need to be kind and safe for the Companion and the next traveler. Please try different words.';
+  }
   return null;
 }
 
@@ -136,7 +250,10 @@ bool isEmail(String text) => RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]{2,}$').hasMatch(t
 String? checkPlaceDescription(String text) {
   final t = text.trim();
   if (t.isEmpty) return null;
-  if (RegExp(r'\d+\s+\w+\s+(st|street|ave|avenue|rd|road|blvd|boulevard|ln|lane|dr|drive|way|ct|court|pl|place)\b', caseSensitive: false).hasMatch(t)) {
+  if (RegExp(
+    r'\d+\s+\w+\s+(st|street|ave|avenue|rd|road|blvd|boulevard|ln|lane|dr|drive|way|ct|court|pl|place)\b',
+    caseSensitive: false,
+  ).hasMatch(t)) {
     return 'Please describe the spot instead of giving a street address.';
   }
   return checkPublicText(t, maxLength: 60);

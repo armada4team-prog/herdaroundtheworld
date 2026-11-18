@@ -37,6 +37,8 @@ void main() {
     expect(model.stamps.length, stampsBefore + 2);
     model.setNextWish('07', 'I want to meet a dog.');
     expect(c.wish, 'meet a dog');
+    model.setNextWish('07', 'I want to see the northern lights.');
+    expect(c.wish, 'see the northern lights', reason: 'a typed wish is kept as typed');
   });
 
   test('a Companion goes found, left, found, left: never left twice in a row', () {
