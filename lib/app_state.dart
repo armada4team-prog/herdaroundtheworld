@@ -141,7 +141,13 @@ class AppModel extends ChangeNotifier {
 
   void changed() => notifyListeners();
 
+  /// A Companion's journey always goes found → left → found → left. You can only log a find
+  /// for a Companion you aren't already holding, and only pass on one you've logged finding.
+  bool canLogFind(String number) => !holding.contains(number);
+  bool canPassOn(String number) => holding.contains(number);
+
   void logFind(String number, {required String city, required String nickname, required CheckIn checkIn, String? email, LatLng? point}) {
+    if (!canLogFind(number)) return;
     this.nickname = nickname;
     if (email != null && email.isNotEmpty) this.email = email;
     holding.add(number);
@@ -182,6 +188,7 @@ class AppModel extends ChangeNotifier {
       required String nickname,
       required bool grantedWish,
       LatLng? point}) {
+    if (!canPassOn(number)) return;
     if (nickname.isNotEmpty) this.nickname = nickname;
     holding.remove(number);
     final c = companion(number);

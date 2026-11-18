@@ -47,11 +47,13 @@ class _PassOnScreenState extends State<PassOnScreen> {
   String? nicknameError;
   String? emailError;
   String? wishPhotoError;
+  bool? needsFindFirst; // checked once when the screen opens
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (nickname.text.isEmpty) nickname.text = context.model.nickname;
+    needsFindFirst ??= !context.model.canPassOn(widget.number);
   }
 
   @override
@@ -95,14 +97,16 @@ class _PassOnScreenState extends State<PassOnScreen> {
     final point = lookup.point;
     final place = (!handToSomeone && publicPlace && description.isNotEmpty) ? description : null;
     final model = context.model;
-    model.passOn(widget.number,
-        city: city,
-        place: place,
-        handedToSomeone: handToSomeone,
-        chapter: chapter.text.trim(),
-        nickname: nickname.text.trim(),
-        grantedWish: grantedWish,
-        point: point);
+    model.passOn(
+      widget.number,
+      city: city,
+      place: place,
+      handedToSomeone: handToSomeone,
+      chapter: chapter.text.trim(),
+      nickname: nickname.text.trim(),
+      grantedWish: grantedWish,
+      point: point,
+    );
     if (alertMe) model.following.add(widget.number);
     if (email.text.trim().isNotEmpty) model.setEmail(email.text.trim());
     context.router.replaceTop(grantedWish ? WishRoute(widget.number) : SentRoute(widget.number));
@@ -125,239 +129,329 @@ class _PassOnScreenState extends State<PassOnScreen> {
     final name = c?.displayName ?? '#${widget.number}';
     return Scaffold(
       appBar: herdAppBar(title: 'Pass them on'),
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Stack(children: [
-          if (_samplePhotoForTests)
-            Positioned(
-              left: -1000,
-              child: RepaintBoundary(
-                key: sampleKey,
-                child: Container(
-                  width: 360,
-                  height: 260,
-                  decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Herd.butter, Herd.mintSoft])),
-                  alignment: Alignment.bottomCenter,
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: const CompanionFigure(glaze: Herd.mint, waving: true, happy: true, height: 150),
-                ),
+      body: needsFindFirst == true
+          ? OutOfOrderView(
+              companion: c,
+              title: 'Find {0} first'.replaceAll('{0}', name),
+              message: 'Every Companion’s journey goes found, then left, then found again. Log that you found {0} before you pass them on.'
+                  .replaceAll('{0}', name),
+              buttonLabel: 'I found them →',
+              onPressed: () => context.router.replaceTop(FoundRoute(widget.number)),
+            )
+          : GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: Stack(
+                children: [
+                  if (_samplePhotoForTests)
+                    Positioned(
+                      left: -1000,
+                      child: RepaintBoundary(
+                        key: sampleKey,
+                        child: Container(
+                          width: 360,
+                          height: 260,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [Herd.butter, Herd.mintSoft],
+                            ),
+                          ),
+                          alignment: Alignment.bottomCenter,
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: const CompanionFigure(glaze: Herd.mint, waving: true, happy: true, height: 150),
+                        ),
+                      ),
+                    ),
+                  ListView(
+                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: const EdgeInsets.all(20),
+                    children: [
+                      Eyebrow('Step 2 of 2 · Companion #${widget.number}'),
+                      const SizedBox(height: 4),
+                      Text(tr('Send $name on their way'), style: HerdText.script(40)),
+                      Text(tr('Thanks for traveling together. Tell us where they’re headed next.'), style: HerdText.body(16)),
+                      const SizedBox(height: 18),
+                      if (model.nickname.isNotEmpty && model.holding.contains(widget.number)) ...[
+                        HerdCard(
+                          color: Herd.mintSoft,
+                          children: [
+                            Text(
+                              tr('Welcome back, ${model.nickname}! We filled in your details from last time.'),
+                              style: HerdText.body(15, color: Herd.mintInk),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 18),
+                      ],
+                      const FieldLabel('How are you passing them on? *'),
+                      const SizedBox(height: 10),
+                      ChoiceCard(
+                        title: 'Handing them to someone',
+                        detail: 'Give them to a fellow traveler: a new friend, a host, someone heading somewhere fun.',
+                        badge: 'Most personal',
+                        selected: handToSomeone,
+                        onTap: () => setState(() {
+                          handToSomeone = true;
+                          publicPlace = false;
+                        }),
+                      ),
+                      const SizedBox(height: 10),
+                      ChoiceCard(
+                        title: 'Leaving them somewhere',
+                        detail: 'A café shelf, a hostel lobby, a little free library. Somewhere they’ll be found.',
+                        selected: !handToSomeone,
+                        onTap: () => setState(() => handToSomeone = false),
+                      ),
+                      const SizedBox(height: 20),
+                      const FieldLabel('Which city? *'),
+                      const SizedBox(height: 8),
+                      HerdField(
+                        fieldKey: const Key('passWhere'),
+                        controller: whereText,
+                        hint: 'City, State or Country, like Santa Fe, NM',
+                        errorText: whereError,
+                        onChanged: (_) => setState(() => whereError = null),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        tr('Please never use a home address. We only ever show a place name and city, never a street address.'),
+                        style: HerdText.body(13),
+                      ),
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: softChip(
+                          locating ? 'Finding your location…' : 'Use my location',
+                          Icons.near_me_outlined,
+                          locating
+                              ? null
+                              : () async {
+                                  setState(() => locating = true);
+                                  final found = await Services.currentCity();
+                                  if (!mounted) return;
+                                  setState(() {
+                                    if (found != null) whereText.text = found;
+                                    locating = false;
+                                  });
+                                },
+                        ),
+                      ),
+                      if (!handToSomeone) ...[
+                        const SizedBox(height: 20),
+                        const FieldLabel('Where in the city? (optional)'),
+                        const SizedBox(height: 8),
+                        HerdField(
+                          fieldKey: const Key('passPlace'),
+                          controller: placeText,
+                          hint: 'Like a café on the plaza, or a hostel lobby',
+                          maxLength: 60,
+                          errorText: placeError,
+                          onChanged: (_) => setState(() => placeError = null),
+                        ),
+                        const SizedBox(height: 20),
+                        const FieldLabel('How exact should the map be?'),
+                        const SizedBox(height: 10),
+                        ChoiceCard(
+                          title: 'Public place',
+                          detail: 'Shows the place name, like “café on the plaza, Santa Fe,” so the next person can find them.',
+                          selected: publicPlace,
+                          onTap: () => setState(() => publicPlace = true),
+                        ),
+                        const SizedBox(height: 10),
+                        ChoiceCard(
+                          title: 'Just the city',
+                          detail: 'Shows “Santa Fe, NM” only. Always used when you hand them to someone.',
+                          selected: !publicPlace,
+                          onTap: () => setState(() => publicPlace = false),
+                        ),
+                      ],
+                      const SizedBox(height: 20),
+                      const FieldLabel('Add a photo (optional)'),
+                      const SizedBox(height: 8),
+                      _photoBox(photo, 'A photo from your time together, or their new spot', Herd.stepDot, () async {
+                        final p = await Services.pickPhoto();
+                        if (p != null && mounted) setState(() => photo = p);
+                      }),
+                      const SizedBox(height: 8),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.lock_outline, size: 16, color: Herd.sageDark),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              tr('We remove the hidden location data from photos, so only the spot you choose above is shared.'),
+                              style: HerdText.body(13),
+                            ),
+                          ),
+                        ],
+                      ),
+                      LabeledSwitch(
+                        label: 'It’s OK for The Herd to share my photo on their website and Instagram, with credit.',
+                        value: shareOK,
+                        onChanged: (v) => setState(() => shareOK = v),
+                      ),
+                      const SizedBox(height: 16),
+                      const FieldLabel('Add your chapter to their story'),
+                      const SizedBox(height: 8),
+                      HerdField(
+                        fieldKey: const Key('passChapter'),
+                        controller: chapter,
+                        hint: 'Where did you go together? Who are you passing them to, and why?',
+                        minLines: 4,
+                        maxLines: 8,
+                        maxLength: 500,
+                        showCounter: true,
+                        errorText: chapterError,
+                        onChanged: (_) => setState(() => chapterError = null),
+                      ),
+                      Text(
+                        tr('Keep it kind and family-friendly. Chapters are checked, and The Herd takes a quick look.'),
+                        style: HerdText.body(13),
+                      ),
+                      if (c != null && !c.wishGranted) ...[const SizedBox(height: 20), _wishSection(c)],
+                      const SizedBox(height: 20),
+                      const FieldLabel('Your name or nickname *'),
+                      const SizedBox(height: 8),
+                      HerdField(
+                        fieldKey: const Key('passNickname'),
+                        controller: nickname,
+                        hint: 'Shown on their page',
+                        maxLength: 30,
+                        errorText: nicknameError,
+                        onChanged: (_) => setState(() => nicknameError = null),
+                      ),
+                      const SizedBox(height: 20),
+                      const FieldLabel('Email (optional)'),
+                      const SizedBox(height: 8),
+                      HerdField(
+                        controller: email,
+                        hint: 'you@email.com',
+                        keyboardType: TextInputType.emailAddress,
+                        errorText: emailError,
+                        onChanged: (_) => setState(() => emailError = null),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(tr('Optional. Your stamps are always saved in the app. Never shown publicly.'), style: HerdText.body(13)),
+                      LabeledSwitch(
+                        label: 'Alert me each time #${widget.number} moves',
+                        value: alertMe,
+                        onChanged: (v) => setState(() => alertMe = v),
+                      ),
+                      const SizedBox(height: 12),
+                      HerdCard(
+                        color: Herd.pinkSoft,
+                        children: [
+                          Text(
+                            tr(
+                              'Your sighting shows up right away. Photos and new wishes appear after a quick look, usually within a few days. Your new stamps appear in your Passport after that review.',
+                            ),
+                            style: HerdText.body(14, color: Herd.pinkInk),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      HerdButton(saving ? 'Sending…' : 'Send them on their way →', onPressed: canSubmit ? submit : null),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ListView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: const EdgeInsets.all(20),
-            children: [
-              Eyebrow('Step 2 of 2 · Companion #${widget.number}'),
-              const SizedBox(height: 4),
-              Text(tr('Send $name on their way'), style: HerdText.script(40)),
-              Text(tr('Thanks for traveling together. Tell us where they’re headed next.'), style: HerdText.body(16)),
-              const SizedBox(height: 18),
-              if (model.nickname.isNotEmpty && model.holding.contains(widget.number)) ...[
-                HerdCard(color: Herd.mintSoft, children: [
-                  Text(tr('Welcome back, ${model.nickname}! We filled in your details from last time.'), style: HerdText.body(15, color: Herd.mintInk)),
-                ]),
-                const SizedBox(height: 18),
-              ],
-              const FieldLabel('How are you passing them on? *'),
-              const SizedBox(height: 10),
-              ChoiceCard(
-                title: 'Handing them to someone',
-                detail: 'Give them to a fellow traveler: a new friend, a host, someone heading somewhere fun.',
-                badge: 'Most personal',
-                selected: handToSomeone,
-                onTap: () => setState(() {
-                  handToSomeone = true;
-                  publicPlace = false;
-                }),
-              ),
-              const SizedBox(height: 10),
-              ChoiceCard(
-                title: 'Leaving them somewhere',
-                detail: 'A café shelf, a hostel lobby, a little free library. Somewhere they’ll be found.',
-                selected: !handToSomeone,
-                onTap: () => setState(() => handToSomeone = false),
-              ),
-              const SizedBox(height: 20),
-              const FieldLabel('Which city? *'),
-              const SizedBox(height: 8),
-              HerdField(
-                fieldKey: const Key('passWhere'),
-                controller: whereText,
-                hint: 'City, State or Country, like Santa Fe, NM',
-                errorText: whereError,
-                onChanged: (_) => setState(() => whereError = null),
-              ),
-              const SizedBox(height: 6),
-              Text(tr('Please never use a home address. We only ever show a place name and city, never a street address.'), style: HerdText.body(13)),
-              const SizedBox(height: 8),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: softChip(locating ? 'Finding your location…' : 'Use my location', Icons.near_me_outlined, locating
-                    ? null
-                    : () async {
-                        setState(() => locating = true);
-                        final found = await Services.currentCity();
-                        if (!mounted) return;
-                        setState(() {
-                          if (found != null) whereText.text = found;
-                          locating = false;
-                        });
-                      }),
-              ),
-              if (!handToSomeone) ...[
-                const SizedBox(height: 20),
-                const FieldLabel('Where in the city? (optional)'),
-                const SizedBox(height: 8),
-                HerdField(
-                  fieldKey: const Key('passPlace'),
-                  controller: placeText,
-                  hint: 'Like a café on the plaza, or a hostel lobby',
-                  maxLength: 60,
-                  errorText: placeError,
-                  onChanged: (_) => setState(() => placeError = null),
-                ),
-                const SizedBox(height: 20),
-                const FieldLabel('How exact should the map be?'),
-                const SizedBox(height: 10),
-                ChoiceCard(
-                  title: 'Public place',
-                  detail: 'Shows the place name, like “café on the plaza, Santa Fe,” so the next person can find them.',
-                  selected: publicPlace,
-                  onTap: () => setState(() => publicPlace = true),
-                ),
-                const SizedBox(height: 10),
-                ChoiceCard(
-                  title: 'Just the city',
-                  detail: 'Shows “Santa Fe, NM” only. Always used when you hand them to someone.',
-                  selected: !publicPlace,
-                  onTap: () => setState(() => publicPlace = false),
-                ),
-              ],
-              const SizedBox(height: 20),
-              const FieldLabel('Add a photo (optional)'),
-              const SizedBox(height: 8),
-              _photoBox(photo, 'A photo from your time together, or their new spot', Herd.stepDot, () async {
-                final p = await Services.pickPhoto();
-                if (p != null && mounted) setState(() => photo = p);
-              }),
-              const SizedBox(height: 8),
-              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Icon(Icons.lock_outline, size: 16, color: Herd.sageDark),
-                const SizedBox(width: 8),
-                Expanded(child: Text(tr('We remove the hidden location data from photos, so only the spot you choose above is shared.'), style: HerdText.body(13))),
-              ]),
-              LabeledSwitch(label: 'It’s OK for The Herd to share my photo on their website and Instagram, with credit.', value: shareOK, onChanged: (v) => setState(() => shareOK = v)),
-              const SizedBox(height: 16),
-              const FieldLabel('Add your chapter to their story'),
-              const SizedBox(height: 8),
-              HerdField(
-                fieldKey: const Key('passChapter'),
-                controller: chapter,
-                hint: 'Where did you go together? Who are you passing them to, and why?',
-                minLines: 4,
-                maxLines: 8,
-                maxLength: 500,
-                showCounter: true,
-                errorText: chapterError,
-                onChanged: (_) => setState(() => chapterError = null),
-              ),
-              Text(tr('Keep it kind and family-friendly. Chapters are checked, and The Herd takes a quick look.'), style: HerdText.body(13)),
-              if (c != null && !c.wishGranted) ...[const SizedBox(height: 20), _wishSection(c)],
-              const SizedBox(height: 20),
-              const FieldLabel('Your name or nickname *'),
-              const SizedBox(height: 8),
-              HerdField(
-                fieldKey: const Key('passNickname'),
-                controller: nickname,
-                hint: 'Shown on their page',
-                maxLength: 30,
-                errorText: nicknameError,
-                onChanged: (_) => setState(() => nicknameError = null),
-              ),
-              const SizedBox(height: 20),
-              const FieldLabel('Email (optional)'),
-              const SizedBox(height: 8),
-              HerdField(
-                controller: email,
-                hint: 'you@email.com',
-                keyboardType: TextInputType.emailAddress,
-                errorText: emailError,
-                onChanged: (_) => setState(() => emailError = null),
-              ),
-              const SizedBox(height: 6),
-              Text(tr('Optional. Your stamps are always saved in the app. Never shown publicly.'), style: HerdText.body(13)),
-              LabeledSwitch(label: 'Alert me each time #${widget.number} moves', value: alertMe, onChanged: (v) => setState(() => alertMe = v)),
-              const SizedBox(height: 12),
-              HerdCard(color: Herd.pinkSoft, children: [
-                Text(
-                  tr('Your sighting shows up right away. Photos and new wishes appear after a quick look, usually within a few days. Your new stamps appear in your Passport after that review.'),
-                  style: HerdText.body(14, color: Herd.pinkInk),
-                ),
-              ]),
-              const SizedBox(height: 18),
-              HerdButton(saving ? 'Sending…' : 'Send them on their way →', onPressed: canSubmit ? submit : null),
-            ],
-          ),
-        ]),
-      ),
     );
   }
 
-  Widget _wishSection(Companion c) => HerdCard(color: Herd.butter, padding: 16, radius: 18, spacing: 10, children: [
-        Row(children: [
+  Widget _wishSection(Companion c) => HerdCard(
+    color: Herd.butter,
+    padding: 16,
+    radius: 18,
+    spacing: 10,
+    children: [
+      Row(
+        children: [
           const Icon(Icons.star_rounded, color: Herd.gold),
           const SizedBox(width: 8),
-          Text(tr('Did you grant their wish?'), style: HerdText.body(16, weight: FontWeight.w600, color: Herd.wishInk)),
-        ]),
-        Text(tr('“${c.wishSentence}”'), style: HerdText.script(24, color: Herd.wishInk)),
-        ChoiceCard(
-          title: 'Yes, we did it!',
-          detail: 'Add a photo of the moment below. You’ll choose their next wish and earn a Wish Granted stamp.',
-          selected: grantedWish,
-          onTap: () async {
-            setState(() => grantedWish = true);
-            if (_samplePhotoForTests && wishPhoto == null) {
-              final sample = await _renderSamplePhoto();
-              if (mounted) setState(() => wishPhoto = sample);
-            }
-          },
-        ),
-        ChoiceCard(title: 'Not this time', detail: 'That’s okay. The next traveler can try.', selected: !grantedWish, onTap: () => setState(() => grantedWish = false)),
-        if (grantedWish) ...[
-          Text(tr('A photo of the wish coming true *'), style: HerdText.body(15, weight: FontWeight.w600, color: Herd.wishInk)),
-          _photoBox(wishPhoto, 'Add the photo', Herd.gold, () async {
-            final p = await Services.pickPhoto();
-            if (p != null && mounted) {
-              setState(() {
-                wishPhoto = p;
-                wishPhotoError = null;
-              });
-            }
-          }),
-          if (wishPhotoError != null) Text(tr(wishPhotoError!), style: HerdText.body(13, color: const Color(0xFFB3261E))),
-          Text(tr('Required for the Wish Granted stamp. It’s added once we see your photo.'), style: HerdText.body(13, color: Herd.butterInk)),
+          Text(
+            tr('Did you grant their wish?'),
+            style: HerdText.body(16, weight: FontWeight.w600, color: Herd.wishInk),
+          ),
         ],
-      ]);
+      ),
+      Text(tr('“${c.wishSentence}”'), style: HerdText.script(24, color: Herd.wishInk)),
+      ChoiceCard(
+        title: 'Yes, we did it!',
+        detail: 'Add a photo of the moment below. You’ll choose their next wish and earn a Wish Granted stamp.',
+        selected: grantedWish,
+        onTap: () async {
+          setState(() => grantedWish = true);
+          if (_samplePhotoForTests && wishPhoto == null) {
+            final sample = await _renderSamplePhoto();
+            if (mounted) setState(() => wishPhoto = sample);
+          }
+        },
+      ),
+      ChoiceCard(
+        title: 'Not this time',
+        detail: 'That’s okay. The next traveler can try.',
+        selected: !grantedWish,
+        onTap: () => setState(() => grantedWish = false),
+      ),
+      if (grantedWish) ...[
+        Text(
+          tr('A photo of the wish coming true *'),
+          style: HerdText.body(15, weight: FontWeight.w600, color: Herd.wishInk),
+        ),
+        _photoBox(wishPhoto, 'Add the photo', Herd.gold, () async {
+          final p = await Services.pickPhoto();
+          if (p != null && mounted) {
+            setState(() {
+              wishPhoto = p;
+              wishPhotoError = null;
+            });
+          }
+        }),
+        if (wishPhotoError != null) Text(tr(wishPhotoError!), style: HerdText.body(13, color: const Color(0xFFB3261E))),
+        Text(
+          tr('Required for the Wish Granted stamp. It’s added once we see your photo.'),
+          style: HerdText.body(13, color: Herd.butterInk),
+        ),
+      ],
+    ],
+  );
 
   Widget _photoBox(Uint8List? bytes, String prompt, Color tint, VoidCallback onTap) => Semantics(
-        button: true,
-        label: tr(bytes == null ? prompt : 'Photo added. Tap to change it.'),
-        excludeSemantics: true,
-        child: GestureDetector(
-          onTap: onTap,
-          child: Container(
-            height: bytes == null ? 120 : 200,
-            width: double.infinity,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(color: Herd.beige, borderRadius: BorderRadius.circular(16), border: Border.all(color: tint, width: 2)),
-            child: bytes != null
-                ? Image.memory(bytes, fit: BoxFit.cover)
-                : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const Icon(Icons.photo_camera_outlined, color: Herd.ink, size: 26),
-                    const SizedBox(height: 6),
-                    Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text(tr(prompt), textAlign: TextAlign.center, style: HerdText.body(14, color: Herd.ink))),
-                  ]),
-          ),
+    button: true,
+    label: tr(bytes == null ? prompt : 'Photo added. Tap to change it.'),
+    excludeSemantics: true,
+    child: GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: bytes == null ? 120 : 200,
+        width: double.infinity,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: Herd.beige,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: tint, width: 2),
         ),
-      );
+        child: bytes != null
+            ? Image.memory(bytes, fit: BoxFit.cover)
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.photo_camera_outlined, color: Herd.ink, size: 26),
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      tr(prompt),
+                      textAlign: TextAlign.center,
+                      style: HerdText.body(14, color: Herd.ink),
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    ),
+  );
 }

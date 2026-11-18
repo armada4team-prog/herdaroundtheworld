@@ -6,6 +6,7 @@ import '../l10n.dart';
 
 import '../models.dart';
 import '../theme.dart';
+import 'companion_figure.dart';
 
 /// A Passport stamp: round, slightly tilted, with a big word and a small word.
 class StampView extends StatelessWidget {
@@ -256,6 +257,28 @@ class ChoiceCard extends StatelessWidget {
 }
 
 /// Placeholder for traveler photos (until real photos come from the server).
+/// Shown instead of a form when a step is out of order (found → left → found → left).
+class OutOfOrderView extends StatelessWidget {
+  const OutOfOrderView({super.key, required this.companion, required this.title, required this.message, required this.buttonLabel, required this.onPressed});
+  final Companion? companion;
+  final String title;
+  final String message;
+  final String buttonLabel;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => ListView(padding: const EdgeInsets.all(24), children: [
+        const SizedBox(height: 24),
+        if (companion != null) Center(child: CompanionBadge(companion: companion!, size: 96)),
+        const SizedBox(height: 20),
+        Text(tr(title), textAlign: TextAlign.center, style: HerdText.script(34)),
+        const SizedBox(height: 10),
+        Text(tr(message), textAlign: TextAlign.center, style: HerdText.body(16, color: Herd.ink)),
+        const SizedBox(height: 24),
+        HerdButton(buttonLabel, onPressed: onPressed),
+      ]);
+}
+
 class PhotoPlaceholder extends StatelessWidget {
   const PhotoPlaceholder({super.key, this.label = 'Traveler’s photo', this.color = Herd.sageBackground, this.height = 120});
   final String label;

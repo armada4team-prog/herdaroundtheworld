@@ -30,6 +30,23 @@ void main() {
     expect(c.wish, 'meet a dog');
   });
 
+  test('a Companion goes found, left, found, left: never left twice in a row', () {
+    final model = AppModel();
+    final c = model.companion('07')!;
+    final stopsBefore = c.stops.length;
+    expect(model.canPassOn('07'), isFalse);
+    model.passOn('07', city: 'Boulder, CO', handedToSomeone: false, chapter: '', nickname: 'Sam', grantedWish: false);
+    expect(c.stops.length, stopsBefore, reason: 'cannot leave before finding');
+    model.logFind('07', city: 'Denver, CO', nickname: 'Sam', checkIn: CheckIn.none);
+    expect(model.canLogFind('07'), isFalse);
+    model.logFind('07', city: 'Denver, CO', nickname: 'Sam', checkIn: CheckIn.none);
+    expect(c.stops.length, stopsBefore + 1, reason: 'cannot find twice in a row');
+    model.passOn('07', city: 'Boulder, CO', handedToSomeone: false, chapter: '', nickname: 'Sam', grantedWish: false);
+    model.passOn('07', city: 'Golden, CO', handedToSomeone: false, chapter: '', nickname: 'Sam', grantedWish: false);
+    expect(c.stops.length, stopsBefore + 2, reason: 'cannot leave twice in a row');
+    expect(model.canLogFind('07'), isTrue);
+  });
+
   testWidgets('opens on the welcome screen and comes in', (tester) async {
     await tester.pumpWidget(const HerdApp());
     await tester.pump(const Duration(milliseconds: 300));

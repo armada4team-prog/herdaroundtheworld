@@ -94,6 +94,7 @@ class _HerdAppState extends State<HerdApp> {
       case 'found':
         router.open(const FoundRoute('07'), inTab: AppTab.home);
       case 'passon':
+        model.holding.add('07'); // preview as someone who has found #07
         router.open(const PassOnRoute('07'), inTab: AppTab.home);
       case 'wish':
         router.open(const WishRoute('07'), inTab: AppTab.home);
