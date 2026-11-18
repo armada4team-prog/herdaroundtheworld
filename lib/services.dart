@@ -15,6 +15,20 @@ import 'theme.dart';
 /// Location, photos and links, working the same way on Android and iPhone.
 class Services {
   /// "Use my city": asks once for location, then turns it into a city name only (never a street address).
+  /// Where the phone is, roughly (city level). Null if location is off or not allowed.
+  static Future<LatLng?> currentPoint() async {
+    try {
+      if (!await Geolocator.isLocationServiceEnabled()) return null;
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) return null;
+      final position = await Geolocator.getCurrentPosition(locationSettings: const LocationSettings(accuracy: LocationAccuracy.low));
+      return LatLng(position.latitude, position.longitude);
+    } catch (_) {
+      return null;
+    }
+  }
+
   static Future<String?> currentCity() async {
     try {
       if (!await Geolocator.isLocationServiceEnabled()) return null;

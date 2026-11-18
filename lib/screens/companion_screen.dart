@@ -67,7 +67,7 @@ class _CompanionScreenState extends State<CompanionScreen> {
                         spacing: 8,
                         children: [
                           CircleIconButton(
-                            icon: Icons.more_horiz,
+                            icon: Icons.share_outlined,
                             label: 'Share',
                             size: 40,
                             onTap: () => SharePlus.instance.share(

@@ -64,7 +64,8 @@ void main() {
     expect(model.tryFindCode('07', 'AAAA' == findCodeFor('07') ? 'CCCC' : 'AAAA'), CodeCheck.wrong);
     expect(model.hasFindCode('07'), isFalse);
     final code = findCodeFor('07');
-    expect(code.length, 4);
+    expect(code, 'KCVT', reason: 'the code the studio was given for #07');
+    expect(model.companion('7')!.number, '07', reason: 'typing 7 finds #07');
     expect(findCodeFor('7'), code, reason: '07 and 7 are the same Companion');
     expect(findCodeFor('08'), isNot(code));
     expect(model.tryFindCode('07', ' ${code.toLowerCase()} '), CodeCheck.right);

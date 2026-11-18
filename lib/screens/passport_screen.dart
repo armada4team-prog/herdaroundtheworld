@@ -24,7 +24,7 @@ class PassportScreen extends StatelessWidget {
               const Wordmark(),
               const Spacer(),
               CircleIconButton(
-                icon: Icons.more_horiz,
+                icon: Icons.share_outlined,
                 label: 'Share',
                 size: 40,
                 onTap: () => SharePlus.instance.share(ShareParams(
