@@ -23,8 +23,9 @@ preview, the "Where are you?" box also offers test spots (Aurora, Denver and Bou
 5-mile rule can be tried from a computer. Sample find codes: #07 = `KCVT`, #3 = `MHE6`, #12 = `TH3M`.
 Try a QR link like <http://localhost:8000/website/index.html?preview=1#/c/07?k=KCVT>.
 
-Without `?preview=1` the site tries the live Wix data first and falls back to preview by itself
-when it can't reach it.
+Without `?preview=1` the site uses the live Wix data only when it can read the lists *and* The
+Herd's checker answers (`herdMine`); otherwise (for example before the Wix site is published) it
+falls back to preview by itself, so it never sends finds to a checker that isn't there yet.
 
 ## Pages
 

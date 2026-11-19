@@ -69,12 +69,18 @@ The earlier iPhone-only SwiftUI version is kept on the `swiftui-version` branch.
 
 ## Test data vs. real data
 
-Right now the app runs on **sample data** (the journeys from the designs) and keeps anything you
-do in memory until the app closes. That’s enough to try every screen and show people the idea.
+The app shares The Herd's Wix site with the website (`lib/wix_api.dart`, the same calls as
+`website/js/data.js`). When it opens, it asks The Herd's checker (`herdMine`) whether it's there:
 
-To make it live, everything goes through `AppModel`: replace `sampleCompanions()` with data loaded
-from The Herd’s database, and send `logFind`, `passOn`, `setNextWish`, `sendChat` and
-`reportBroken` to it. The website and the app should share that one database so they stay in sync.
+- **LIVE** (the checker answers): Companions, stops and chat come from the Wix CMS lists, every
+  find, pass-on, wish, chat message and report goes to the checker, and find codes are checked
+  there. A copy of the lists is kept on the phone for when it's offline.
+- **SAMPLE** (the Wix site isn't published yet, or no internet on a first launch): the sample
+  journeys from the designs, with the same rules checked in the app. The Passport says
+  "Preview: using sample Companions".
+
+Either way, what's yours (nickname, follows, the Companions in your care, your Passport, your
+optional sign-in) is saved on the phone, so nothing resets when the app closes.
 
 ## Maps
 
@@ -104,5 +110,5 @@ List every code and QR address for printing labels (keep this list private):
 dart run tool/print_codes.dart 52
 ```
 
-For now the codes are worked out inside the app. Once the app is connected to the website, they
-should move to the website's server so nobody can dig them out of the app.
+In SAMPLE mode the codes are worked out inside the app. In LIVE mode they're checked by The
+Herd's checker on the Wix site, so nobody can dig them out of the app.

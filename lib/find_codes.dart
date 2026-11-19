@@ -5,9 +5,9 @@
 /// for when the camera won't scan. Logging a find needs that code, so typing a number alone
 /// only lets you look at a Companion's page.
 ///
-/// FOR NOW the codes are worked out here in the app. Once the app is connected to the website,
-/// the codes should live only on the website's server and be checked there, so nobody can dig
-/// them out of the app. Run `dart run tool/print_codes.dart` to list every code for printing.
+/// These codes are only used in SAMPLE mode. In LIVE mode (The Herd's Wix site is published) the
+/// codes live only on the Wix site and are checked there (AppModel.checkFindCode), so nobody can
+/// dig them out of the app. Run `dart run tool/print_codes.dart` to list every code for printing.
 library;
 
 /// Letters and digits that can't be mixed up on a tiny label (no 0/O, 1/I/L, 2/Z, 5/S, 8/B).

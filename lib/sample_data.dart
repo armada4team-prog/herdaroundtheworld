@@ -1,5 +1,5 @@
 // Sample data from the Page 4 designs: 52 Companions and their journeys (real city coordinates).
-// In the live app this comes from The Herd's database (see README → "Connecting real data").
+// Used until The Herd’s Wix site is live (see README → "Test data vs. real data").
 import 'models.dart';
 
 List<Companion> sampleCompanions() => [

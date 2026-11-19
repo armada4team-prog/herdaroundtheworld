@@ -21,6 +21,13 @@ class _ChatScreenState extends State<ChatScreen> {
   final draft = TextEditingController();
   final scroll = ScrollController();
   String? error;
+  bool sending = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.model.ensureChat(widget.number); // LIVE: read the chat from The Herd's site
+  }
 
   @override
   void dispose() {
@@ -29,15 +36,24 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  void send() {
+  Future<void> send() async {
     final problem = checkPublicText(draft.text, maxLength: 500);
     if (problem != null) {
       setState(() => error = problem);
       return;
     }
-    context.model.sendChat(widget.number, draft.text);
+    setState(() => sending = true);
+    final result = await context.model.submitChat(widget.number, draft.text);
+    if (!mounted) return;
+    if (!result.ok) {
+      setState(() {
+        sending = false;
+        error = result.message ?? 'Something went wrong on our side. Please try again in a minute.';
+      });
+      return;
+    }
     draft.clear();
-    setState(() {});
+    setState(() => sending = false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scroll.hasClients) {
         scroll.animateTo(scroll.position.maxScrollExtent, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
@@ -119,7 +135,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           shape: const CircleBorder(),
                           child: InkWell(
                             customBorder: const CircleBorder(),
-                            onTap: draft.text.trim().isEmpty ? null : send,
+                            onTap: draft.text.trim().isEmpty || sending ? null : send,
                             child: const SizedBox(width: 44, height: 44, child: Icon(Icons.arrow_upward, color: Colors.white)),
                           ),
                         ),
@@ -182,7 +198,8 @@ class StoryScreen extends StatelessWidget {
         builder: (context, model) {
           final c = model.companion(number);
           if (c == null) return const SizedBox.shrink();
-          final lastText = model.chats[number]?.last.text ?? 'Say hi to the travelers before you.';
+          model.ensureChat(number); // LIVE: read the chat from The Herd's site
+          final lastText = model.chats[number]?.lastOrNull?.text ?? 'Say hi to the travelers before you.';
           return ListView(
             padding: const EdgeInsets.all(20),
             children: [
@@ -258,6 +275,19 @@ class StoryScreen extends StatelessWidget {
                     child: InfoPill('Waiting for The Herd’s quick look', background: Herd.cream, foreground: Herd.ink),
                   ),
                 ],
+              ),
+            )
+          else if (stop.photoUrl != null)
+            // An approved photo on The Herd's website.
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.network(
+                stop.photoUrl!,
+                height: 220,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                semanticLabel: tr('Traveler’s photo'),
+                errorBuilder: (_, _, _) => const PhotoPlaceholder(height: 140),
               ),
             )
           else if (stop.note != null)

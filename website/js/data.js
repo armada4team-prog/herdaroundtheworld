@@ -2,7 +2,8 @@
 //
 // LIVE: reads The Herd's Wix CMS lists with a Wix Headless visitor token, and sends every find,
 // pass-on, wish, chat message and report to The Herd's Wix checker (wix/backend/handlers.src.js).
-// PREVIEW: used automatically when the live lists can't be read, or with ?preview=1. Reads the
+// PREVIEW: used automatically when the live lists can't be read or the checker doesn't answer yet
+// (before the Wix site is published), or with ?preview=1. Reads the
 // bundled sample data (data/sample.json) and checks writes right here in the browser with the
 // same rules as the Wix checker. Nothing is saved anywhere but this browser.
 import {
@@ -219,13 +220,33 @@ async function loadSample() {
 }
 
 // ── Loading ─────────────────────────────────────────────────────────────────────────────
+/**
+ * True when the Wix checker answers. Before the site is published the lists may be readable but
+ * the checker doesn't exist yet, so writes would fail: then the site stays in preview.
+ * herdMine with no session answers 400 { field: 'session' } when the checker is live.
+ */
+export async function checkerIsLive() {
+  try {
+    const res = await Promise.race([
+      fetch(CHECKER + 'herdMine', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: '{}' }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 6000)),
+    ]);
+    if (res.status !== 400) return false;
+    const json = await res.json();
+    return !!json && json.field === 'session';
+  } catch (e) {
+    return false;
+  }
+}
+
 export async function load() {
   if (!forcePreview) {
     try {
-      const list = await Promise.race([
-        loadLive(),
+      const [list, live] = await Promise.race([
+        Promise.all([loadLive(), checkerIsLive()]),
         new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000)),
       ]);
+      if (!live) throw new Error('the checker isn’t answering yet');
       state.mode = 'live';
       state.companions = list;
       return state;

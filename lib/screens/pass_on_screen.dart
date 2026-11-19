@@ -47,13 +47,14 @@ class _PassOnScreenState extends State<PassOnScreen> {
   String? emailError;
   String? wishPhotoError;
   String? photoError;
+  String? formError; // from The Herd's checker, when it isn't about one box
   bool triedToSend = false; // after a send with problems, the list of fixes shows above the button
   final kWhere = GlobalKey(), kPlace = GlobalKey(), kPhoto = GlobalKey(), kChapter = GlobalKey();
   final kWish = GlobalKey(), kNickname = GlobalKey(), kEmail = GlobalKey();
 
   /// Every problem still on the form, in the order they appear.
   List<String> get problems =>
-      [whereError, placeError, photoError, chapterError, wishPhotoError, nicknameError, emailError].whereType<String>().toList();
+      [whereError, placeError, photoError, chapterError, wishPhotoError, nicknameError, emailError, formError].whereType<String>().toList();
   bool? needsFindFirst; // checked once when the screen opens
 
   @override
@@ -99,6 +100,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
       emailError = email.text.trim().isNotEmpty && !isEmail(email.text) ? 'Please enter a valid email, or leave it empty.' : null;
       wishPhotoError = grantedWish && wishPhoto == null ? 'Please add a photo of the wish coming true.' : null;
       photoError = photo == null ? 'Please add a photo.' : null;
+      formError = null;
     });
     if (problems.isNotEmpty) {
       setState(() => triedToSend = true);
@@ -122,7 +124,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
     final point = where.blurred(exactish: !handToSomeone);
     final place = handToSomeone ? null : description;
     final model = context.model;
-    model.passOn(
+    final result = await model.submitPassOn(
       widget.number,
       city: city,
       place: place,
@@ -130,11 +132,43 @@ class _PassOnScreenState extends State<PassOnScreen> {
       chapter: chapter.text.trim(),
       nickname: nickname.text.trim(),
       grantedWish: grantedWish,
-      photo: photo ?? (grantedWish ? wishPhoto : null),
+      photo: photo,
+      wishPhoto: grantedWish ? wishPhoto : null,
       point: point,
       exactPoint: where.point,
+      shrink: Services.shrinkPhoto,
     );
-    if (alertMe) model.following.add(widget.number);
+    if (!mounted) return;
+    if (!result.ok) {
+      // The checker said what to fix: mark that box in red.
+      final message = result.message ?? 'Something went wrong on our side. Please try again in a minute.';
+      setState(() {
+        saving = false;
+        triedToSend = true;
+        switch (result.field) {
+          case 'where':
+            whereError = message;
+          case 'hint':
+            placeError = message;
+          case 'photo':
+            photoError = message;
+          case 'chapter':
+            chapterError = message;
+          case 'wishPhoto':
+            wishPhotoError = message;
+          case 'nickname':
+            nicknameError = message;
+          default:
+            formError = message;
+        }
+      });
+      scrollToFirstProblem(
+        [kWhere, kPlace, kPhoto, kChapter, kWish, kNickname],
+        ['where', 'hint', 'photo', 'chapter', 'wishPhoto', 'nickname'].map((f) => f == result.field).toList(),
+      );
+      return;
+    }
+    if (alertMe && !model.following.contains(widget.number)) model.toggleFollow(widget.number);
     if (email.text.trim().isNotEmpty) model.setEmail(email.text.trim());
     context.router.replaceTop(grantedWish ? WishRoute(widget.number) : SentRoute(widget.number));
   }

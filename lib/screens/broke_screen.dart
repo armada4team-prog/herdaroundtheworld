@@ -30,6 +30,7 @@ class _BrokeScreenState extends State<BrokeScreen> {
   String? whereError;
   String? chapterError;
   String? nicknameError;
+  String? formError; // from The Herd's checker, when it isn't about one box
 
   @override
   void didChangeDependencies() {
@@ -51,6 +52,7 @@ class _BrokeScreenState extends State<BrokeScreen> {
     FocusScope.of(context).unfocus();
     final place = whereText.text.trim();
     setState(() {
+      formError = null;
       whereError = checkPlaceFormat(place);
       chapterError = checkPublicText(chapter.text, maxLength: 500);
       nicknameError = checkNickname(nickname.text);
@@ -66,7 +68,32 @@ class _BrokeScreenState extends State<BrokeScreen> {
       });
       return;
     }
-    context.model.reportBroken(widget.number, chipped: what == _What.chipped);
+    final result = await context.model.submitReport(
+      widget.number,
+      what: what.name,
+      city: place,
+      note: chapter.text.trim(),
+      byName: nickname.text.trim(),
+      sendPieces: what == _What.broke && sendHome,
+    );
+    if (!mounted) return;
+    if (!result.ok) {
+      final message = result.message ?? 'Something went wrong on our side. Please try again in a minute.';
+      setState(() {
+        saving = false;
+        switch (result.field) {
+          case 'where':
+            whereError = message;
+          case 'note':
+            chapterError = message;
+          case 'nickname':
+            nicknameError = message;
+          default:
+            formError = message;
+        }
+      });
+      return;
+    }
     setState(() {
       saving = false;
       sent = true;
@@ -166,6 +193,7 @@ class _BrokeScreenState extends State<BrokeScreen> {
               style: HerdText.body(14)),
         ],
         const SizedBox(height: 18),
+        if (formError != null) ...[ErrorNote(formError!), const SizedBox(height: 12)],
         HerdButton(
           what == _What.chipped ? 'Send the note' : 'Share their last chapter',
           onPressed: canSubmit ? submit : null,

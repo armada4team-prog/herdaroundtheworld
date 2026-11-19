@@ -17,9 +17,12 @@ class Stop {
     this.when = '',
     this.note,
     this.photo,
+    this.photoUrl,
     this.found = false,
     this.handedOn = false,
-  });
+    String? kind,
+    this.date,
+  }) : kind = kind ?? (found ? 'found' : (handedOn ? 'passedOn' : 'left'));
 
   final String city;
   final String? place;
@@ -31,6 +34,15 @@ class Stop {
 
   /// The traveler's photo. Waits for The Herd's quick look before others see it.
   final Uint8List? photo;
+
+  /// An approved photo on The Herd's website (live data only).
+  final String? photoUrl;
+
+  /// made, found, passedOn or left (as on the website).
+  final String kind;
+
+  /// When it happened, if known (live data).
+  final DateTime? date;
 
   /// True for "Found by …" stops.
   final bool found;
@@ -48,6 +60,23 @@ class Stop {
       : 'Left by $leftBy';
 
   LatLng get point => LatLng(latitude, longitude);
+
+  /// The same stop with the traveler's just-taken photo (shown on this phone until it's approved).
+  Stop withPhoto(Uint8List? bytes) => Stop(
+    city: city,
+    place: place,
+    latitude: latitude,
+    longitude: longitude,
+    leftBy: leftBy,
+    when: when,
+    note: note,
+    photo: bytes,
+    photoUrl: photoUrl,
+    found: found,
+    handedOn: handedOn,
+    kind: kind,
+    date: date,
+  );
 }
 
 enum CompanionStatus {

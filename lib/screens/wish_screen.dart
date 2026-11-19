@@ -29,6 +29,7 @@ class _WishScreenState extends State<WishScreen> {
   final custom = TextEditingController();
   String? grantedWish;
   String? customError;
+  bool saving = false;
 
   @override
   void didChangeDependencies() {
@@ -165,18 +166,30 @@ class _WishScreenState extends State<WishScreen> {
           const SizedBox(height: 18),
           HerdButton(
             'Set their next wish →',
-            onPressed: () {
-              if (custom.text.trim().isNotEmpty) {
-                final error = checkWish(custom.text);
-                if (error != null) {
-                  setState(() => customError = error);
-                  return;
-                }
-              }
-              // The wish they typed (or picked) goes on the Companion's page.
-              model.setNextWish(widget.number, chosen);
-              context.router.replaceTop(SentRoute(widget.number));
-            },
+            onPressed: saving
+                ? null
+                : () async {
+                    if (custom.text.trim().isNotEmpty) {
+                      final error = checkWish(custom.text);
+                      if (error != null) {
+                        setState(() => customError = error);
+                        return;
+                      }
+                    }
+                    // The wish they typed (or picked) goes on the Companion's page.
+                    setState(() => saving = true);
+                    final router = context.router;
+                    final result = await model.submitWish(widget.number, chosen);
+                    if (!mounted) return;
+                    if (!result.ok) {
+                      setState(() {
+                        saving = false;
+                        customError = result.message ?? 'Something went wrong on our side. Please try again in a minute.';
+                      });
+                      return;
+                    }
+                    router.replaceTop(SentRoute(widget.number));
+                  },
           ),
         ],
       ),

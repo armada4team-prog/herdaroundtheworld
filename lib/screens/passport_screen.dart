@@ -33,7 +33,7 @@ class PassportScreen extends StatelessWidget {
               ),
             ]),
             const SizedBox(height: 16),
-            if (model.email == null) ...[
+            if (!model.signedIn) ...[
               Material(
                 color: Herd.butter,
                 borderRadius: BorderRadius.circular(18),
@@ -83,6 +83,10 @@ class PassportScreen extends StatelessWidget {
               Text(tr('Your herd: ${model.herdSize} travelers in 5 countries'), style: HerdText.chunky(18, extraBold: false)),
               Text(tr('Everyone who carried the same Companions as you. You’re connected, even if you’ve never met.'), style: HerdText.body(14)),
             ]),
+            if (!model.isLive) ...[
+              const SizedBox(height: 14),
+              Center(child: Text(tr('Preview: using sample Companions'), style: HerdText.body(12))),
+            ],
           ]),
         ),
       ),

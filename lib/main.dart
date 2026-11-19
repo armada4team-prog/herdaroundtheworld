@@ -22,7 +22,9 @@ import 'screens/sent_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/wish_screen.dart';
 import 'services.dart';
+import 'storage.dart';
 import 'theme.dart';
+import 'wix_api.dart';
 
 /// Opens straight to one screen when built with `--dart-define=SCREEN=map`, or on the web with `?screen=map`
 /// (used for automatic screenshots).
@@ -32,7 +34,10 @@ final startScreen = const String.fromEnvironment('SCREEN').isNotEmpty
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const HerdApp());
+  // The real app connects to The Herd's Wix site (or uses the sample data until it's published)
+  // and keeps what's yours on the phone. Screenshot runs (SCREEN=…) always use the sample data.
+  final model = startScreen.isEmpty ? (AppModel(api: WixApi(), store: PrefsStore())..start()) : AppModel();
+  runApp(HerdApp(model: model));
 }
 
 Widget pageFor(AppRoute route) => switch (route) {
@@ -49,14 +54,17 @@ Widget pageFor(AppRoute route) => switch (route) {
 };
 
 class HerdApp extends StatefulWidget {
-  const HerdApp({super.key});
+  const HerdApp({super.key, this.model});
+
+  /// Without one, the app uses the sample data in memory.
+  final AppModel? model;
 
   @override
   State<HerdApp> createState() => _HerdAppState();
 }
 
 class _HerdAppState extends State<HerdApp> {
-  final model = AppModel();
+  late final AppModel model = widget.model ?? AppModel();
   String _language = 'en';
   late final router = AppRouter(pageFor: pageFor);
   bool showSplash = startScreen.isEmpty || startScreen == 'splash';
@@ -139,6 +147,14 @@ class _HerdAppState extends State<HerdApp> {
           children: [
             const MainShell(),
             if (showSplash) Positioned.fill(child: SplashScreen(onEnter: () => setState(() => showSplash = false))),
+            // First launch only: waiting for The Herd's Companions (the welcome screen usually covers it).
+            if (!showSplash)
+              Positioned.fill(
+                child: ListenableBuilder(
+                  listenable: model,
+                  builder: (context, _) => model.ready ? const SizedBox.shrink() : const _Loading(),
+                ),
+              ),
           ],
         ),
       ),
@@ -200,4 +216,23 @@ class MainShell extends StatelessWidget {
       ),
     );
   }
+}
+
+class _Loading extends StatelessWidget {
+  const _Loading();
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: Herd.cream,
+    child: Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 14,
+        children: [
+          const SizedBox(width: 28, height: 28, child: CircularProgressIndicator(strokeWidth: 3, color: Herd.sageDark)),
+          Text(tr('Loading the herd…'), style: HerdText.body(16, color: Herd.sageDark)),
+        ],
+      ),
+    ),
+  );
 }

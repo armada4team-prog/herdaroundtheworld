@@ -23,6 +23,7 @@ class _ScanScreenState extends State<ScanScreen> {
   bool notFound = false;
   Companion? found;
   String? codeError;
+  bool checking = false;
   final number = TextEditingController();
   final code = TextEditingController();
   final numberFocus = FocusNode();
@@ -50,7 +51,7 @@ class _ScanScreenState extends State<ScanScreen> {
       if (c != null) {
         // The code hidden in the QR address proves they're holding this Companion.
         final hidden = codeFromScan(raw);
-        if (hidden != null) context.model.tryFindCode(c.number, hidden);
+        if (hidden != null) context.model.checkFindCode(c.number, hidden);
         setState(() => found = c);
         Future.delayed(const Duration(milliseconds: 800), () {
           if (!mounted) return;
@@ -62,7 +63,8 @@ class _ScanScreenState extends State<ScanScreen> {
     }
   }
 
-  void findTyped() {
+  Future<void> findTyped() async {
+    if (checking) return;
     final c = context.model.companion(number.text);
     if (c == null) {
       setState(() => notFound = true);
@@ -70,13 +72,18 @@ class _ScanScreenState extends State<ScanScreen> {
     }
     // No code: just looking at their page. With a code: unlocks logging a find.
     if (code.text.trim().isNotEmpty) {
-      final check = context.model.tryFindCode(c.number, code.text);
-      if (check != CodeCheck.right) {
+      setState(() => checking = true);
+      final result = await context.model.checkFindCode(c.number, code.text);
+      if (!mounted) return;
+      setState(() => checking = false);
+      if (result.check != CodeCheck.right) {
         setState(() {
           notFound = false;
-          codeError = check == CodeCheck.tooManyTries
-              ? 'Too many tries. Please wait 10 minutes and try again.'
-              : 'That code doesn’t match #{0}. Check the letters under their number.'.replaceAll('{0}', c.number);
+          codeError = switch (result.check) {
+            CodeCheck.tooManyTries => 'Too many tries. Please wait 10 minutes and try again.',
+            CodeCheck.problem => result.message ?? 'Something went wrong on our side. Please try again in a minute.',
+            _ => 'That code doesn’t match #{0}. Check the letters under their number.'.replaceAll('{0}', c.number),
+          };
         });
         return;
       }
@@ -248,7 +255,7 @@ class _ScanScreenState extends State<ScanScreen> {
       ),
       if (codeError != null) ErrorNote(codeError!),
       if (notFound) const ErrorNote('We couldn’t find that number. Check their bottom and try again.'),
-      HerdButton('Find them →', onPressed: number.text.isEmpty ? null : findTyped),
+      HerdButton('Find them →', onPressed: number.text.isEmpty || checking ? null : findTyped),
       if (!cameraFailed && (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) && !kIsWeb)
         Center(
           child: TextButton(

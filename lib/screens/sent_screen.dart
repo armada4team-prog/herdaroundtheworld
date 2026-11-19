@@ -170,6 +170,10 @@ class Postcard extends StatelessWidget {
             children: [
               if (companion.current?.photo != null)
                 Positioned.fill(child: Image.memory(companion.current!.photo!, fit: BoxFit.cover))
+              else if (companion.current?.photoUrl != null)
+                Positioned.fill(
+                  child: Image.network(companion.current!.photoUrl!, fit: BoxFit.cover, errorBuilder: (_, _, _) => const SizedBox.shrink()),
+                )
               else
                 Align(
                   alignment: Alignment.bottomCenter,
@@ -178,7 +182,8 @@ class Postcard extends StatelessWidget {
                     child: CompanionFigure(glaze: companion.glazeColor, waving: true, happy: true, showsShadow: false, height: 110),
                   ),
                 ),
-              if (companion.current?.photo == null) const Positioned(left: 12, top: 12, child: InfoPill('Your photo')),
+              if (companion.current?.photo == null && companion.current?.photoUrl == null)
+                const Positioned(left: 12, top: 12, child: InfoPill('Your photo')),
               Positioned(
                 right: 12,
                 top: 12,

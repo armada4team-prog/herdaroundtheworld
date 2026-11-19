@@ -32,10 +32,11 @@ class _FoundScreenState extends State<FoundScreen> {
   String? cityError;
   String? nicknameError;
   String? emailError;
+  String? formError; // from The Herd's checker, when it isn't about one box
   bool triedToSend = false;
   final kWhere = GlobalKey(), kNickname = GlobalKey(), kCheckIn = GlobalKey();
 
-  List<String> get problems => [cityError, nicknameError, emailError].whereType<String>().toList();
+  List<String> get problems => [cityError, nicknameError, emailError, formError].whereType<String>().toList();
 
   @override
   void didChangeDependencies() {
@@ -59,13 +60,15 @@ class _FoundScreenState extends State<FoundScreen> {
       cityError = where == null ? 'We need your location to log a find.' : null;
       nicknameError = checkNickname(nickname.text);
       emailError = checkIn == CheckIn.email && !isEmail(email.text) ? 'Please enter a valid email, or choose another option.' : null;
+      formError = null;
     });
     if (where == null || nicknameError != null || emailError != null) {
       setState(() => triedToSend = true);
       scrollToFirstProblem([kWhere, kNickname, kCheckIn], [cityError != null, nicknameError != null, emailError != null]);
       return;
     }
-    context.model.logFind(
+    setState(() => saving = true);
+    final result = await context.model.submitFind(
       widget.number,
       city: where.city,
       nickname: nickname.text.trim(),
@@ -74,6 +77,26 @@ class _FoundScreenState extends State<FoundScreen> {
       point: where.blurred(exactish: false),
       exactPoint: where.point,
     );
+    if (!mounted) return;
+    if (!result.ok) {
+      // The checker said what to fix: mark that box in red.
+      final message = result.message ?? 'Something went wrong on our side. Please try again in a minute.';
+      setState(() {
+        saving = false;
+        triedToSend = true;
+        switch (result.field) {
+          case 'where':
+            cityError = message;
+          case 'nickname':
+            nicknameError = message;
+          case 'email':
+            emailError = message;
+          default:
+            formError = message;
+        }
+      });
+      return;
+    }
     setState(() {
       saving = false;
       done = true;

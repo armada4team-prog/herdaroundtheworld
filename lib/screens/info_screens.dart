@@ -83,19 +83,23 @@ class LearnScreen extends StatelessWidget {
   }
 }
 
-/// Save your Passport: optional email sign-in by link, no password.
-Future<void> showSignIn(BuildContext context) => showModalBottomSheet<void>(
+/// Save your Passport: optional "Sign up or sign in" with an emailed 6-digit code, no password.
+/// The first code creates the account. Nothing in the app needs it.
+Future<void> showSignIn(BuildContext context, {bool confirmDelete = false}) => showModalBottomSheet<void>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Herd.cream,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (_) => AppScope(model: context.model, router: context.router, child: const _SignInSheet()),
+      builder: (_) => AppScope(model: context.model, router: context.router, child: _SignInSheet(confirmDelete: confirmDelete)),
     );
 
+enum _SignInStep { email, code, signedIn, confirm }
+
 class _SignInSheet extends StatefulWidget {
-  const _SignInSheet();
+  const _SignInSheet({this.confirmDelete = false});
+  final bool confirmDelete;
 
   @override
   State<_SignInSheet> createState() => _SignInSheetState();
@@ -103,56 +107,225 @@ class _SignInSheet extends StatefulWidget {
 
 class _SignInSheetState extends State<_SignInSheet> {
   final email = TextEditingController();
-  bool sent = false;
+  final code = TextEditingController();
+  _SignInStep? step;
+  String? emailError;
+  String? codeError;
+  String? deleteError;
+  String? previewCode;
+  String? note;
+  bool busy = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    step ??= context.model.signedIn ? (widget.confirmDelete ? _SignInStep.confirm : _SignInStep.signedIn) : _SignInStep.email;
+  }
 
   @override
   void dispose() {
     email.dispose();
+    code.dispose();
     super.dispose();
   }
 
+  Future<void> sendCode() async {
+    if (!isEmail(email.text)) {
+      setState(() => emailError = 'Please enter a valid email.');
+      return;
+    }
+    setState(() {
+      busy = true;
+      emailError = null;
+      codeError = null;
+    });
+    final result = await context.model.signInStart(email.text.trim());
+    if (!mounted) return;
+    setState(() {
+      busy = false;
+      if (!result.ok) {
+        emailError = result.message ?? 'Something went wrong on our side. Please try again in a minute.';
+        step = _SignInStep.email;
+      } else {
+        previewCode = result.previewCode;
+        code.clear();
+        step = _SignInStep.code;
+      }
+    });
+  }
+
+  Future<void> verify() async {
+    final typed = code.text.replaceAll(RegExp(r'\D'), '');
+    if (typed.length != 6) {
+      setState(() => codeError = 'Please enter the 6-digit code from the email.');
+      return;
+    }
+    setState(() {
+      busy = true;
+      codeError = null;
+    });
+    final result = await context.model.signInVerify(email.text.trim(), typed);
+    if (!mounted) return;
+    setState(() {
+      busy = false;
+      if (!result.ok) {
+        codeError = result.message ?? 'Something went wrong on our side. Please try again in a minute.';
+      } else {
+        note = 'You’re signed in. Companions you found on this device came along.';
+        step = _SignInStep.signedIn;
+      }
+    });
+  }
+
+  Future<void> signOut() async {
+    setState(() => busy = true);
+    await context.model.signOut();
+    if (!mounted) return;
+    setState(() {
+      busy = false;
+      note = 'You’re signed out. Everything still works on this device.';
+      previewCode = null;
+      step = _SignInStep.email;
+    });
+  }
+
+  Future<void> deleteData() async {
+    setState(() {
+      busy = true;
+      deleteError = null;
+    });
+    final result = await context.model.forgetMe();
+    if (!mounted) return;
+    setState(() {
+      busy = false;
+      if (!result.ok) {
+        deleteError = result.message ?? 'Something went wrong on our side. Please try again in a minute.';
+      } else {
+        note = 'Your email and sign-in are deleted. Everything still works without signing in.';
+        previewCode = null;
+        step = _SignInStep.email;
+      }
+    });
+  }
+
+  Widget _link(String label, VoidCallback? onPressed, {Color color = Herd.sageDark}) =>
+      TextButton(onPressed: onPressed, child: Text(tr(label), style: HerdText.body(15, color: color)));
+
+  Widget _note() => HerdCard(color: Herd.mintSoft, children: [Text(tr(note!), style: HerdText.body(14, color: Herd.mintInk))]);
+
   @override
   Widget build(BuildContext context) {
-    final valid = isEmail(email.text);
+    final model = context.model;
+    final children = switch (step!) {
+      _SignInStep.email => [
+          Text(tr('Save your Passport'), style: HerdText.chunky(17, extraBold: false)),
+          const Blob(color: Herd.mintSoft, width: 120, height: 110, child: Icon(Icons.menu_book_outlined, size: 40, color: Herd.ink)),
+          Text(tr('Keep your stamps safe'), textAlign: TextAlign.center, style: HerdText.script(38)),
+          Text(tr('Right now your Passport and stamps live only on this phone. Add your email to keep them if you change phones, and to see them on the website too.'),
+              textAlign: TextAlign.center, style: HerdText.body(16)),
+          if (note != null) _note(),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 8, children: [
+            const FieldLabel('Your email'),
+            HerdField(
+              fieldKey: const Key('signInEmail'),
+              controller: email,
+              hint: 'you@email.com',
+              keyboardType: TextInputType.emailAddress,
+              autofillHints: const [AutofillHints.email],
+              errorText: emailError,
+              onChanged: (_) => setState(() => emailError = null),
+            ),
+          ]),
+          HerdButton(busy ? 'Sending…' : 'Email me a sign-in code', onPressed: busy || email.text.trim().isEmpty ? null : sendCode),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 8, children: [
+            for (final line in const ['No password to remember, ever', 'Never shown publicly or shared', 'Optional: finding and passing on never need it'])
+              Row(children: [
+                const Icon(Icons.check, size: 18, color: Herd.sageDark),
+                const SizedBox(width: 10),
+                Expanded(child: Text(tr(line), style: HerdText.body(14, color: Herd.ink))),
+              ]),
+          ]),
+          _link('Not now', () => Navigator.of(context).pop()),
+        ],
+      _SignInStep.code => [
+          Text(tr('Save your Passport'), style: HerdText.chunky(17, extraBold: false)),
+          const Blob(color: Herd.butter, width: 120, height: 110, child: Icon(Icons.mail_outline, size: 40, color: Herd.butterInk)),
+          Text(tr('Check your email'), textAlign: TextAlign.center, style: HerdText.script(38)),
+          Text(tr('We sent a 6-digit code to ${email.text.trim()}. It works for 15 minutes.'), textAlign: TextAlign.center, style: HerdText.body(16)),
+          if (previewCode != null)
+            HerdCard(color: Herd.butter, children: [
+              Text(tr('Preview: your code is $previewCode. On the real site it’s emailed.'), style: HerdText.body(14, color: Herd.butterInk)),
+            ]),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 8, children: [
+            const FieldLabel('Your 6-digit code'),
+            HerdField(
+              fieldKey: const Key('signInCode'),
+              controller: code,
+              hint: '123456',
+              keyboardType: TextInputType.number,
+              maxLength: 6,
+              autofillHints: const [AutofillHints.oneTimeCode],
+              errorText: codeError,
+              onChanged: (_) => setState(() => codeError = null),
+            ),
+          ]),
+          HerdButton('Sign in', onPressed: busy ? null : verify),
+          Wrap(alignment: WrapAlignment.center, children: [
+            _link(
+              'Use a different email',
+              busy
+                  ? null
+                  : () => setState(() {
+                        step = _SignInStep.email;
+                        previewCode = null;
+                        codeError = null;
+                      }),
+            ),
+            _link('Send a new code', busy ? null : sendCode),
+          ]),
+        ],
+      _SignInStep.signedIn => [
+          Text(tr('Your sign-in'), style: HerdText.chunky(17, extraBold: false)),
+          const Blob(color: Herd.mintSoft, width: 120, height: 110, child: Icon(Icons.verified_outlined, size: 40, color: Herd.ink)),
+          Text(tr('Your stamps are safe'), textAlign: TextAlign.center, style: HerdText.script(38)),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Icon(Icons.check, size: 18, color: Herd.sageDark),
+            const SizedBox(width: 8),
+            Flexible(child: Text(tr('Signed in as ${model.account?.email ?? ''}'), style: HerdText.body(16, weight: FontWeight.w600, color: Herd.ink))),
+          ]),
+          Text(tr('Your Passport, the Companions in your care and the ones you follow are saved with your email, on every device.'),
+              textAlign: TextAlign.center, style: HerdText.body(16)),
+          if (note != null) _note(),
+          HerdButton('Done', onPressed: () => Navigator.of(context).pop()),
+          HerdButton('Sign out', kind: HerdButtonKind.outline, onPressed: busy ? null : signOut),
+          _link(
+            'Delete my data',
+            busy
+                ? null
+                : () => setState(() {
+                      deleteError = null;
+                      step = _SignInStep.confirm;
+                    }),
+            color: Herd.error,
+          ),
+        ],
+      _SignInStep.confirm => [
+          Text(tr('Your sign-in'), style: HerdText.chunky(17, extraBold: false)),
+          Text(tr('Delete your email and sign-in from The Herd?'), textAlign: TextAlign.center, style: HerdText.chunky(20, color: Herd.error)),
+          Text(tr('Your chapters stay on the Companions’ pages. Everything keeps working without signing in.'),
+              textAlign: TextAlign.center, style: HerdText.body(16)),
+          if (deleteError != null) ErrorNote(deleteError!),
+          HerdButton('Yes, delete my data', onPressed: busy ? null : deleteData),
+          HerdButton('Keep it', kind: HerdButtonKind.outline, onPressed: busy ? null : () => setState(() => step = _SignInStep.signedIn)),
+        ],
+    };
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(22, 12, 22, 28),
         child: Column(mainAxisSize: MainAxisSize.min, spacing: 16, children: [
           Container(width: 40, height: 5, decoration: BoxDecoration(color: hex('DCDDD6'), borderRadius: BorderRadius.circular(999))),
-          Text(tr('Save your Passport'), style: HerdText.chunky(17, extraBold: false)),
-          if (sent) ...[
-            const Blob(color: Herd.butter, width: 120, height: 110, child: Icon(Icons.mail_outline, size: 40, color: Herd.butterInk)),
-            Text(tr('Check your email'), textAlign: TextAlign.center, style: HerdText.script(38)),
-            Text(tr('We sent a link to ${email.text}. Tap it on this phone and you’re in. Your stamps are saved.'),
-                textAlign: TextAlign.center, style: HerdText.body(16)),
-            TextButton(onPressed: () => setState(() => sent = false), child: Text(tr('Use a different email'), style: HerdText.body(15, color: Herd.sageDark))),
-            HerdButton('Done', onPressed: () => Navigator.of(context).pop()),
-          ] else ...[
-            const Blob(color: Herd.mintSoft, width: 120, height: 110, child: Icon(Icons.menu_book_outlined, size: 40, color: Herd.ink)),
-            Text(tr('Keep your stamps safe'), textAlign: TextAlign.center, style: HerdText.script(38)),
-            Text(tr('Right now your Passport and stamps live only on this phone. Add your email to keep them if you change phones, and to see them on the website too.'),
-                textAlign: TextAlign.center, style: HerdText.body(16)),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 8, children: [
-              const FieldLabel('Your email'),
-              HerdField(controller: email, hint: 'you@email.com', keyboardType: TextInputType.emailAddress, onChanged: (_) => setState(() {})),
-            ]),
-            HerdButton('Email me a sign-in link', onPressed: valid
-                ? () {
-                    context.model.setEmail(email.text.trim());
-                    setState(() => sent = true);
-                  }
-                : null),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 8, children: [
-              for (final line in const ['No password to remember, ever', 'Never shown publicly or shared', 'Optional: finding and passing on never need it'])
-                Row(children: [
-                  const Icon(Icons.check, size: 18, color: Herd.sageDark),
-                  const SizedBox(width: 10),
-                  Expanded(child: Text(tr(line), style: HerdText.body(14, color: Herd.ink))),
-                ]),
-            ]),
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(tr('Not now'), style: HerdText.body(15, color: Herd.sageDark))),
-          ],
+          ...children,
         ]),
       ),
     );
@@ -262,9 +435,23 @@ class NotificationSettingsScreen extends StatelessWidget {
           Text(tr(model.email == null ? 'Add your email in Passport to get emails too.' : 'Emails go to ${model.email}.'), style: HerdText.body(13)),
           const SizedBox(height: 20),
           HerdCard(color: Colors.white, children: [
+            // Optional sign-in (opens the same sheet as the Passport's "Save your Passport").
+            TextButton(
+              key: const Key('settingsSignIn'),
+              style: TextButton.styleFrom(padding: EdgeInsets.zero, alignment: Alignment.centerLeft),
+              onPressed: () => showSignIn(context),
+              child: Text(
+                tr(model.signedIn ? 'Signed in as ${model.account!.email}' : 'Sign up or sign in'),
+                style: HerdText.body(15, weight: FontWeight.w500, color: Herd.sageDark),
+              ),
+            ),
+          ]),
+          const SizedBox(height: 20),
+          HerdCard(color: Colors.white, children: [
             TextButton(
               style: TextButton.styleFrom(padding: EdgeInsets.zero, alignment: Alignment.centerLeft),
-              onPressed: model.deleteMyData,
+              // Signed in: confirm first, then remove the email and sign-in from The Herd too.
+              onPressed: model.signedIn ? () => showSignIn(context, confirmDelete: true) : model.deleteMyData,
               child: Text(tr('Delete my data'), style: HerdText.body(15, weight: FontWeight.w500, color: const Color(0xFFC0392B))),
             ),
           ]),

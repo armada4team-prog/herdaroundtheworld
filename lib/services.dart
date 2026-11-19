@@ -163,6 +163,19 @@ class Services {
     }
   }
 
+  /// A smaller copy of a photo, for when it's too big to send (The Herd's limit is 8 MB).
+  static Future<Uint8List?> shrinkPhoto(Uint8List original) async {
+    try {
+      final codec = await ui.instantiateImageCodec(original, targetWidth: 800);
+      final frame = await codec.getNextFrame();
+      final png = await frame.image.toByteData(format: ui.ImageByteFormat.png);
+      frame.image.dispose();
+      return png?.buffer.asUint8List();
+    } catch (_) {
+      return null;
+    }
+  }
+
   static Future<void> open(String url) async {
     await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
