@@ -288,7 +288,7 @@ export async function send(name, body) {
     let json = {};
     try { json = await res.json(); } catch (e) { /* not JSON */ }
     if (res.status === 200 && json.ok !== false) {
-      await refresh();
+      if (!/^herd(SignIn|Mine|Follow|SignOut|ForgetMe)/.test(name)) await refresh(); // sign-in calls don't change the map
       return { ...json, ok: true, status: 200 };
     }
     if (res.status === 400) return { ok: false, status: 400, field: json.field || null, message: json.message || 'Something was missing. Please try again.' };
@@ -327,6 +327,27 @@ function savePreviewPhoto(photo) {
   return id;
 }
 
+function previewTraveler(db, sessionValue) {
+  if (!sessionValue || typeof sessionValue !== 'string') return null;
+  return Object.values(db.travelers || {}).find((x) => (x.sessions || []).includes(sessionValue)) || null;
+}
+function previewProfile(db, traveler) {
+  const holds = [];
+  const wishTokens = {};
+  for (const [n, h] of Object.entries(db.holds)) {
+    if (h.travelerId !== traveler.id) continue;
+    const number = (sample.companions.find((x) => cleanNumber(x.number) === n) || {}).number || n;
+    if (h.wishToken) wishTokens[number] = h.wishToken;
+    if (h.active) holds.push({ number, token: h.token, city: h.city || '', date: h.createdAt || null });
+  }
+  const journal = [];
+  for (const [n, list] of Object.entries(db.stops)) {
+    const number = (sample.companions.find((x) => cleanNumber(x.number) === n) || {}).number || n;
+    for (const st of list) if (st.travelerId === traveler.id) journal.push({ number, kind: st.kind, city: st.city, date: st.createdAt, wishGranted: !!st.wishPhoto });
+  }
+  return { email: traveler.email, nickname: traveler.nickname || '', following: traveler.following || [], holds, wishTokens, journal };
+}
+
 const previewServer = {
   async herdFind(b) {
     if (!b) return problem('Something was missing. Please try again.');
@@ -348,11 +369,16 @@ const previewServer = {
     if (!b.city || !isNumber(b.latitude) || !isNumber(b.longitude)) return problem('We need your location to log a find.', 'where');
     if (checkPublicText(b.city, 80)) return problem('We couldn’t read your location. Please refresh it and try again.', 'where');
     const tokenValue = randomToken();
-    db.holds[n] = { token: tokenValue, active: true, byName: String(b.nickname).trim(), foundLatitude: b.latitude, foundLongitude: b.longitude, wishToken: null };
+    const traveler = previewTraveler(db, b.session);
+    db.holds[n] = {
+      token: tokenValue, active: true, byName: String(b.nickname).trim(), foundLatitude: b.latitude, foundLongitude: b.longitude,
+      wishToken: null, travelerId: traveler ? traveler.id : null, city: String(b.city).trim(), createdAt: new Date().toISOString(),
+    };
     (db.stops[n] ||= []).push({
       kind: 'found', city: String(b.city).trim(), latitude: blur(b.latitude, false), longitude: blur(b.longitude, false),
-      byName: String(b.nickname).trim(), createdAt: new Date().toISOString(),
+      byName: String(b.nickname).trim(), createdAt: new Date().toISOString(), travelerId: traveler ? traveler.id : null,
     });
+    if (traveler && !traveler.nickname) traveler.nickname = String(b.nickname).trim();
     db.companions[n] = { ...(db.companions[n] || {}), status: 'moving' };
     savePreviewDb(db);
     return ok({ number: c.number, holdToken: tokenValue });
@@ -392,7 +418,10 @@ const previewServer = {
       kind: handedOn ? 'passedOn' : 'left', city: String(b.city).trim(),
       latitude: blur(b.latitude, !handedOn), longitude: blur(b.longitude, !handedOn),
       byName: String(b.nickname).trim(), photo, photoApproved: false, createdAt: new Date().toISOString(),
+      travelerId: hold.travelerId || null,
     };
+    const passer = previewTraveler(db, b.session);
+    if (passer) stop.travelerId = passer.id;
     if (!handedOn) stop.place = String(b.hint).trim();
     if (b.chapter) stop.chapter = String(b.chapter).trim();
     if (wishPhoto) stop.wishPhoto = wishPhoto;
@@ -457,16 +486,106 @@ const previewServer = {
     savePreviewDb(db);
     return ok({});
   },
+
+  // ── Optional sign-in (same rules as the Wix checker; the code is shown instead of emailed) ──
+  async herdSignInStart(b) {
+    const email = String((b && b.email) || '').trim().toLowerCase();
+    if (!isEmail(email)) return problem('Please enter a valid email.', 'email');
+    const db = previewDb();
+    db.travelers ||= {};
+    let traveler = db.travelers[email];
+    const now = Date.now();
+    if (traveler && traveler.codeSentAt && now - traveler.codeSentAt < 60 * 1000) {
+      return problem('We just sent you a code. Please wait a minute before asking for another one.', 'email');
+    }
+    const code = String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
+    traveler = traveler || { id: 't' + randomToken().slice(0, 10), email, following: [], sessions: [], nickname: '' };
+    Object.assign(traveler, { code, codeExpires: now + 15 * 60 * 1000, codeTries: 0, codeSentAt: now });
+    db.travelers[email] = traveler;
+    savePreviewDb(db);
+    return ok({ previewCode: code });
+  },
+
+  async herdSignInVerify(b) {
+    if (!b) return problem('Something was missing. Please try again.');
+    const email = String(b.email || '').trim().toLowerCase();
+    const db = previewDb();
+    const traveler = (db.travelers || {})[email];
+    if (!traveler || !traveler.code) return problem('Please ask for a sign-in code first.', 'code');
+    if (Date.now() > traveler.codeExpires) return problem('That code has expired. Please ask for a new one.', 'code');
+    if ((traveler.codeTries || 0) >= 5) return problem('Too many tries. Please ask for a new code.', 'code');
+    const code = String(b.code || '').replace(/\D/g, '');
+    if (code !== traveler.code) {
+      traveler.codeTries = (traveler.codeTries || 0) + 1;
+      savePreviewDb(db);
+      return problem('That code isn’t right. Check the email and try again.', 'code');
+    }
+    const session = randomToken();
+    const extra = (Array.isArray(b.following) ? b.following : []).map(String).filter((x) => /^\d{1,4}$/.test(x));
+    Object.assign(traveler, {
+      code: null, codeExpires: null, codeTries: 0,
+      sessions: [...(traveler.sessions || []).slice(-9), session],
+      following: [...new Set([...(traveler.following || []), ...extra])],
+      nickname: traveler.nickname || (b.nickname && !checkNickname(b.nickname) ? String(b.nickname).trim() : ''),
+    });
+    // Companions found on this device before signing in come along.
+    for (const [number, tokenValue] of Object.entries(b.holds && typeof b.holds === 'object' ? b.holds : {})) {
+      const hold = db.holds[cleanNumber(number)];
+      if (hold && hold.token === String(tokenValue) && !hold.travelerId) {
+        hold.travelerId = traveler.id;
+      }
+    }
+    savePreviewDb(db);
+    return ok({ session, profile: previewProfile(db, traveler) });
+  },
+
+  async herdMine(b) {
+    const db = previewDb();
+    const traveler = previewTraveler(db, b && b.session);
+    if (!traveler) return problem('Please sign in again.', 'session');
+    return ok({ profile: previewProfile(db, traveler) });
+  },
+
+  async herdFollow(b) {
+    const db = previewDb();
+    const traveler = previewTraveler(db, b && b.session);
+    if (!traveler) return problem('Please sign in again.', 'session');
+    const c = sampleCompanion(b.number);
+    if (!c) return problem('We couldn’t find that Companion.', 'number');
+    const set = new Set(traveler.following || []);
+    if (b.on) set.add(c.number); else set.delete(c.number);
+    traveler.following = [...set];
+    savePreviewDb(db);
+    return ok({ following: traveler.following });
+  },
+
+  async herdSignOut(b) {
+    const db = previewDb();
+    const traveler = previewTraveler(db, b && b.session);
+    if (traveler) { traveler.sessions = traveler.sessions.filter((x) => x !== b.session); savePreviewDb(db); }
+    return ok({});
+  },
+
+  async herdForgetMe(b) {
+    const db = previewDb();
+    const traveler = previewTraveler(db, b && b.session);
+    if (!traveler) return problem('Please sign in again.', 'session');
+    for (const h of Object.values(db.holds)) if (h.travelerId === traveler.id) h.travelerId = null;
+    for (const list of Object.values(db.stops)) for (const st of list) if (st.travelerId === traveler.id) st.travelerId = null;
+    delete db.travelers[traveler.email];
+    savePreviewDb(db);
+    return ok({});
+  },
 };
 
 /** Clears everything the preview saved in this browser. */
 export function resetPreview() {
-  try { local.removeItem(previewKey); local.removeItem('herd.mine.preview'); session.removeItem('herd.preview.photos'); session.removeItem('herd.unlocked.preview'); } catch (e) { /* ignore */ }
+  try { local.removeItem(previewKey); local.removeItem('herd.mine.preview'); local.removeItem('herd.session.preview'); session.removeItem('herd.preview.photos'); session.removeItem('herd.unlocked.preview'); } catch (e) { /* ignore */ }
 }
 
 // ── What this browser knows about you: what you hold, your wishes, your journal ───────────
 const mineKey = () => 'herd.mine.' + (state.mode === 'live' ? 'live' : 'preview');
-const emptyMine = () => ({ nickname: '', following: [], holds: {}, wishTokens: {}, journal: [], codeTries: { wrong: 0, lockedUntil: 0 } });
+const emptyMine = () => ({ nickname: '', following: [], holds: {}, wishTokens: {}, journal: [], remoteJournal: [], remoteWishKeys: [], codeTries: { wrong: 0, lockedUntil: 0 } });
 export function mine() { return { ...emptyMine(), ...readJSON(local, mineKey(), {}) }; }
 export function updateMine(fn) { const m = mine(); fn(m); writeJSON(local, mineKey(), m); return m; }
 
@@ -476,7 +595,121 @@ export const wishTokenFor = (number) => mine().wishTokens[cleanNumber(number)] |
 export const isFollowing = (number) => mine().following.includes(cleanNumber(number));
 export function toggleFollow(number) {
   const n = cleanNumber(number);
-  updateMine((m) => { m.following = m.following.includes(n) ? m.following.filter((x) => x !== n) : [...m.following, n]; });
+  const on = !mine().following.includes(n);
+  updateMine((m) => { m.following = on ? [...m.following, n] : m.following.filter((x) => x !== n); });
+  const acct = account();
+  if (acct) {
+    // Signed in: the follow is kept with the traveler's sign-in too (it works locally either way).
+    send('herdFollow', { session: acct.session, number, on }).then((res) => {
+      if (res.ok && Array.isArray(res.following)) updateMine((m) => { m.following = res.following.map(cleanNumber); });
+      else if (res.field === 'session') dropAccount();
+    });
+  }
+}
+
+// ── Optional email sign-in ──────────────────────────────────────────────────────────────
+// Nothing needs it. When signed in, the Passport, Companions in Your Care, follows and nickname
+// follow the traveler to every device. Without it, everything stays in this browser, as before.
+const accountKey = () => 'herd.session.' + (state.mode === 'live' ? 'live' : 'preview');
+/** { session, email } when signed in on this browser, otherwise null. */
+export const account = () => readJSON(local, accountKey(), null);
+/** Adds the session to a find or pass-on when signed in. */
+export const withSession = (body) => { const a = account(); return a ? { ...body, session: a.session } : body; };
+
+function applyProfile(profile) {
+  updateMine((m) => {
+    const holds = {};
+    // Holds never linked to the sign-in stay; the server's list is the truth for the rest.
+    for (const [n, h] of Object.entries(m.holds)) if (!h.claimed) holds[n] = h;
+    for (const h of profile.holds || []) {
+      const n = cleanNumber(h.number);
+      const before = m.holds[n] && m.holds[n].token === h.token ? m.holds[n] : {};
+      holds[n] = { ...before, token: h.token, number: String(h.number), city: h.city || before.city || '', date: h.date || before.date || null, claimed: true };
+    }
+    m.holds = holds;
+    for (const k of m.remoteWishKeys || []) delete m.wishTokens[k];
+    m.remoteWishKeys = [];
+    for (const [num, tok] of Object.entries(profile.wishTokens || {})) { m.wishTokens[cleanNumber(num)] = tok; m.remoteWishKeys.push(cleanNumber(num)); }
+    m.following = [...new Set([...(profile.following || []).map(cleanNumber)])];
+    if (!m.nickname && profile.nickname) m.nickname = profile.nickname;
+    m.remoteJournal = Array.isArray(profile.journal) ? profile.journal : [];
+  });
+}
+
+/** Signed out (or the sign-in ended): the account's data leaves this browser; local finds stay. */
+function dropAccount() {
+  try { local.removeItem(accountKey()); } catch (e) { /* ignore */ }
+  delete memory[accountKey()];
+  updateMine((m) => {
+    // Companions found on this device stay (their hold token still works); ones that only came
+    // from the sign-in leave with it.
+    for (const [n, h] of Object.entries(m.holds)) {
+      if (!h.claimed) continue;
+      if (Number.isFinite(h.foundLatitude)) h.claimed = false; else delete m.holds[n];
+    }
+    for (const k of m.remoteWishKeys || []) delete m.wishTokens[k];
+    m.remoteWishKeys = [];
+    m.remoteJournal = [];
+  });
+}
+
+/** On load: refresh what the signed-in traveler has. Problems never block anything. */
+export async function syncAccount() {
+  const acct = account();
+  if (!acct) return;
+  const res = await Promise.race([send('herdMine', { session: acct.session }), new Promise((r) => setTimeout(() => r({ ok: false }), 6000))]);
+  if (res.ok && res.profile) applyProfile(res.profile);
+  else if (res.field === 'session') dropAccount();
+}
+
+export const signInStart = (email) => send('herdSignInStart', { email: String(email || '').trim() });
+
+export async function signInVerify(email, code) {
+  const m = mine();
+  const holds = {};
+  for (const [n, h] of Object.entries(m.holds)) if (h.token) holds[n] = h.token;
+  const res = await send('herdSignInVerify', { email: String(email || '').trim(), code, holds, following: m.following, nickname: m.nickname });
+  if (!res.ok) return res;
+  writeJSON(local, accountKey(), { session: res.session, email: res.profile?.email || String(email).trim().toLowerCase() });
+  // Holds sent along are now linked to the sign-in.
+  updateMine((x) => { for (const n of Object.keys(holds)) if (x.holds[n]) x.holds[n].claimed = true; });
+  applyProfile(res.profile || {});
+  return res;
+}
+
+export async function signOut() {
+  const acct = account();
+  if (acct) await send('herdSignOut', { session: acct.session });
+  dropAccount();
+}
+
+/** "Delete my data": removes the email and sign-in from The Herd. Chapters stay. */
+export async function forgetMe() {
+  const acct = account();
+  if (!acct) return { ok: true };
+  const res = await send('herdForgetMe', { session: acct.session });
+  if (res.ok || res.field === 'session') { dropAccount(); return { ok: true }; }
+  return res;
+}
+
+/** Your travels: this browser's journal plus the signed-in traveler's, without doubles. */
+export function journal() {
+  const m = mine();
+  const out = [];
+  const seen = new Set();
+  const day = (d) => { const x = new Date(d); return Number.isNaN(x.getTime()) ? '' : x.toISOString().slice(0, 10); };
+  const add = (j) => {
+    const key = [cleanNumber(j.number), j.type, j.type === 'wish' ? '' : String(j.city || '').toLowerCase(), day(j.date)].join('|');
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push(j);
+  };
+  m.journal.forEach(add);
+  for (const r of m.remoteJournal || []) {
+    add({ type: r.kind, number: String(r.number), city: r.city, date: r.date, remote: true });
+    if (r.wishGranted) add({ type: 'wish', number: String(r.number), city: r.city, date: r.date, remote: true });
+  }
+  return out.sort((a, b) => (new Date(a.date).getTime() || 0) - (new Date(b.date).getTime() || 0));
 }
 
 // Find codes from a QR link or typed: "unlocked" until the find is logged (each scan logs one find).

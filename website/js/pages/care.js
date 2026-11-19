@@ -1,6 +1,7 @@
 // Companions in Your Care: the ones you've logged finding on this device and haven't passed on yet
 // (and any whose next wish you get to choose).
-import { companion, mine } from '../data.js';
+import { companion, mine, account } from '../data.js';
+import { openSignInSheet } from '../signin.js';
 import { t, esc, badge, blob, icons } from '../ui.js';
 import { tr, lang } from '../i18n.js';
 import { label } from '../model.js';
@@ -33,6 +34,13 @@ export async function render({ root }) {
       : `<div class="card" style="max-width:640px;padding:26px"><h2 class="chunky" style="font-size:22px">${t('No Companions in your care right now.')}</h2>
           <p>${t('Found one? Scan the code on their bottom, or type their number and find code.')}</p>
           <p style="margin-top:14px"><a class="btn" href="#/found">${t('Found a Companion')}</a></p></div>`}
-    <p class="muted" style="margin-top:24px">${t('This list is saved in this browser on this device.')}</p>
+    <div class="card care-account" style="margin-top:24px">
+      ${account()
+        ? `<p>${icons.check}<span>${t(`Signed in as ${account().email}`)}. ${t('This list follows you to every device.')}</span></p>
+           <button type="button" class="btn outline small-btn" id="care-account">${t('Your sign-in')}</button>`
+        : `<p>${icons.lock}<span>${t('This list is saved in this browser on this device.')} ${t('Sign up or sign in (optional and free) to see it on any phone or computer.')}</span></p>
+           <button type="button" class="btn soft small-btn" id="care-account">${t('Sign up or sign in')}</button>`}
+    </div>
   </div></section>`;
+  root.querySelector('#care-account').addEventListener('click', () => openSignInSheet());
 }

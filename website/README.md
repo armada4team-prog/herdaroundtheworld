@@ -52,6 +52,17 @@ All of this is in `js/data.js`.
 The word filter, the 988 note and the wish check come from `shared/rules.js`, the same file the Wix
 checker is built from. Keep `shared/` next to `website/` when hosting (or copy it there).
 
+## Optional sign-in
+
+Everything works without signing in. "Sign up or sign in" (header, Companions in Your Care, and the
+Passport's "Keep your stamps safe" card) emails a 6-digit code (`herdSignInStart` /
+`herdSignInVerify`); the first code creates the account. Signed in, the Passport, Companions in Your
+Care, follows and nickname follow the traveler to every device (`herdMine`, `herdFollow`), and finds
+and pass-ons carry the session. Companions found before signing in come along. Signing out or
+"Delete my data" (`herdSignOut`, `herdForgetMe`) goes back to this browser only. In preview, no email
+is sent: the code is shown on screen, with the same rules (one code a minute, 5 tries, 15 minutes).
+Until The Herd sets up the sign-in email in Wix, the sheet says "Email sign-in isn’t switched on yet".
+
 ## Languages
 
 English, Spanish, French and Japanese. Most text comes from the app (`lib/translations.dart`);
@@ -61,7 +72,7 @@ after changing it, run `node website/tools/build-translations.mjs`. Website-only
 ## Tests
 
 ```sh
-node --test website/test/flows.test.mjs
+node --test website/test/*.test.mjs
 ```
 
 Walks find → leave → find → hand on in preview mode (wrong and right codes, the 5-mile rule, the

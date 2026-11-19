@@ -1,5 +1,6 @@
 // Herd Around the World website: header, footer, preview banner and the page router (#/map, #/c/07, …).
-import { load, state, resetPreview } from './data.js';
+import { load, state, resetPreview, account, syncAccount } from './data.js';
+import { openSignInSheet } from './signin.js';
 import { tr, lang, setLang, languages } from './i18n.js';
 import { esc, t, icons } from './ui.js';
 import * as home from './pages/home.js';
@@ -65,6 +66,7 @@ function header(active) {
       <span class="wordmark">THE HERD</span>
     </a>
     <div class="menu-pill" id="menu">
+      ${accountButton('account-btn in-menu')}
       <a href="${HERD_SITE}">${t('Home')}</a>
       <div class="hatw">
         <a href="#/"${active === 'home' ? ' aria-current="page"' : ''}><span>${t('Herd Around the World')}</span></a>
@@ -74,6 +76,7 @@ function header(active) {
         </div>
       </div>
     </div>
+    ${accountButton('account-btn in-bar')}
     <div class="lang">
       <button class="lang-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="${t('Language')}: ${esc(current.label)}">${icons.globe}<span>${esc(lang().toUpperCase())}</span></button>
       <ul class="lang-list" role="menu" hidden>
@@ -84,7 +87,18 @@ function header(active) {
   </nav>`;
 }
 
+/** "Sign up or sign in" (optional), or the signed-in traveler's email. */
+function accountButton(cls) {
+  const acct = account();
+  const label = acct ? acct.email : tr('Sign up or sign in');
+  return `<button type="button" class="${cls}" data-account aria-haspopup="dialog" aria-label="${esc(acct ? tr(`Signed in as ${acct.email}`) : label)}">${acct ? icons.check : icons.mail}<span>${esc(label)}</span></button>`;
+}
+
 function bindHeader(el) {
+  el.querySelectorAll('[data-account]').forEach((b) => b.addEventListener('click', () => {
+    el.classList.remove('menu-open');
+    openSignInSheet();
+  }));
   const langBtn = el.querySelector('.lang-btn');
   const list = el.querySelector('.lang-list');
   langBtn.addEventListener('click', () => {
@@ -182,10 +196,12 @@ async function render(keepScroll = false) {
 }
 
 window.addEventListener('hashchange', () => render());
+window.addEventListener('herd:account', () => render(true));
 
 (async function start() {
   setLang(lang());
   await load();
+  await syncAccount();
   document.body.dataset.mode = state.mode;
   await render();
   document.body.dataset.ready = '1';

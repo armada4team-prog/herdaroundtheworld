@@ -1,7 +1,7 @@
 // Step 2 of 2: send them on their way (TLeave design, the app's Pass-on screen). Only the person
 // holding the Companion can pass them on: hand them to someone (anywhere), or leave them somewhere
 // at least 5 miles from where they were found, with a hint for the next traveler and a photo.
-import { companion, send, holdFor, mine, updateMine } from '../data.js';
+import { companion, send, holdFor, mine, updateMine, withSession } from '../data.js';
 import { t, icons, fixList } from '../ui.js';
 import { tr } from '../i18n.js';
 import { checkNickname, checkPublicText, checkHint, milesBetween, minMilesToLeave, cleanNumber } from '../../../shared/rules.js';
@@ -85,6 +85,8 @@ export async function render({ params, root, go }) {
   /** The 5-mile rule: a message if they're still too close to where they found this Companion. */
   function tooClose(place) {
     if (handOn || !place) return null;
+    // A find made on another device (signed in) has no spot here: the checker still checks it.
+    if (!Number.isFinite(hold.foundLatitude) || !Number.isFinite(hold.foundLongitude)) return null;
     const m = milesBetween(hold.foundLatitude, hold.foundLongitude, place.latitude, place.longitude);
     if (m >= minMilesToLeave) return null;
     if (m < 1) return 'To leave a Companion somewhere, take them at least 5 miles from where you found them. You’re still close to where you found them. (Handing them to someone is fine anywhere.)';
@@ -152,14 +154,14 @@ export async function render({ params, root, go }) {
     fix.innerHTML = '';
     busy(button, true, t('Sending…'));
     const nickname = val('nickname');
-    const res = await send('herdPassOn', {
+    const res = await send('herdPassOn', withSession({
       number: c.number, holdToken: hold.token, handedOn: handOn,
       city: here.city, latitude: here.latitude, longitude: here.longitude,
       hint: handOn ? '' : val('hint'), chapter: val('chapter'), nickname,
       photo: { base64: photo.base64, mimeType: photo.mimeType },
       wishGranted: granted,
       wishPhoto: granted ? { base64: wishPhoto.base64, mimeType: wishPhoto.mimeType } : undefined,
-    });
+    }));
     busy(button, false, t('Send them on their way →'));
     if (!res.ok) {
       const field = order.includes(res.field) ? res.field : null;
@@ -173,7 +175,7 @@ export async function render({ params, root, go }) {
       m.nickname = nickname;
       delete m.holds[n];
       if (res.wishToken) m.wishTokens[n] = res.wishToken;
-      const miles = milesBetween(hold.foundLatitude, hold.foundLongitude, here.latitude, here.longitude);
+      const miles = Number.isFinite(hold.foundLatitude) ? milesBetween(hold.foundLatitude, hold.foundLongitude, here.latitude, here.longitude) : 0;
       m.journal.push({
         type: handOn ? 'passedOn' : 'left', number: c.number, city: here.city, place: handOn ? null : val('hint'),
         miles: Math.round(miles), date: new Date().toISOString(),

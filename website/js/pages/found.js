@@ -1,6 +1,6 @@
 // Step 1 of 2: "I found them" (TScan design, the app's Found screen). Needs the Companion's find
 // code (from the QR link or typed on "Found a Companion") and the device's location.
-import { companion, send, isHolding, unlockedCode, setUnlocked, updateMine, mine } from '../data.js';
+import { companion, send, isHolding, unlockedCode, setUnlocked, updateMine, mine, withSession, account } from '../data.js';
 import { t, badge } from '../ui.js';
 import { tr } from '../i18n.js';
 import { checkNickname, cleanNumber } from '../../../shared/rules.js';
@@ -67,9 +67,9 @@ export async function render({ params, root }) {
     if (problems.length) { showProblems(root, fix, problems); return; }
     fix.innerHTML = '';
     busy(button, true, t('Logging…'));
-    const res = await send('herdFind', {
+    const res = await send('herdFind', withSession({
       number: c.number, code, nickname, city: here.city, latitude: here.latitude, longitude: here.longitude,
-    });
+    }));
     busy(button, false, t('Log my find →'));
     if (!res.ok) {
       if (res.field === 'code') {
@@ -89,6 +89,7 @@ export async function render({ params, root }) {
       m.holds[cleanNumber(c.number)] = {
         token: res.holdToken, number: c.number, city: here.city,
         foundLatitude: here.latitude, foundLongitude: here.longitude, date: new Date().toISOString(),
+        claimed: !!account(),
       };
       m.journal.push({ type: 'found', number: c.number, city: here.city, date: new Date().toISOString() });
       if (!m.following.includes(cleanNumber(c.number))) m.following.push(cleanNumber(c.number));

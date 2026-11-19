@@ -512,3 +512,46 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.45; }
   .hello-pills { justify-content: flex-start; }
   .hello .script { font-size: 56px; }
 }
+
+/* Optional sign-in ("Sign up or sign in") */
+.account-btn { display: inline-flex; align-items: center; gap: 8px; border: 2px solid var(--sage-dark); background: transparent; color: var(--ink); border-radius: 999px; padding: 0 16px; min-height: 44px; cursor: pointer; font-size: 15px; max-width: 260px; }
+.account-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account-btn:hover { background: var(--mint-soft); }
+.account-btn.in-menu { display: none; }
+.sheet-overlay { position: fixed; inset: 0; background: rgba(63, 90, 76, 0.35); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 16px; overflow-y: auto; }
+.sheet { background: var(--cream); border-radius: 26px; width: 100%; max-width: 460px; padding: 26px 24px 20px; position: relative; margin: auto 0; box-shadow: 0 16px 40px rgba(63, 90, 76, 0.25); }
+.sheet-close { position: absolute; right: 14px; top: 14px; background: var(--field); }
+.signin { display: flex; flex-direction: column; gap: 12px; }
+.signin-title { font-size: 18px; color: var(--sage-dark); padding-right: 48px; }
+.signin-script { font-size: 36px; line-height: 1.2; }
+.signin-form { display: flex; flex-direction: column; gap: 12px; }
+.signin .field > label { font-weight: 600; color: var(--sage-dark); }
+.ticks { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--ink); }
+.ticks li, .signed-in, .care-account p { display: flex; gap: 8px; align-items: flex-start; }
+.ticks .ic, .signed-in .ic, .care-account .ic { color: var(--sage-dark); margin-top: 2px; }
+.signed-in { font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.preview-code { background: var(--butter); color: var(--butter-ink); border: 2px dashed var(--gold); border-radius: 12px; padding: 10px 12px; font-size: 14px; }
+.code-input { font-family: var(--chunky); font-size: 26px; letter-spacing: 6px; }
+.signin-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 16px; }
+.signin-slim { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
+.signin-slim > span { display: inline-flex; gap: 8px; align-items: center; font-weight: 600; color: var(--mint-ink); }
+.small-btn { min-height: 44px; padding: 8px 20px; font-size: 14px; }
+.link-btn.danger { color: var(--error); }
+.danger-btn { background: var(--error); }
+.danger-btn:hover { background: #8C1D17; }
+.confirm-box { background: var(--error-field); border: 2px solid var(--error); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; color: var(--ink); }
+.signin-card { border-radius: 24px; padding: 24px 28px; }
+.signin-card .signin { max-width: 560px; }
+.care-account { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; }
+.care-account p { flex: 1 1 320px; margin: 0; }
+@media (max-width: 640px) {
+  .account-btn.in-bar { display: none; }
+  .account-btn.in-menu { display: inline-flex; margin: 4px 6px 8px; max-width: none; justify-content: center; background: var(--mint-soft); }
+  .signin-card { padding: 20px; }
+  .sheet { padding: 22px 18px 16px; }
+}
+.signin .col-a, .signin .col-b { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+@media (min-width: 900px) {
+  .signin-card .signin-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 48px; align-items: start; max-width: none; }
+  .signin-card .signin-cols .col-b { padding-top: 8px; }
+}

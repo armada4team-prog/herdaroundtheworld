@@ -1,6 +1,7 @@
 // Passport (TPassport design; phone: TPhonePassport): every Companion you found or passed on and
 // every wish you granted, from this browser. Stamps are yours to keep.
-import { state, mine, companion } from '../data.js';
+import { state, mine, companion, journal, account } from '../data.js';
+import { mountSignIn } from '../signin.js';
 import { t, esc, icons, blob, share } from '../ui.js';
 import { tr, lang } from '../i18n.js';
 import { cleanNumber } from '../../../shared/rules.js';
@@ -29,14 +30,15 @@ export function passportData() {
   let handedOne = false;
   const carried = new Set();
   let milesCarried = 0;
-  for (const j of m.journal) {
+  const all = journal();
+  for (const j of all) {
     if (j.type === 'found') carried.add(cleanNumber(j.number));
     if (j.type === 'passedOn' || j.type === 'left') {
       milesCarried += j.miles || 0;
       stamps.push({ big: '#' + j.number, small: String(j.city || '').split(',')[0], label: tr(`Passed on #${j.number}`) + ' · ' + month(j.date), p: palettes[i++ % palettes.length] });
       if (j.type === 'passedOn' && !handedOne) { handedOne = true; stamps.push({ big: '1st', small: 'Hand-off', label: tr('Handed one to a stranger'), p: palettes[2] }); }
     }
-    if (j.type === 'wish') stamps.push({ big: 'Wish', small: 'Granted', label: tr(`Helped #${j.number} ${j.wish}`), p: wishPalette });
+    if (j.type === 'wish') stamps.push({ big: 'Wish', small: 'Granted', label: j.wish ? tr(`Helped #${j.number} ${j.wish}`) : `${tr('Wish granted')} · #${j.number}`, p: wishPalette });
   }
   // Your herd: everyone else who carried the same Companions.
   const herd = new Set();
@@ -48,19 +50,19 @@ export function passportData() {
       if (s.byName && s.byName !== m.nickname && s.kind !== 'made') { herd.add(s.byName); countries.add(countryOf(s.city)); }
     }
   }
-  return { m, stamps: stamps.reverse(), carried: carried.size, milesCarried, herd: herd.size, countries: countries.size };
+  return { m, all, stamps: stamps.reverse(), carried: carried.size, milesCarried, herd: herd.size, countries: countries.size };
 }
 
 export async function render({ root }) {
   document.title = `${tr('Passport')} · ${tr('Herd Around the World')}`;
-  const { m, stamps, carried, milesCarried, herd, countries } = passportData();
+  const { m, all, stamps, carried, milesCarried, herd, countries } = passportData();
   const name = m.nickname ? `${m.nickname}’s travels` : 'Your travels';
   const allStamps = [...stamps, { empty: true, label: 'Your next Companion' }, { empty: true, label: 'Grant another wish' }];
   const tilts = [-6, 5, -3, 4, -2, 3];
-  const travels = [...m.journal].reverse().map((j) => {
+  const travels = [...all].reverse().map((j) => {
     const p = j.type === 'wish' ? wishPalette : j.type === 'found' ? palettes[2] : j.type === 'left' ? palettes[1] : palettes[0];
     const title = j.type === 'found' ? `Found #${j.number}` : j.type === 'wish' ? 'Wish granted' : `Passed on #${j.number}`;
-    const detail = j.type === 'wish' ? `Helped #${j.number} ${j.wish}` : `In ${j.city}`;
+    const detail = j.type === 'wish' ? (j.wish ? `Helped #${j.number} ${j.wish}` : `In ${j.city}`) : `In ${j.city}`;
     return `<li class="travel" style="background:${p.bg};color:${p.ink}"><span class="n">#${esc(j.number)}</span><span><b>${t(title)}</b><span>${t(detail)}</span></span><span class="when">${esc(month(j.date))}</span></li>`;
   }).join('');
 
@@ -84,10 +86,7 @@ export async function render({ root }) {
         <a href="#/map" style="background:var(--mint-soft);color:var(--mint-ink)"><b>${t('Map')}</b><span>${t('Where everyone is')}</span></a>
         <a href="#/found" style="background:var(--pink-soft);color:var(--pink-ink)"><b>${t('Found one?')}</b><span>${t('Log your find')}</span></a>
       </div>
-      <div class="card mint" style="border-radius:24px;padding:24px 28px;display:flex;gap:14px;align-items:flex-start;margin-top:14px">
-        ${icons.lock}<div><h2 class="script" style="font-size:34px">${t('Keep your stamps safe')}</h2>
-        <p>${t('Your Passport is saved in this browser on this device. Signing in with your email, to see it on any phone or computer, is coming soon.')}</p></div>
-      </div>
+      <div class="card mint signin-card" id="account" style="margin-top:14px"></div>
       <div class="stats passport-wide" style="margin-top:36px">
         <div class="stat frame"><b>${carried}</b><span>${t('Companions carried')}</span></div>
         <div class="stat frame"><b>${milesCarried}</b><span>${t('Miles carried')}</span></div>
@@ -120,5 +119,6 @@ export async function render({ root }) {
   </section>`;
   root.querySelector('#share').addEventListener('click', (e) =>
     share('I’m part of The Herd’s Companions project! Find one, carry one, watch them go.', 'https://theherdstudio.com', e.currentTarget));
-  void state;
+  mountSignIn(root.querySelector('#account'));
+  void state; void account;
 }
