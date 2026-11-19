@@ -18,11 +18,27 @@ export function makeMap(el, { interactive = true, center = [30, -30], zoom = 2, 
   });
   map.attributionControl.setPrefix(false);
   if (interactive) L.control.zoom({ position: 'bottomright' }).addTo(map);
+  // A simple world outline drawn by the site itself (land and sea in The Herd's colours). It shows
+  // right away and stays as a backup if the detailed street map can't load.
+  map.createPane('land');
+  map.getPane('land').style.zIndex = 150;
+  worldLand().then((geo) => {
+    if (geo) L.geoJSON(geo, { pane: 'land', interactive: false, style: { color: '#C9BBA9', weight: 1, fillColor: '#F3EBDF', fillOpacity: 1 } }).addTo(map);
+  });
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
+    // If a tile can't load, show nothing (the world outline underneath still shows).
+    errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
   return map;
+}
+
+let landPromise = null;
+/** The world outline (Natural Earth, public domain), loaded once. */
+function worldLand() {
+  landPromise ??= fetch(new URL('../data/world-land.json', import.meta.url)).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  return landPromise;
 }
 
 /** A round dot marker. */

@@ -30,12 +30,15 @@ function helloCard(c) {
     <div class="hello">
       ${blob('#F6D3D3', 'b-tl')}${blob('#F9EBB5', 'b-br')}
       <button type="button" class="circle-btn close" data-close aria-label="${t('Close')}">${icons.close}</button>
+      <div class="hello-main">
       ${badge(c, 104, { waving: true, happy: true })}
       <p class="eyebrow">${t(`Art in Transit · No. ${c.number}`)}</p>
       <h2 class="script" id="hello-title">${t(`Hi, I’m ${displayName(c)}!`)}</h2>
       <p>${esc(c.blurb)}</p>
       <div class="my-wish">${icons.star}<div><p class="eyebrow" style="color:var(--butter-ink)">${t('My wish')}</p><p class="script">${t(`“${wishSentence(c)}”`)}</p></div></div>
-      <div class="pills" style="justify-content:center">${pill(`${stopCount(c)} stops`, 'beige')}${cur ? pill(`Last seen in ${cur.city}`, 'beige') : ''}</div>
+      <div class="pills hello-pills">${pill(`${stopCount(c)} stops`, 'beige')}${cur ? pill(`Last seen in ${cur.city}`, 'beige') : ''}</div>
+      </div>
+      <div class="hello-side">
       <div class="how-card">
         <p class="eyebrow">${t('How this works')}</p>
         <div class="numbered"><span class="n">1</span><p>${t('Take me along for a while, and help my wish come true if you can!')}</p></div>
@@ -45,6 +48,7 @@ function helloCard(c) {
       </div>
       <button type="button" class="btn block" data-close>${t('See where I’ve been ↓')}</button>
       <p class="muted">${t('You’ve found a piece of ')}<b>${t('Art in Transit')}</b>${t(', a traveling art project by The Herd. No app, no sign-up, no cost.')}</p>
+      </div>
     </div>
   </div>`;
 }
@@ -173,7 +177,7 @@ export async function render({ params, query, root, go }) {
       m.addTo(map);
       const text = s.city + (i === 0 ? ' · ' + tr('start') : isNow ? ' · ' + tr('now') : '');
       const phone = window.matchMedia('(max-width: 640px)').matches;
-      m.bindTooltip(esc(text), { permanent: !phone || i === 0 || isNow, direction: 'right', className: 'journey-label', offset: [8, 0] });
+      m.bindTooltip(esc(text), { permanent: i === 0 || isNow, direction: 'auto', className: 'journey-label', offset: [8, 0] });
     });
     fit(map, pts, { maxZoom: 7, padding: [60, 60] });
   }

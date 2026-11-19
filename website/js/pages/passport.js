@@ -60,7 +60,7 @@ export async function render({ root }) {
   const travels = [...m.journal].reverse().map((j) => {
     const p = j.type === 'wish' ? wishPalette : j.type === 'found' ? palettes[2] : j.type === 'left' ? palettes[1] : palettes[0];
     const title = j.type === 'found' ? `Found #${j.number}` : j.type === 'wish' ? 'Wish granted' : `Passed on #${j.number}`;
-    const detail = j.type === 'found' ? `In ${j.city}` : j.type === 'wish' ? `Helped #${j.number} ${j.wish}` : j.type === 'left' ? `Left in ${j.city}` : `Handed on in ${j.city}`;
+    const detail = j.type === 'wish' ? `Helped #${j.number} ${j.wish}` : `In ${j.city}`;
     return `<li class="travel" style="background:${p.bg};color:${p.ink}"><span class="n">#${esc(j.number)}</span><span><b>${t(title)}</b><span>${t(detail)}</span></span><span class="when">${esc(month(j.date))}</span></li>`;
   }).join('');
 
