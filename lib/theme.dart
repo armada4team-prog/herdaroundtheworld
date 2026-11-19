@@ -7,6 +7,8 @@ class Herd {
   static const cream = Color(0xFFFDF8F3);
   static const beige = Color(0xFFF6EFE7);
   static const field = Color(0xFFF1EAE3);
+  static const error = Color(0xFFB3261E); // "this needs fixing" red
+  static const errorField = Color(0xFFFDECEC);
   static const sageBackground = Color(0xFFE7ECE5);
   static const sage = Color(0xFF6E8B7D);
   static const sageDark = Color(0xFF5B7869);
@@ -40,8 +42,8 @@ class HerdText {
   static TextStyle body(double size, {FontWeight weight = FontWeight.w400, Color color = Herd.body, double? height}) =>
       TextStyle(fontFamily: 'FiraSans', fontSize: size, fontWeight: weight, color: color, height: height ?? 1.4);
 
-  static TextStyle chunky(double size, {bool extraBold = true, Color color = Herd.ink}) => TextStyle(
-      fontFamily: 'Baloo2', fontSize: size, fontWeight: extraBold ? FontWeight.w800 : FontWeight.w700, color: color, height: 1.2);
+  static TextStyle chunky(double size, {bool extraBold = true, Color color = Herd.ink}) =>
+      TextStyle(fontFamily: 'Baloo2', fontSize: size, fontWeight: extraBold ? FontWeight.w800 : FontWeight.w700, color: color, height: 1.2);
 }
 
 ThemeData herdTheme() {
@@ -82,8 +84,7 @@ class Eyebrow extends StatelessWidget {
   final Color color;
 
   @override
-  Widget build(BuildContext context) =>
-      Text(tr(text).toUpperCase(), style: HerdText.body(13, color: color).copyWith(letterSpacing: 1));
+  Widget build(BuildContext context) => Text(tr(text).toUpperCase(), style: HerdText.body(13, color: color).copyWith(letterSpacing: 1));
 }
 
 /// "THE HERD" wordmark used in headers.
@@ -91,8 +92,12 @@ class Wordmark extends StatelessWidget {
   const Wordmark({super.key});
 
   @override
-  Widget build(BuildContext context) =>
-      Semantics(label: 'The Herd', child: ExcludeSemantics(child: Text('THE HERD', style: HerdText.chunky(22, color: Herd.sageDark))));
+  Widget build(BuildContext context) => Semantics(
+    label: 'The Herd',
+    child: ExcludeSemantics(
+      child: Text('THE HERD', style: HerdText.chunky(22, color: Herd.sageDark)),
+    ),
+  );
 }
 
 enum HerdButtonKind { primary, soft, outline }
@@ -174,11 +179,11 @@ class HerdCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(padding),
-        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(radius)),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: spacing, children: children),
-      );
+    width: double.infinity,
+    padding: EdgeInsets.all(padding),
+    decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(radius)),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: spacing, children: children),
+  );
 }
 
 /// Field label and text field in the designs' style.
@@ -187,7 +192,10 @@ class FieldLabel extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) => Text(tr(text), style: HerdText.body(16, weight: FontWeight.w600, color: Herd.sageDark));
+  Widget build(BuildContext context) => Text(
+    tr(text),
+    style: HerdText.body(16, weight: FontWeight.w600, color: Herd.sageDark),
+  );
 }
 
 class HerdField extends StatelessWidget {
@@ -219,29 +227,117 @@ class HerdField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => TextField(
-        key: fieldKey,
-        controller: controller,
-        keyboardType: keyboardType,
-        maxLines: maxLines,
-        minLines: minLines,
-        maxLength: maxLength,
-        onChanged: onChanged,
-        autofillHints: autofillHints,
-        style: HerdText.body(16, color: Herd.ink),
-        decoration: InputDecoration(
-          hintText: tr(hint),
-          hintStyle: HerdText.body(16, color: Herd.body.withValues(alpha: 0.7)),
-          filled: true,
-          fillColor: Herd.field,
-          counterText: showCounter ? null : '',
-          counterStyle: HerdText.body(12),
-          errorText: errorText == null ? null : tr(errorText!),
-          errorMaxLines: 3,
-          errorStyle: HerdText.body(13, color: const Color(0xFFB3261E)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+    key: fieldKey,
+    controller: controller,
+    keyboardType: keyboardType,
+    maxLines: maxLines,
+    minLines: minLines,
+    maxLength: maxLength,
+    onChanged: onChanged,
+    autofillHints: autofillHints,
+    style: HerdText.body(16, color: Herd.ink),
+    decoration: InputDecoration(
+      hintText: tr(hint),
+      hintStyle: HerdText.body(16, color: Herd.body.withValues(alpha: 0.7)),
+      filled: true,
+      fillColor: errorText == null ? Herd.field : Herd.errorField,
+      counterText: showCounter ? null : '',
+      counterStyle: HerdText.body(12),
+      error: errorText == null ? null : Padding(padding: const EdgeInsets.only(top: 2), child: ErrorNote(errorText!)),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Herd.error, width: 2),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Herd.error, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+    ),
+  );
+}
+
+/// A "needs fixing" message: red, with a warning icon, so it's hard to miss.
+class ErrorNote extends StatelessWidget {
+  const ErrorNote(this.text, {super.key});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    liveRegion: true,
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(top: 1),
+          child: Icon(Icons.error_outline, color: Herd.error, size: 18),
         ),
-      );
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            tr(text),
+            style: HerdText.body(14, weight: FontWeight.w500, color: Herd.error),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Shown above a form's send button when something still needs fixing: a list of every problem.
+class FixList extends StatelessWidget {
+  const FixList(this.problems, {super.key});
+  final List<String> problems;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      color: Herd.errorField,
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: Herd.error, width: 2),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.warning_amber_rounded, color: Herd.error),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(tr('Almost there! Please fix these first:'), style: HerdText.chunky(17, extraBold: false, color: Herd.error)),
+            ),
+          ],
+        ),
+        for (final p in problems)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('•  ', style: HerdText.body(14, color: Herd.error)),
+              Expanded(
+                child: Text(tr(p), style: HerdText.body(14, color: Herd.ink)),
+              ),
+            ],
+          ),
+      ],
+    ),
+  );
+}
+
+/// Scrolls so the first problem on a form is on screen.
+void scrollToFirstProblem(List<GlobalKey> keysInOrder, List<bool> hasProblem) {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    for (var i = 0; i < keysInOrder.length; i++) {
+      final ctx = keysInOrder[i].currentContext;
+      if (hasProblem[i] && ctx != null) {
+        Scrollable.ensureVisible(ctx, alignment: 0.15, duration: const Duration(milliseconds: 450), curve: Curves.easeInOut);
+        return;
+      }
+    }
+  });
 }
 
 /// Small rounded info pill ("6 stops", "Last seen in Santa Fe").
@@ -253,15 +349,22 @@ class InfoPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 12),
-        decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(999)),
-        child: Text(tr(text), style: HerdText.body(14, color: foreground)),
-      );
+    padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 12),
+    decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(999)),
+    child: Text(tr(text), style: HerdText.body(14, color: foreground)),
+  );
 }
 
 /// Round icon button (mint circle) used in headers.
 class CircleIconButton extends StatelessWidget {
-  const CircleIconButton({super.key, required this.icon, required this.label, required this.onTap, this.color = Herd.mintSoft, this.size = 44});
+  const CircleIconButton({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.color = Herd.mintSoft,
+    this.size = 44,
+  });
   final IconData icon;
   final String label;
   final VoidCallback onTap;
@@ -270,27 +373,31 @@ class CircleIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
-        button: true,
-        label: tr(label),
-        excludeSemantics: true,
-        child: Material(
-          color: color,
-          shape: const CircleBorder(),
-          child: InkWell(
-            customBorder: const CircleBorder(),
-            onTap: onTap,
-            child: SizedBox(width: size, height: size, child: Icon(icon, size: 20, color: Herd.mintInk)),
-          ),
+    button: true,
+    label: tr(label),
+    excludeSemantics: true,
+    child: Material(
+      color: color,
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: SizedBox(
+          width: size,
+          height: size,
+          child: Icon(icon, size: 20, color: Herd.mintInk),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 /// App bar for pushed screens: back arrow and the wordmark (or a title) in the middle.
 PreferredSizeWidget herdAppBar({String? title, List<Widget>? actions, bool showBack = true}) => AppBar(
-      automaticallyImplyLeading: showBack,
-      title: title == null ? const Wordmark() : Text(tr(title), style: HerdText.chunky(17, extraBold: false)),
-      actions: actions,
-    );
+  automaticallyImplyLeading: showBack,
+  title: title == null ? const Wordmark() : Text(tr(title), style: HerdText.chunky(17, extraBold: false)),
+  actions: actions,
+);
 
 /// 1453 → "1,453".
 String formatThousands(int n) => n.toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (m) => '${m[1]},');

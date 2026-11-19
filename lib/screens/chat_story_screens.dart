@@ -235,7 +235,7 @@ class StoryScreen extends StatelessWidget {
   }
 
   Widget _chapter(Stop stop, int index, bool isNow) {
-    final meta = [if (stop.leftBy != null) 'Left by ${stop.leftBy}', if (stop.when.isNotEmpty) stop.when].join(' · ');
+    final meta = [if (stop.byLine != null) stop.byLine!, if (stop.when.isNotEmpty) stop.when].map(tr).join(' · ');
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(

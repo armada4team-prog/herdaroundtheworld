@@ -246,7 +246,7 @@ class AppModel extends ChangeNotifier {
           longitude: point?.longitude ?? last?.longitude ?? 0,
           leftBy: nickname,
           when: 'Just now',
-          note: 'Found by $nickname.',
+          found: true,
         ),
       );
       c.lastMoved = 'Just now';

@@ -246,9 +246,8 @@ class _ScanScreenState extends State<ScanScreen> {
         tr('The 4 letters printed under their number. You need it to log a find. Leave it empty to just look at their page.'),
         style: HerdText.body(13),
       ),
-      if (codeError != null) Text(tr(codeError!), style: HerdText.body(14, color: Herd.pinkInk)),
-      if (notFound)
-        Text(tr('We couldn’t find that number. Check their bottom and try again.'), style: HerdText.body(14, color: Herd.pinkInk)),
+      if (codeError != null) ErrorNote(codeError!),
+      if (notFound) const ErrorNote('We couldn’t find that number. Check their bottom and try again.'),
       HerdButton('Find them →', onPressed: number.text.isEmpty ? null : findTyped),
       if (!cameraFailed && (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) && !kIsWeb)
         Center(

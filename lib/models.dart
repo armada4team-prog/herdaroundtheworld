@@ -17,6 +17,7 @@ class Stop {
     this.when = '',
     this.note,
     this.photo,
+    this.found = false,
   });
 
   final String city;
@@ -29,6 +30,12 @@ class Stop {
 
   /// The traveler's photo. Waits for The Herd's quick look before others see it.
   final Uint8List? photo;
+
+  /// True for "Found by …" stops, false for "Left by …" (passed on) stops.
+  final bool found;
+
+  /// "Found by Sam" or "Left by Sam".
+  String? get byLine => leftBy == null ? null : (found ? 'Found by $leftBy' : 'Left by $leftBy');
 
   LatLng get point => LatLng(latitude, longitude);
 }

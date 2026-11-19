@@ -32,6 +32,10 @@ class _FoundScreenState extends State<FoundScreen> {
   String? cityError;
   String? nicknameError;
   String? emailError;
+  bool triedToSend = false;
+  final kWhere = GlobalKey(), kNickname = GlobalKey(), kCheckIn = GlobalKey();
+
+  List<String> get problems => [cityError, nicknameError, emailError].whereType<String>().toList();
 
   @override
   void didChangeDependencies() {
@@ -48,8 +52,6 @@ class _FoundScreenState extends State<FoundScreen> {
     super.dispose();
   }
 
-  bool get canSubmit => nickname.text.trim().isNotEmpty && !saving;
-
   Future<void> submit() async {
     FocusScope.of(context).unfocus();
     final where = here;
@@ -58,7 +60,11 @@ class _FoundScreenState extends State<FoundScreen> {
       nicknameError = checkNickname(nickname.text);
       emailError = checkIn == CheckIn.email && !isEmail(email.text) ? 'Please enter a valid email, or choose another option.' : null;
     });
-    if (where == null || nicknameError != null || emailError != null) return;
+    if (where == null || nicknameError != null || emailError != null) {
+      setState(() => triedToSend = true);
+      scrollToFirstProblem([kWhere, kNickname, kCheckIn], [cityError != null, nicknameError != null, emailError != null]);
+      return;
+    }
     context.model.logFind(
       widget.number,
       city: where.city,
@@ -106,6 +112,7 @@ class _FoundScreenState extends State<FoundScreen> {
           : GestureDetector(
               onTap: () => FocusScope.of(context).unfocus(),
               child: ListView(
+                scrollCacheExtent: const ScrollCacheExtent.pixels(10000), // keep the whole form built, so we can scroll to any problem
                 keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 padding: const EdgeInsets.all(20),
                 children: done ? _doneView(c, name) : _form(name),
@@ -123,7 +130,7 @@ class _FoundScreenState extends State<FoundScreen> {
       style: HerdText.body(16),
     ),
     const SizedBox(height: 20),
-    const FieldLabel('Where are you? *'),
+    FieldLabel('Where are you? *', key: kWhere),
     const SizedBox(height: 8),
     HereCard(
       errorText: cityError,
@@ -133,7 +140,7 @@ class _FoundScreenState extends State<FoundScreen> {
       }),
     ),
     const SizedBox(height: 20),
-    const FieldLabel('Your name or nickname *'),
+    FieldLabel('Your name or nickname *', key: kNickname),
     const SizedBox(height: 8),
     HerdField(
       fieldKey: const Key('foundNickname'),
@@ -145,7 +152,7 @@ class _FoundScreenState extends State<FoundScreen> {
       autofillHints: const [AutofillHints.nickname],
     ),
     const SizedBox(height: 20),
-    FieldLabel('Want $name to check in with you?'),
+    FieldLabel('Want $name to check in with you?', key: kCheckIn),
     const SizedBox(height: 6),
     Text(tr('In about a month, $name will send one friendly nudge to help you pass them on. Totally optional.'), style: HerdText.body(14)),
     const SizedBox(height: 10),
@@ -173,7 +180,8 @@ class _FoundScreenState extends State<FoundScreen> {
       Text(tr('Never shown publicly. Never shared.'), style: HerdText.body(13)),
     ],
     const SizedBox(height: 20),
-    HerdButton(saving ? 'Logging…' : 'Log my find →', onPressed: canSubmit ? submit : null),
+    if (triedToSend && problems.isNotEmpty) ...[FixList(problems), const SizedBox(height: 12)],
+    HerdButton(saving ? 'Logging…' : 'Log my find →', onPressed: saving ? null : submit),
   ];
 
   List<Widget> _doneView(Companion? c, String name) => [

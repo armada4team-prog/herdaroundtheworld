@@ -28,11 +28,13 @@ void main() {
     final stopsBefore = c.stops.length;
     model.tryFindCode('07', findCodeFor('07'));
     model.logFind('07', city: 'Denver, CO', nickname: 'Sam', checkIn: CheckIn.appAlert);
+    expect(c.current!.byLine, 'Found by Sam', reason: 'a find shows as Found by');
     final photo = Uint8List.fromList([1, 2, 3]);
     model.passOn('07', city: 'Boulder, CO', handedToSomeone: true, chapter: 'Hi', nickname: 'Sam', grantedWish: true, photo: photo);
     expect(c.stops.length, stopsBefore + 2);
     expect(c.current!.photo, photo, reason: 'the photo is saved with the chapter');
     expect(c.current!.note, 'Hi');
+    expect(c.current!.byLine, 'Left by Sam');
     expect(c.current!.city, 'Boulder, CO');
     expect(model.stamps.length, stampsBefore + 2);
     model.setNextWish('07', 'I want to meet a dog.');

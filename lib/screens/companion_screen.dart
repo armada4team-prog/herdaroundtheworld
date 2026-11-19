@@ -171,9 +171,9 @@ class _CompanionScreenState extends State<CompanionScreen> {
     final parts = [
       if (isNow) 'Now',
       if (stop.place != null) stop.place!,
-      if (stop.leftBy != null) 'left by ${stop.leftBy}',
+      if (stop.byLine != null) stop.byLine!,
       if (stop.when.isNotEmpty) stop.when,
-    ];
+    ].map(tr);
     return MergeSemantics(
       child: Padding(
         padding: const EdgeInsets.only(bottom: 12),

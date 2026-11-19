@@ -47,6 +47,13 @@ class _PassOnScreenState extends State<PassOnScreen> {
   String? emailError;
   String? wishPhotoError;
   String? photoError;
+  bool triedToSend = false; // after a send with problems, the list of fixes shows above the button
+  final kWhere = GlobalKey(), kPlace = GlobalKey(), kPhoto = GlobalKey(), kChapter = GlobalKey();
+  final kWish = GlobalKey(), kNickname = GlobalKey(), kEmail = GlobalKey();
+
+  /// Every problem still on the form, in the order they appear.
+  List<String> get problems =>
+      [whereError, placeError, photoError, chapterError, wishPhotoError, nicknameError, emailError].whereType<String>().toList();
   bool? needsFindFirst; // checked once when the screen opens
 
   @override
@@ -78,8 +85,6 @@ class _PassOnScreenState extends State<PassOnScreen> {
         .replaceAll('{0}', miles.toStringAsFixed(0));
   }
 
-  bool get canSubmit => nickname.text.trim().isNotEmpty && !saving;
-
   Future<void> submit() async {
     FocusScope.of(context).unfocus();
     final where = here;
@@ -95,8 +100,17 @@ class _PassOnScreenState extends State<PassOnScreen> {
       wishPhotoError = grantedWish && wishPhoto == null ? 'Please add a photo of the wish coming true.' : null;
       photoError = photo == null ? 'Please add a photo.' : null;
     });
-    if ([whereError, placeError, chapterError, nicknameError, emailError, wishPhotoError, photoError].any((e) => e != null)) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr('A few things need a quick fix. They’re marked in red.'))));
+    if (problems.isNotEmpty) {
+      setState(() => triedToSend = true);
+      scrollToFirstProblem([
+        kWhere,
+        kPlace,
+        kPhoto,
+        kChapter,
+        kWish,
+        kNickname,
+        kEmail,
+      ], [whereError, placeError, photoError, chapterError, wishPhotoError, nicknameError, emailError].map((e) => e != null).toList());
       return;
     }
     if (where == null) return;
@@ -177,6 +191,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
                       ),
                     ),
                   ListView(
+                    scrollCacheExtent: const ScrollCacheExtent.pixels(10000), // keep the whole form built, so we can scroll to any problem
                     keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                     padding: const EdgeInsets.all(20),
                     children: [
@@ -220,7 +235,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
                         }),
                       ),
                       const SizedBox(height: 20),
-                      const FieldLabel('Where are you? *'),
+                      FieldLabel('Where are you? *', key: kWhere),
                       const SizedBox(height: 8),
                       HereCard(
                         errorText: whereError,
@@ -236,7 +251,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
                       ),
                       if (!handToSomeone) ...[
                         const SizedBox(height: 20),
-                        const FieldLabel('Where in the city? *'),
+                        FieldLabel('Where in the city? *', key: kPlace),
                         const SizedBox(height: 8),
                         HerdField(
                           fieldKey: const Key('passPlace'),
@@ -255,7 +270,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
                         ),
                       ],
                       const SizedBox(height: 20),
-                      const FieldLabel('Add a photo *'),
+                      FieldLabel('Add a photo *', key: kPhoto),
                       const SizedBox(height: 8),
                       _photoBox(
                         photo,
@@ -273,10 +288,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
                           }
                         },
                       ),
-                      if (photoError != null) ...[
-                        const SizedBox(height: 6),
-                        Text(tr(photoError!), style: HerdText.body(14, color: Herd.pinkInk)),
-                      ],
+                      if (photoError != null) ...[const SizedBox(height: 6), ErrorNote(photoError!)],
                       const SizedBox(height: 8),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,7 +309,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
                         onChanged: (v) => setState(() => shareOK = v),
                       ),
                       const SizedBox(height: 16),
-                      const FieldLabel('Add your chapter to their story'),
+                      FieldLabel('Add your chapter to their story', key: kChapter),
                       const SizedBox(height: 8),
                       HerdField(
                         fieldKey: const Key('passChapter'),
@@ -314,9 +326,9 @@ class _PassOnScreenState extends State<PassOnScreen> {
                         tr('Keep it kind and family-friendly. Chapters are checked, and The Herd takes a quick look.'),
                         style: HerdText.body(13),
                       ),
-                      if (c != null && !c.wishGranted) ...[const SizedBox(height: 20), _wishSection(c)],
+                      if (c != null && !c.wishGranted) ...[const SizedBox(height: 20), KeyedSubtree(key: kWish, child: _wishSection(c))],
                       const SizedBox(height: 20),
-                      const FieldLabel('Your name or nickname *'),
+                      FieldLabel('Your name or nickname *', key: kNickname),
                       const SizedBox(height: 8),
                       HerdField(
                         fieldKey: const Key('passNickname'),
@@ -327,7 +339,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
                         onChanged: (_) => setState(() => nicknameError = null),
                       ),
                       const SizedBox(height: 20),
-                      const FieldLabel('Email (optional)'),
+                      FieldLabel('Email (optional)', key: kEmail),
                       const SizedBox(height: 8),
                       HerdField(
                         controller: email,
@@ -356,7 +368,8 @@ class _PassOnScreenState extends State<PassOnScreen> {
                         ],
                       ),
                       const SizedBox(height: 18),
-                      HerdButton(saving ? 'Sending…' : 'Send them on their way →', onPressed: canSubmit ? submit : null),
+                      if (triedToSend && problems.isNotEmpty) ...[FixList(problems), const SizedBox(height: 12)],
+                      HerdButton(saving ? 'Sending…' : 'Send them on their way →', onPressed: saving ? null : submit),
                     ],
                   ),
                 ],
@@ -414,7 +427,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
             });
           }
         }),
-        if (wishPhotoError != null) Text(tr(wishPhotoError!), style: HerdText.body(13, color: const Color(0xFFB3261E))),
+        if (wishPhotoError != null) ErrorNote(wishPhotoError!),
         Text(
           tr('Required for the Wish Granted stamp. It’s added once we see your photo.'),
           style: HerdText.body(13, color: Herd.butterInk),
