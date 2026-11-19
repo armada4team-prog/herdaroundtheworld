@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Herd Around the World · The Herd</title>
+<script>
+  // Static hosts show this page for addresses they don't have, like the QR link /c/07?k=CODE.
+  // Send it to the website's own Companion page: index.html#/c/07?k=CODE (works from any folder).
+  (function () {
+    var path = location.pathname;
+    var m = path.match(/^(.*?)\/c\/(\d+)\/?$/);
+    var base = m ? m[1] : path.replace(/\/[^/]*$/, '');
+    var hash = m ? '#/c/' + m[2] + location.search : '#/';
+    location.replace(base + '/index.html' + hash);
+  })();
+</script>
+</head>
+<body style="font-family: 'Fira Sans', system-ui, sans-serif; background: #FDF8F3; color: #566E62; text-align: center; padding: 60px 20px">
+<p>Taking you to Herd Around the World… <a href="index.html" style="color: #5B7869">Go now</a></p>
+</body>
+</html>

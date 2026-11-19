@@ -1,0 +1,192 @@
+// Herd Around the World website: header, footer, preview banner and the page router (#/map, #/c/07, …).
+import { load, state, resetPreview } from './data.js';
+import { tr, lang, setLang, languages } from './i18n.js';
+import { esc, t, icons } from './ui.js';
+import * as home from './pages/home.js';
+import * as mapPage from './pages/map.js';
+import * as findPage from './pages/find.js';
+import * as care from './pages/care.js';
+import * as passport from './pages/passport.js';
+import * as companionPage from './pages/companion.js';
+import * as foundForm from './pages/found.js';
+import * as passOn from './pages/pass-on.js';
+import * as wish from './pages/wish.js';
+import * as sent from './pages/sent.js';
+import * as broke from './pages/broke.js';
+import * as chat from './pages/chat.js';
+import * as story from './pages/story.js';
+
+export const HERD_SITE = 'https://www.theherdstudio.com';
+
+const routes = [
+  [/^\/?$/, home, 'home'],
+  [/^\/map$/, mapPage, 'map'],
+  [/^\/found$/, findPage, 'found'],
+  [/^\/care$/, care, 'care'],
+  [/^\/passport$/, passport, 'passport'],
+  [/^\/c\/(\d+)$/, companionPage],
+  [/^\/c\/(\d+)\/found$/, foundForm],
+  [/^\/c\/(\d+)\/pass-on$/, passOn],
+  [/^\/c\/(\d+)\/wish$/, wish],
+  [/^\/c\/(\d+)\/sent$/, sent],
+  [/^\/c\/(\d+)\/something-happened$/, broke],
+  [/^\/c\/(\d+)\/chat$/, chat],
+  [/^\/c\/(\d+)\/story$/, story],
+];
+
+const main = document.getElementById('main');
+let cleanup = null;
+let currentKey = null;
+
+function parseHash() {
+  const raw = location.hash.replace(/^#/, '') || '/';
+  const [path, qs] = raw.split('?');
+  return { path: path || '/', query: new URLSearchParams(qs || '') };
+}
+
+/** Goes to a page: go('/c/07/found'). */
+export function go(path, { replace = false } = {}) {
+  const target = '#' + path;
+  if (location.hash === target) { render(); return; }
+  if (replace) location.replace(target); else location.hash = target;
+}
+
+function header(active) {
+  const links = [
+    ['map', '#/map', 'Map'],
+    ['found', '#/found', 'Found a Companion'],
+    ['care', '#/care', 'Companions in Your Care'],
+    ['passport', '#/passport', 'Passport'],
+  ];
+  const current = languages.find((l) => l.code === lang());
+  return `<nav aria-label="${t('Main')}">
+    <a class="home-link" href="${HERD_SITE}">
+      <span class="back-hint">${icons.back}${t('The Herd')}</span>
+      <span class="wordmark">THE HERD</span>
+    </a>
+    <div class="menu-pill" id="menu">
+      <a href="${HERD_SITE}">${t('Home')}</a>
+      <div class="hatw">
+        <a href="#/"${active === 'home' ? ' aria-current="page"' : ''}><span>${t('Herd Around the World')}</span></a>
+        <button class="hatw-toggle" type="button" aria-expanded="false" aria-controls="hatw-drop" aria-label="${t('More pages')}">${icons.chevronDown}</button>
+        <div class="hatw-drop" id="hatw-drop">
+          ${links.map(([k, href, text]) => `<a href="${href}"${active === k ? ' aria-current="page"' : ''}>${t(text)}</a>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="lang">
+      <button class="lang-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="${t('Language')}: ${esc(current.label)}">${icons.globe}<span>${esc(lang().toUpperCase())}</span></button>
+      <ul class="lang-list" role="menu" hidden>
+        ${languages.map((l) => `<li role="none"><button type="button" role="menuitemradio" aria-checked="${l.code === lang()}" data-lang="${l.code}">${esc(l.label)}</button></li>`).join('')}
+      </ul>
+    </div>
+    <button class="circle-btn menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="${t('Menu')}">${icons.menu}</button>
+  </nav>`;
+}
+
+function bindHeader(el) {
+  const langBtn = el.querySelector('.lang-btn');
+  const list = el.querySelector('.lang-list');
+  langBtn.addEventListener('click', () => {
+    const open = list.hidden;
+    list.hidden = !open;
+    langBtn.setAttribute('aria-expanded', String(open));
+    if (open) list.querySelector('[aria-checked="true"]').focus();
+  });
+  list.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-lang]');
+    if (!b) return;
+    setLang(b.dataset.lang);
+    list.hidden = true;
+    render(true);
+  });
+  const hatw = el.querySelector('.hatw');
+  const toggle = el.querySelector('.hatw-toggle');
+  toggle.addEventListener('click', () => {
+    const open = !hatw.classList.contains('open');
+    hatw.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+  const menuBtn = el.querySelector('.menu-btn');
+  menuBtn.addEventListener('click', () => {
+    const open = !el.classList.contains('menu-open');
+    el.classList.toggle('menu-open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.lang')) { list.hidden = true; langBtn.setAttribute('aria-expanded', 'false'); }
+    if (!e.target.closest('.hatw')) { hatw.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { list.hidden = true; hatw.classList.remove('open'); el.classList.remove('menu-open'); }
+  });
+}
+
+function footer() {
+  return `<div class="wrap">
+    <div>
+      <p class="script">${t('The Herd · Made to be part of the family.')}</p>
+      <p class="muted">${t('Share your find. Mention @growtheherdstudio and use #TheHerdCompanions')}</p>
+    </div>
+    <nav aria-label="${t('Footer')}">
+      <a href="#/map">${t('Map')}</a>
+      <a href="#/found">${t('Found a Companion')}</a>
+      <a href="#/passport">${t('Passport')}</a>
+      <a href="${HERD_SITE}">theherdstudio.com</a>
+      <span class="muted" style="display:inline-flex;align-items:center">© 2026 The Herd</span>
+    </nav>
+  </div>`;
+}
+
+function banner() {
+  const el = document.getElementById('banner');
+  if (state.mode !== 'preview') { el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="preview-banner" role="status"><span>${t('Preview: nothing is saved yet')}</span>
+    <button type="button" id="reset-preview">${t('Start over')}</button></div>`;
+  el.querySelector('#reset-preview').addEventListener('click', () => {
+    resetPreview();
+    location.reload();
+  });
+}
+
+async function render(keepScroll = false) {
+  const { path, query } = parseHash();
+  let match = null, page = null, active = null;
+  for (const [re, mod, key] of routes) {
+    const m = path.match(re);
+    if (m) { match = m; page = mod; active = key || null; break; }
+  }
+  if (!page) { go('/', { replace: true }); return; }
+  if (cleanup) { try { cleanup(); } catch (e) { /* ignore */ } cleanup = null; }
+  document.documentElement.lang = lang();
+  document.getElementById('skip').textContent = tr('Skip to content');
+  const headerEl = document.getElementById('header');
+  headerEl.className = 'site-header';
+  headerEl.innerHTML = header(active);
+  bindHeader(headerEl);
+  document.getElementById('footer').innerHTML = footer();
+  document.body.dataset.page = active || path.split('/').slice(0, 3).join('-').replace(/^-/, '') || 'home';
+  banner();
+  const key = path + '?' + query.toString();
+  const sameKey = key === currentKey;
+  currentKey = key;
+  main.innerHTML = '';
+  const ctx = { params: match.slice(1), query, root: main, go, path };
+  const result = await page.render(ctx);
+  if (typeof result === 'function') cleanup = result;
+  if (!keepScroll && !sameKey) {
+    window.scrollTo(0, 0);
+    const h1 = [...main.querySelectorAll('h1')].find((h) => h.offsetParent !== null);
+    if (h1) { h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); }
+  }
+}
+
+window.addEventListener('hashchange', () => render());
+
+(async function start() {
+  setLang(lang());
+  await load();
+  document.body.dataset.mode = state.mode;
+  await render();
+  document.body.dataset.ready = '1';
+})();

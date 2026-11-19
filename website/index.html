@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Herd Around the World · The Herd</title>
+<meta name="description" content="Find one. Carry one. Watch them go. Little clay Companions from The Herd travel the world, one traveler at a time.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 80'%3E%3Cpath d='M14 46 Q14 33 30 33 Q46 33 46 46 L46 70 Q46 75 41 75 L19 75 Q14 75 14 70 Z' fill='%23A8DCC9'/%3E%3Ccircle cx='30' cy='20' r='14' fill='%23A8DCC9'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light+Two&family=Fira+Sans:wght@400;500;600&family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="css/site.css">
+<script>
+  // A QR link like /c/07?k=CODE that landed here: turn it into #/c/07?k=CODE.
+  (function () {
+    var m = location.pathname.match(/^(.*?)\/c\/(\d+)\/?$/);
+    if (m && !location.hash) location.replace(m[1] + '/index.html#/c/' + m[2] + location.search);
+  })();
+</script>
+</head>
+<body>
+<a class="skip" href="#main" id="skip">Skip to content</a>
+<div id="banner"></div>
+<header class="site-header" id="header"></header>
+<main id="main" tabindex="-1"><div class="loading" role="status"><span class="spinner" style="display:inline-block"></span></div></main>
+<footer class="site-footer" id="footer"></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

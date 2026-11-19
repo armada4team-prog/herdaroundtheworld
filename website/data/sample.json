@@ -1,0 +1,2533 @@
+{
+ "companions": [
+  {
+   "number": "0",
+   "status": "moving",
+   "isOriginal": true,
+   "wish": "see snow on a mountain",
+   "wishGranted": false,
+   "lastMoved": "2 days ago",
+   "glaze": "F4C7C3",
+   "accent": "E58FA6",
+   "blob": "FBE4E2",
+   "code": "DG3J",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Boulder, CO",
+     "place": null,
+     "latitude": 40.01,
+     "longitude": -105.27,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Denver, CO",
+     "place": null,
+     "latitude": 39.74,
+     "longitude": -104.99,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "07",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "see the ocean",
+   "wishGranted": false,
+   "lastMoved": "3 days ago",
+   "glaze": "A8DCC9",
+   "accent": "D98C86",
+   "blob": "DDF0E8",
+   "code": "KCVT",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": "The Herd",
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Boulder, CO",
+     "place": "Coffee shop near campus",
+     "latitude": 40.01,
+     "longitude": -105.27,
+     "byName": "A friend of The Herd",
+     "chapter": "Their first stop out of the studio. Set loose at a coffee shop near campus.",
+     "whenText": "1 month ago"
+    },
+    {
+     "kind": "left",
+     "city": "Salt Lake City, UT",
+     "place": null,
+     "latitude": 40.76,
+     "longitude": -111.89,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 month ago"
+    },
+    {
+     "kind": "left",
+     "city": "Boise, ID",
+     "place": null,
+     "latitude": 43.62,
+     "longitude": -116.2,
+     "byName": "[TRAVELER 2]",
+     "chapter": "I miss this little one already. Boise was lovely to them.",
+     "whenText": "3 weeks ago"
+    },
+    {
+     "kind": "left",
+     "city": "Moab, UT",
+     "place": "Bookstore on Main Street",
+     "latitude": 38.57,
+     "longitude": -109.55,
+     "byName": "Sam R.",
+     "chapter": "Found them on a bookstore shelf and carried them through the arches.",
+     "whenText": "2 weeks ago"
+    },
+    {
+     "kind": "left",
+     "city": "Santa Fe, NM",
+     "place": "Café on the plaza",
+     "latitude": 35.69,
+     "longitude": -105.94,
+     "byName": "[TRAVELER]",
+     "chapter": "They’re on a café windowsill, watching the street.",
+     "whenText": "3 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 7
+  },
+  {
+   "number": "2",
+   "status": "moving",
+   "isOriginal": true,
+   "wish": "ride a train",
+   "wishGranted": true,
+   "lastMoved": "1 week ago",
+   "glaze": "F6E3A1",
+   "accent": "E0B94A",
+   "blob": "FBF3D6",
+   "code": "U77C",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "New York, NY",
+     "place": null,
+     "latitude": 40.71,
+     "longitude": -74,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Reykjavik",
+     "place": null,
+     "latitude": 64.15,
+     "longitude": -21.94,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Lisbon",
+     "place": null,
+     "latitude": 38.72,
+     "longitude": -9.14,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 week ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 4
+  },
+  {
+   "number": "3",
+   "status": "moving",
+   "isOriginal": true,
+   "wish": "meet a dog",
+   "wishGranted": false,
+   "lastMoved": "3 days ago",
+   "glaze": "D9CCEB",
+   "accent": "A08BC9",
+   "blob": "EFE9F7",
+   "code": "MHE6",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "New York, NY",
+     "place": null,
+     "latitude": 40.71,
+     "longitude": -74,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "London",
+     "place": null,
+     "latitude": 51.51,
+     "longitude": -0.13,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Delhi",
+     "place": null,
+     "latitude": 28.61,
+     "longitude": 77.21,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Tokyo",
+     "place": null,
+     "latitude": 35.68,
+     "longitude": 139.65,
+     "byName": null,
+     "chapter": null,
+     "whenText": "3 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 5
+  },
+  {
+   "number": "4",
+   "status": "quiet",
+   "isOriginal": true,
+   "wish": "go to a concert",
+   "wishGranted": false,
+   "lastMoved": "2 weeks ago",
+   "glaze": "BFDDF0",
+   "accent": "7FB2D9",
+   "blob": "E5F1FA",
+   "code": "CAFJ",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Mexico City",
+     "place": null,
+     "latitude": 19.43,
+     "longitude": -99.13,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Lima",
+     "place": null,
+     "latitude": -12.05,
+     "longitude": -77.04,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Buenos Aires",
+     "place": null,
+     "latitude": -34.6,
+     "longitude": -58.38,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 weeks ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 4
+  },
+  {
+   "number": "9",
+   "status": "retired",
+   "isOriginal": false,
+   "wish": "see snow",
+   "wishGranted": false,
+   "lastMoved": "5 days ago",
+   "glaze": "F7C8AE",
+   "accent": "F0A27A",
+   "blob": "FCE9DD",
+   "code": "YGRH",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Chicago, IL",
+     "place": null,
+     "latitude": 41.88,
+     "longitude": -87.63,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "London",
+     "place": null,
+     "latitude": 51.51,
+     "longitude": -0.13,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Paris",
+     "place": null,
+     "latitude": 48.86,
+     "longitude": 2.35,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Berlin",
+     "place": null,
+     "latitude": 52.52,
+     "longitude": 13.4,
+     "byName": null,
+     "chapter": null,
+     "whenText": "5 days ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 5
+  },
+  {
+   "number": "10",
+   "status": "adopted",
+   "isOriginal": false,
+   "wish": "watch a sunrise",
+   "wishGranted": false,
+   "lastMoved": "4 days ago",
+   "glaze": "A8DCC9",
+   "accent": "6BBFA3",
+   "blob": "DDF0E8",
+   "code": "DXNU",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Lisbon",
+     "place": null,
+     "latitude": 38.72,
+     "longitude": -9.14,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Rome",
+     "place": null,
+     "latitude": 41.9,
+     "longitude": 12.5,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Delhi",
+     "place": null,
+     "latitude": 28.61,
+     "longitude": 77.21,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Seoul",
+     "place": null,
+     "latitude": 37.57,
+     "longitude": 126.98,
+     "byName": null,
+     "chapter": null,
+     "whenText": "4 days ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 5
+  },
+  {
+   "number": "17",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "see penguins",
+   "wishGranted": false,
+   "lastMoved": "6 days ago",
+   "glaze": "EADFD2",
+   "accent": "C4A27A",
+   "blob": "F1EAE3",
+   "code": "YXET",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "New York, NY",
+     "place": null,
+     "latitude": 40.71,
+     "longitude": -74,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Marrakesh",
+     "place": null,
+     "latitude": 31.63,
+     "longitude": -7.99,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Nairobi",
+     "place": null,
+     "latitude": -1.29,
+     "longitude": 36.82,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Cape Town",
+     "place": null,
+     "latitude": -33.92,
+     "longitude": 18.42,
+     "byName": null,
+     "chapter": null,
+     "whenText": "6 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 5
+  },
+  {
+   "number": "18",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "learn to surf",
+   "wishGranted": false,
+   "lastMoved": "1 week ago",
+   "glaze": "B9C9BF",
+   "accent": "8FAA9B",
+   "blob": "E7ECE5",
+   "code": "FJNA",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "London",
+     "place": null,
+     "latitude": 51.51,
+     "longitude": -0.13,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Bangkok",
+     "place": null,
+     "latitude": 13.75,
+     "longitude": 100.5,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Bali",
+     "place": null,
+     "latitude": -8.41,
+     "longitude": 115.19,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Sydney",
+     "place": null,
+     "latitude": -33.87,
+     "longitude": 151.21,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 week ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 5
+  },
+  {
+   "number": "1",
+   "status": "moving",
+   "isOriginal": true,
+   "wish": "ride a train",
+   "wishGranted": false,
+   "lastMoved": "5 days ago",
+   "glaze": "A8DCC9",
+   "accent": "5FA8A0",
+   "blob": "DDF0E8",
+   "code": "4Y7Y",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Boise, ID",
+     "place": null,
+     "latitude": 43.62,
+     "longitude": -116.2,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Seattle, WA",
+     "place": null,
+     "latitude": 47.61,
+     "longitude": -122.33,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Portland, OR",
+     "place": null,
+     "latitude": 45.52,
+     "longitude": -122.68,
+     "byName": null,
+     "chapter": null,
+     "whenText": "5 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 4
+  },
+  {
+   "number": "12",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "visit a library",
+   "wishGranted": true,
+   "lastMoved": "4 days ago",
+   "glaze": "F4C7C3",
+   "accent": "E58FA6",
+   "blob": "FBE4E2",
+   "code": "TH3M",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Chicago, IL",
+     "place": null,
+     "latitude": 41.88,
+     "longitude": -87.63,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "New York, NY",
+     "place": null,
+     "latitude": 40.71,
+     "longitude": -74,
+     "byName": null,
+     "chapter": null,
+     "whenText": "4 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "13",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "meet a dog",
+   "wishGranted": false,
+   "lastMoved": "1 week ago",
+   "glaze": "E4C9DD",
+   "accent": "B07AA1",
+   "blob": "F6ECF3",
+   "code": "3D37",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Santa Fe, NM",
+     "place": null,
+     "latitude": 35.69,
+     "longitude": -105.94,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Mexico City",
+     "place": null,
+     "latitude": 19.43,
+     "longitude": -99.13,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 week ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "19",
+   "status": "waiting",
+   "isOriginal": false,
+   "wish": "see the ocean",
+   "wishGranted": false,
+   "lastMoved": "1 day ago",
+   "glaze": "F6E3A1",
+   "accent": "E0B94A",
+   "blob": "FBF3D6",
+   "code": "N9G7",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Denver, CO",
+     "place": null,
+     "latitude": 39.74,
+     "longitude": -104.99,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 day ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 2
+  },
+  {
+   "number": "20",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "ride a train",
+   "wishGranted": false,
+   "lastMoved": "2 days ago",
+   "glaze": "D9CCEB",
+   "accent": "A08BC9",
+   "blob": "EFE9F7",
+   "code": "XYQW",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Santa Fe, NM",
+     "place": null,
+     "latitude": 35.69,
+     "longitude": -105.94,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Los Angeles, CA",
+     "place": null,
+     "latitude": 34.05,
+     "longitude": -118.24,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "21",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "meet a dog",
+   "wishGranted": false,
+   "lastMoved": "4 days ago",
+   "glaze": "BFDDF0",
+   "accent": "7FB2D9",
+   "blob": "E5F1FA",
+   "code": "QDWY",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Salt Lake City, UT",
+     "place": null,
+     "latitude": 40.76,
+     "longitude": -111.89,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "San Francisco, CA",
+     "place": null,
+     "latitude": 37.77,
+     "longitude": -122.42,
+     "byName": null,
+     "chapter": null,
+     "whenText": "4 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "22",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "see snow",
+   "wishGranted": false,
+   "lastMoved": "6 days ago",
+   "glaze": "F7C8AE",
+   "accent": "F0A27A",
+   "blob": "FCE9DD",
+   "code": "GCGQ",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Santa Fe, NM",
+     "place": null,
+     "latitude": 35.69,
+     "longitude": -105.94,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Austin, TX",
+     "place": null,
+     "latitude": 30.27,
+     "longitude": -97.74,
+     "byName": null,
+     "chapter": null,
+     "whenText": "6 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "23",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "go to a concert",
+   "wishGranted": false,
+   "lastMoved": "1 week ago",
+   "glaze": "A8DCC9",
+   "accent": "6BBFA3",
+   "blob": "DDF0E8",
+   "code": "9PCY",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Chicago, IL",
+     "place": null,
+     "latitude": 41.88,
+     "longitude": -87.63,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Nashville, TN",
+     "place": null,
+     "latitude": 36.16,
+     "longitude": -86.78,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 week ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "24",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "visit a library",
+   "wishGranted": false,
+   "lastMoved": "2 weeks ago",
+   "glaze": "F4C7C3",
+   "accent": "E58FA6",
+   "blob": "FBE4E2",
+   "code": "Y99H",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "New York, NY",
+     "place": null,
+     "latitude": 40.71,
+     "longitude": -74,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Boston, MA",
+     "place": null,
+     "latitude": 42.36,
+     "longitude": -71.06,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 weeks ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "25",
+   "status": "waiting",
+   "isOriginal": false,
+   "wish": "watch a sunrise",
+   "wishGranted": false,
+   "lastMoved": "3 weeks ago",
+   "glaze": "EADFD2",
+   "accent": "C4A27A",
+   "blob": "F1EAE3",
+   "code": "RJFD",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Austin, TX",
+     "place": null,
+     "latitude": 30.27,
+     "longitude": -97.74,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Miami, FL",
+     "place": null,
+     "latitude": 25.76,
+     "longitude": -80.19,
+     "byName": null,
+     "chapter": null,
+     "whenText": "3 weeks ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "26",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "learn to surf",
+   "wishGranted": false,
+   "lastMoved": "1 day ago",
+   "glaze": "B9C9BF",
+   "accent": "8FAA9B",
+   "blob": "E7ECE5",
+   "code": "HHWC",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Santa Fe, NM",
+     "place": null,
+     "latitude": 35.69,
+     "longitude": -105.94,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Phoenix, AZ",
+     "place": null,
+     "latitude": 33.45,
+     "longitude": -112.07,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 day ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "27",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "see the ocean",
+   "wishGranted": false,
+   "lastMoved": "2 days ago",
+   "glaze": "A8DCC9",
+   "accent": "5FA8A0",
+   "blob": "DDF0E8",
+   "code": "ATEX",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Chicago, IL",
+     "place": null,
+     "latitude": 41.88,
+     "longitude": -87.63,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Toronto",
+     "place": null,
+     "latitude": 43.65,
+     "longitude": -79.38,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "28",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "ride a train",
+   "wishGranted": false,
+   "lastMoved": "4 days ago",
+   "glaze": "E4C9DD",
+   "accent": "B07AA1",
+   "blob": "F6ECF3",
+   "code": "VMRV",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Toronto",
+     "place": null,
+     "latitude": 43.65,
+     "longitude": -79.38,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Montreal",
+     "place": null,
+     "latitude": 45.5,
+     "longitude": -73.57,
+     "byName": null,
+     "chapter": null,
+     "whenText": "4 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "29",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "meet a dog",
+   "wishGranted": false,
+   "lastMoved": "6 days ago",
+   "glaze": "F6E3A1",
+   "accent": "D4A04C",
+   "blob": "FBF3D6",
+   "code": "NRWM",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Seattle, WA",
+     "place": null,
+     "latitude": 47.61,
+     "longitude": -122.33,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Vancouver",
+     "place": null,
+     "latitude": 49.28,
+     "longitude": -123.12,
+     "byName": null,
+     "chapter": null,
+     "whenText": "6 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "30",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "see snow",
+   "wishGranted": false,
+   "lastMoved": "1 week ago",
+   "glaze": "F6E3A1",
+   "accent": "E0B94A",
+   "blob": "FBF3D6",
+   "code": "D994",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Chicago, IL",
+     "place": null,
+     "latitude": 41.88,
+     "longitude": -87.63,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 week ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 2
+  },
+  {
+   "number": "31",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "go to a concert",
+   "wishGranted": false,
+   "lastMoved": "2 weeks ago",
+   "glaze": "D9CCEB",
+   "accent": "A08BC9",
+   "blob": "EFE9F7",
+   "code": "K33E",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "London",
+     "place": null,
+     "latitude": 51.51,
+     "longitude": -0.13,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Amsterdam",
+     "place": null,
+     "latitude": 52.37,
+     "longitude": 4.9,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 weeks ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "32",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "visit a library",
+   "wishGranted": false,
+   "lastMoved": "3 weeks ago",
+   "glaze": "BFDDF0",
+   "accent": "7FB2D9",
+   "blob": "E5F1FA",
+   "code": "U4JF",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Lisbon",
+     "place": null,
+     "latitude": 38.72,
+     "longitude": -9.14,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Barcelona",
+     "place": null,
+     "latitude": 41.39,
+     "longitude": 2.17,
+     "byName": null,
+     "chapter": null,
+     "whenText": "3 weeks ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "33",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "watch a sunrise",
+   "wishGranted": false,
+   "lastMoved": "1 day ago",
+   "glaze": "F7C8AE",
+   "accent": "F0A27A",
+   "blob": "FCE9DD",
+   "code": "4R4V",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Berlin",
+     "place": null,
+     "latitude": 52.52,
+     "longitude": 13.4,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Prague",
+     "place": null,
+     "latitude": 50.08,
+     "longitude": 14.42,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 day ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "34",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "learn to surf",
+   "wishGranted": false,
+   "lastMoved": "2 days ago",
+   "glaze": "A8DCC9",
+   "accent": "6BBFA3",
+   "blob": "DDF0E8",
+   "code": "CYQJ",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Munich",
+     "place": null,
+     "latitude": 48.14,
+     "longitude": 11.58,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Vienna",
+     "place": null,
+     "latitude": 48.21,
+     "longitude": 16.37,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "35",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "see the ocean",
+   "wishGranted": false,
+   "lastMoved": "4 days ago",
+   "glaze": "F4C7C3",
+   "accent": "E58FA6",
+   "blob": "FBE4E2",
+   "code": "JUKT",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "New York, NY",
+     "place": null,
+     "latitude": 40.71,
+     "longitude": -74,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Dublin",
+     "place": null,
+     "latitude": 53.35,
+     "longitude": -6.26,
+     "byName": null,
+     "chapter": null,
+     "whenText": "4 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "36",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "ride a train",
+   "wishGranted": false,
+   "lastMoved": "6 days ago",
+   "glaze": "EADFD2",
+   "accent": "C4A27A",
+   "blob": "F1EAE3",
+   "code": "TQRV",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Amsterdam",
+     "place": null,
+     "latitude": 52.37,
+     "longitude": 4.9,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Copenhagen",
+     "place": null,
+     "latitude": 55.68,
+     "longitude": 12.57,
+     "byName": null,
+     "chapter": null,
+     "whenText": "6 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "37",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "meet a dog",
+   "wishGranted": false,
+   "lastMoved": "1 week ago",
+   "glaze": "B9C9BF",
+   "accent": "8FAA9B",
+   "blob": "E7ECE5",
+   "code": "3KM7",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Copenhagen",
+     "place": null,
+     "latitude": 55.68,
+     "longitude": 12.57,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Stockholm",
+     "place": null,
+     "latitude": 59.33,
+     "longitude": 18.07,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 week ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "38",
+   "status": "quiet",
+   "isOriginal": false,
+   "wish": "see snow",
+   "wishGranted": false,
+   "lastMoved": "2 weeks ago",
+   "glaze": "A8DCC9",
+   "accent": "5FA8A0",
+   "blob": "DDF0E8",
+   "code": "ATAT",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "London",
+     "place": null,
+     "latitude": 51.51,
+     "longitude": -0.13,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Edinburgh",
+     "place": null,
+     "latitude": 55.95,
+     "longitude": -3.19,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 weeks ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "39",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "go to a concert",
+   "wishGranted": false,
+   "lastMoved": "3 weeks ago",
+   "glaze": "E4C9DD",
+   "accent": "B07AA1",
+   "blob": "F6ECF3",
+   "code": "HHTC",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Paris",
+     "place": null,
+     "latitude": 48.86,
+     "longitude": 2.35,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Munich",
+     "place": null,
+     "latitude": 48.14,
+     "longitude": 11.58,
+     "byName": null,
+     "chapter": null,
+     "whenText": "3 weeks ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "40",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "visit a library",
+   "wishGranted": true,
+   "lastMoved": "1 day ago",
+   "glaze": "F6E3A1",
+   "accent": "D4A04C",
+   "blob": "FBF3D6",
+   "code": "F69N",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Paris",
+     "place": null,
+     "latitude": 48.86,
+     "longitude": 2.35,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Rome",
+     "place": null,
+     "latitude": 41.9,
+     "longitude": 12.5,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 day ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "41",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "watch a sunrise",
+   "wishGranted": false,
+   "lastMoved": "2 days ago",
+   "glaze": "F6E3A1",
+   "accent": "E0B94A",
+   "blob": "FBF3D6",
+   "code": "7JTA",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Rome",
+     "place": null,
+     "latitude": 41.9,
+     "longitude": 12.5,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Istanbul",
+     "place": null,
+     "latitude": 41.01,
+     "longitude": 28.98,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "42",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "learn to surf",
+   "wishGranted": false,
+   "lastMoved": "4 days ago",
+   "glaze": "D9CCEB",
+   "accent": "A08BC9",
+   "blob": "EFE9F7",
+   "code": "WU4Q",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Istanbul",
+     "place": null,
+     "latitude": 41.01,
+     "longitude": 28.98,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Cairo",
+     "place": null,
+     "latitude": 30.04,
+     "longitude": 31.24,
+     "byName": null,
+     "chapter": null,
+     "whenText": "4 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "43",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "see the ocean",
+   "wishGranted": false,
+   "lastMoved": "6 days ago",
+   "glaze": "BFDDF0",
+   "accent": "7FB2D9",
+   "blob": "E5F1FA",
+   "code": "PYA9",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Tokyo",
+     "place": null,
+     "latitude": 35.68,
+     "longitude": 139.65,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Kyoto",
+     "place": null,
+     "latitude": 35.01,
+     "longitude": 135.77,
+     "byName": null,
+     "chapter": null,
+     "whenText": "6 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "44",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "ride a train",
+   "wishGranted": false,
+   "lastMoved": "1 week ago",
+   "glaze": "F7C8AE",
+   "accent": "F0A27A",
+   "blob": "FCE9DD",
+   "code": "GDGC",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Kyoto",
+     "place": null,
+     "latitude": 35.01,
+     "longitude": 135.77,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Osaka",
+     "place": null,
+     "latitude": 34.69,
+     "longitude": 135.5,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 week ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "45",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "meet a dog",
+   "wishGranted": false,
+   "lastMoved": "2 weeks ago",
+   "glaze": "A8DCC9",
+   "accent": "6BBFA3",
+   "blob": "DDF0E8",
+   "code": "9VKR",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Bangkok",
+     "place": null,
+     "latitude": 13.75,
+     "longitude": 100.5,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Hong Kong",
+     "place": null,
+     "latitude": 22.32,
+     "longitude": 114.17,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 weeks ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "46",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "see snow",
+   "wishGranted": false,
+   "lastMoved": "3 weeks ago",
+   "glaze": "F4C7C3",
+   "accent": "E58FA6",
+   "blob": "FBE4E2",
+   "code": "X3QH",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Bangkok",
+     "place": null,
+     "latitude": 13.75,
+     "longitude": 100.5,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Singapore",
+     "place": null,
+     "latitude": 1.35,
+     "longitude": 103.82,
+     "byName": null,
+     "chapter": null,
+     "whenText": "3 weeks ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "47",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "go to a concert",
+   "wishGranted": false,
+   "lastMoved": "1 day ago",
+   "glaze": "EADFD2",
+   "accent": "C4A27A",
+   "blob": "F1EAE3",
+   "code": "QER6",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Bangkok",
+     "place": null,
+     "latitude": 13.75,
+     "longitude": 100.5,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Hanoi",
+     "place": null,
+     "latitude": 21.03,
+     "longitude": 105.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 day ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "48",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "visit a library",
+   "wishGranted": false,
+   "lastMoved": "2 days ago",
+   "glaze": "B9C9BF",
+   "accent": "8FAA9B",
+   "blob": "E7ECE5",
+   "code": "DKT6",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Lima",
+     "place": null,
+     "latitude": -12.05,
+     "longitude": -77.04,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Rio de Janeiro",
+     "place": null,
+     "latitude": -22.91,
+     "longitude": -43.17,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "49",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "watch a sunrise",
+   "wishGranted": false,
+   "lastMoved": "4 days ago",
+   "glaze": "A8DCC9",
+   "accent": "5FA8A0",
+   "blob": "DDF0E8",
+   "code": "46WM",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Mexico City",
+     "place": null,
+     "latitude": 19.43,
+     "longitude": -99.13,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Bogota",
+     "place": null,
+     "latitude": 4.71,
+     "longitude": -74.07,
+     "byName": null,
+     "chapter": null,
+     "whenText": "4 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "50",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "learn to surf",
+   "wishGranted": false,
+   "lastMoved": "6 days ago",
+   "glaze": "E4C9DD",
+   "accent": "B07AA1",
+   "blob": "F6ECF3",
+   "code": "RK6P",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Lima",
+     "place": null,
+     "latitude": -12.05,
+     "longitude": -77.04,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Santiago",
+     "place": null,
+     "latitude": -33.45,
+     "longitude": -70.67,
+     "byName": null,
+     "chapter": null,
+     "whenText": "6 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "51",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "see the ocean",
+   "wishGranted": false,
+   "lastMoved": "1 week ago",
+   "glaze": "F6E3A1",
+   "accent": "D4A04C",
+   "blob": "FBF3D6",
+   "code": "YFX6",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Lima",
+     "place": null,
+     "latitude": -12.05,
+     "longitude": -77.04,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Cusco",
+     "place": null,
+     "latitude": -13.53,
+     "longitude": -71.97,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 week ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "52",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "ride a train",
+   "wishGranted": false,
+   "lastMoved": "2 weeks ago",
+   "glaze": "F6E3A1",
+   "accent": "E0B94A",
+   "blob": "FBF3D6",
+   "code": "AU4D",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Sydney",
+     "place": null,
+     "latitude": -33.87,
+     "longitude": 151.21,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Auckland",
+     "place": null,
+     "latitude": -36.85,
+     "longitude": 174.76,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 weeks ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "53",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "meet a dog",
+   "wishGranted": false,
+   "lastMoved": "3 weeks ago",
+   "glaze": "D9CCEB",
+   "accent": "A08BC9",
+   "blob": "EFE9F7",
+   "code": "HJNK",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Sydney",
+     "place": null,
+     "latitude": -33.87,
+     "longitude": 151.21,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Melbourne",
+     "place": null,
+     "latitude": -37.81,
+     "longitude": 144.96,
+     "byName": null,
+     "chapter": null,
+     "whenText": "3 weeks ago"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 3
+  },
+  {
+   "number": "54",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "see snow",
+   "wishGranted": false,
+   "lastMoved": "1 day ago",
+   "glaze": "BFDDF0",
+   "accent": "7FB2D9",
+   "blob": "E5F1FA",
+   "code": "TRM7",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Marrakesh",
+     "place": null,
+     "latitude": 31.63,
+     "longitude": -7.99,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Lagos",
+     "place": null,
+     "latitude": 6.52,
+     "longitude": 3.38,
+     "byName": null,
+     "chapter": null,
+     "whenText": "1 day ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "55",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "go to a concert",
+   "wishGranted": false,
+   "lastMoved": "2 days ago",
+   "glaze": "F7C8AE",
+   "accent": "F0A27A",
+   "blob": "FCE9DD",
+   "code": "3MMQ",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Lisbon",
+     "place": null,
+     "latitude": 38.72,
+     "longitude": -9.14,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Marrakesh",
+     "place": null,
+     "latitude": 31.63,
+     "longitude": -7.99,
+     "byName": null,
+     "chapter": null,
+     "whenText": "2 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "56",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "visit a library",
+   "wishGranted": false,
+   "lastMoved": "4 days ago",
+   "glaze": "A8DCC9",
+   "accent": "6BBFA3",
+   "blob": "DDF0E8",
+   "code": "C3KT",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "Istanbul",
+     "place": null,
+     "latitude": 41.01,
+     "longitude": 28.98,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "Delhi",
+     "place": null,
+     "latitude": 28.61,
+     "longitude": 77.21,
+     "byName": null,
+     "chapter": null,
+     "whenText": "4 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "57",
+   "status": "moving",
+   "isOriginal": false,
+   "wish": "watch a sunrise",
+   "wishGranted": false,
+   "lastMoved": "6 days ago",
+   "glaze": "F4C7C3",
+   "accent": "E58FA6",
+   "blob": "FBE4E2",
+   "code": "JVKE",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    },
+    {
+     "kind": "left",
+     "city": "New York, NY",
+     "place": null,
+     "latitude": 40.71,
+     "longitude": -74,
+     "byName": null,
+     "chapter": null,
+     "whenText": ""
+    },
+    {
+     "kind": "left",
+     "city": "London",
+     "place": null,
+     "latitude": 51.51,
+     "longitude": -0.13,
+     "byName": null,
+     "chapter": null,
+     "whenText": "6 days ago"
+    }
+   ],
+   "movedThisWeek": true,
+   "travelers": 3
+  },
+  {
+   "number": "5",
+   "status": "waiting",
+   "isOriginal": true,
+   "wish": "visit a library",
+   "wishGranted": false,
+   "lastMoved": "Waiting to be found",
+   "glaze": "F4C7C3",
+   "accent": "D98C86",
+   "blob": "DDF0E8",
+   "code": "3TPC",
+   "stops": [
+    {
+     "kind": "made",
+     "city": "Aurora, CO",
+     "place": null,
+     "latitude": 39.73,
+     "longitude": -104.83,
+     "byName": null,
+     "chapter": null,
+     "whenText": "Where they were made"
+    }
+   ],
+   "movedThisWeek": false,
+   "travelers": 1
+  }
+ ],
+ "chats": {
+  "07": [
+   {
+    "author": "The Herd · made them in Aurora, CO",
+    "message": "Welcome to #07’s chat! Everyone who carries them can talk here. Say hi to the travelers before you.",
+    "herd": true
+   },
+   {
+    "author": "[TRAVELER 2] · Traveler 4 · Boise, ID",
+    "message": "I miss this little one already! Where are they headed next?"
+   },
+   {
+    "author": "Sam R. · Traveler 5 · Moab, UT",
+    "message": "They loved the arches. Somewhere with mountains, please!"
+   }
+  ]
+ }
+}
