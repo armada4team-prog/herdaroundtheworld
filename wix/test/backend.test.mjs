@@ -5,12 +5,13 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
 
-const db = { Companions: [], CompanionFindCodes: [], CompanionHolds: [], CompanionStops: [], CompanionChat: [], CompanionReports: [] };
+const db = { Companions: [], CompanionFindCodes: [], CompanionHolds: [], CompanionStops: [], CompanionChat: [], CompanionReports: [], CompanionTravelers: [], CompanionSettings: [] };
 let nextId = 1;
 const query = (name) => {
   const filters = [];
   const q = {
     eq(f, v) { filters.push((i) => i[f] === v); return q; },
+    hasSome(f, vs) { filters.push((i) => Array.isArray(i[f]) && i[f].some((x) => vs.includes(x))); return q; },
     limit() { return q; },
     async find() { return { items: db[name].filter((i) => filters.every((fn) => fn(i))).map((i) => ({ ...i })) }; },
   };
@@ -20,6 +21,12 @@ globalThis.__wixData = {
   query,
   async insert(name, item) { const saved = { ...item, _id: String(nextId++) }; db[name].push(saved); return saved; },
   async update(name, item) { const i = db[name].findIndex((x) => x._id === item._id); db[name][i] = { ...item }; return item; },
+  async remove(name, id) { db[name] = db[name].filter((x) => x._id !== id); },
+};
+const sentEmails = [];
+globalThis.__crm = {
+  contacts: { async appendOrCreateContact(info) { return { contactId: 'contact-' + info.emails[0].email } } },
+  triggeredEmails: { async emailContact(emailId, contactId, opts) { sentEmails.push({ emailId, contactId, code: opts.variables.code }); } },
 };
 globalThis.__media = { async upload(folder, buffer, name) { return { fileUrl: 'wix:image://v1/' + name }; } };
 const respond = (status) => (o) => ({ status, body: o.body, headers: o.headers });
@@ -28,7 +35,8 @@ globalThis.__http = { ok: respond(200), badRequest: respond(400), serverError: r
 let src = readFileSync('wix/backend/http-functions.js', 'utf8')
   .replace("import { ok, badRequest, serverError } from 'wix-http-functions';", 'const { ok, badRequest, serverError } = globalThis.__http;')
   .replace("import wixData from 'wix-data';", 'const wixData = globalThis.__wixData;')
-  .replace("import { mediaManager } from 'wix-media-backend';", 'const mediaManager = globalThis.__media;');
+  .replace("import { mediaManager } from 'wix-media-backend';", 'const mediaManager = globalThis.__media;')
+  .replace("import { contacts, triggeredEmails } from 'wix-crm-backend';", 'const { contacts, triggeredEmails } = globalThis.__crm;');
 const dir = mkdtempSync(join(tmpdir(), 'herd-'));
 writeFileSync(join(dir, 'f.mjs'), src);
 const f = await import(join(dir, 'f.mjs'));
@@ -85,4 +93,51 @@ assert.equal(r.body.field, 'where');
 r = await call('post_herdReport', { number: '07', what: 'chipped', city: 'Denver, CO' });
 assert.equal(r.status, 200); assert.equal(db.Companions[0].status, 'moving');
 assert.equal(JSON.stringify(db).includes('KCVT') && !JSON.stringify(r).includes('KCVT'), true, 'codes never sent back');
+// ── Optional sign-in ──
+r = await call('post_herdSignInStart', { email: 'sam@example.com' });
+assert.equal(r.status, 400, 'no email template yet: friendly message');
+db.CompanionSettings.push({ _id: 's1', key: 'signInEmailId', value: 'TEMPLATE1' });
+r = await call('post_herdSignInStart', { email: 'not an email' });
+assert.equal(r.body.field, 'email');
+// Found on this device before signing in:
+r = await call('post_herdFind', { number: '07', code: 'KCVT', nickname: 'Sam', ...aurora });
+const earlyHold = r.body.holdToken;
+r = await call('post_herdSignInStart', { email: ' Sam@Example.com ' });
+assert.equal(r.status, 200); assert.equal(sentEmails.length, 1); assert.equal(sentEmails[0].emailId, 'TEMPLATE1');
+r = await call('post_herdSignInStart', { email: 'sam@example.com' });
+assert.equal(r.status, 400, 'one code a minute');
+r = await call('post_herdSignInVerify', { email: 'sam@example.com', code: '000000' === sentEmails[0].code ? '111111' : '000000' });
+assert.equal(r.body.field, 'code');
+r = await call('post_herdSignInVerify', { email: 'sam@example.com', code: sentEmails[0].code, holds: { '07': earlyHold }, following: ['07'], nickname: 'Sam' });
+assert.equal(r.status, 200); const session = r.body.session;
+assert.deepEqual(r.body.profile.holds.map((h) => h.number), ['07'], 'the find from before signing in came along');
+assert.deepEqual(r.body.profile.following, ['07']);
+assert.ok(!JSON.stringify(db.CompanionTravelers).includes(session), 'only a scrambled copy of the session is stored');
+r = await call('post_herdSignInVerify', { email: 'sam@example.com', code: sentEmails[0].code });
+assert.equal(r.status, 400, 'a code works once');
+// Pass on while signed in: it shows in their travels on every device
+r = await call('post_herdPassOn', { number: '07', holdToken: earlyHold, handedOn: true, nickname: 'Sam', photo, session, ...boulder });
+assert.equal(r.status, 200);
+r = await call('post_herdMine', { session });
+assert.equal(r.body.profile.holds.length, 0);
+assert.ok(r.body.profile.journal.some((j) => j.kind === 'passedOn' && j.number === '07'));
+// Someone else finds it later: it never shows as in Sam's care
+r = await call('post_herdFind', { number: '07', code: 'KCVT', nickname: 'Ana', ...aurora });
+r = await call('post_herdMine', { session });
+assert.equal(r.body.profile.holds.length, 0);
+r = await call('post_herdFollow', { session, number: '3', on: true });
+assert.equal(r.status, 400, 'unknown Companion');
+r = await call('post_herdFollow', { session, number: '07', on: false });
+assert.deepEqual(r.body.following, []);
+r = await call('post_herdSignOut', { session });
+r = await call('post_herdMine', { session });
+assert.equal(r.body.field, 'session', 'signed out');
+// Sign in again and delete my data
+await call('post_herdSignInStart', { email: 'sam@example.com' }).catch(() => {});
+db.CompanionTravelers[0].codeSentAt = 0;
+await call('post_herdSignInStart', { email: 'sam@example.com' });
+r = await call('post_herdSignInVerify', { email: 'sam@example.com', code: sentEmails.at(-1).code });
+r = await call('post_herdForgetMe', { session: r.body.session });
+assert.equal(r.status, 200); assert.equal(db.CompanionTravelers.length, 0);
+assert.ok(db.CompanionStops.every((st) => !st.travelerId), 'chapters stay, unlinked');
 console.log('All Wix checker tests passed.');
