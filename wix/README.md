@@ -33,7 +33,10 @@ That's it. The website and app start saving to your Wix lists right away.
 | Companion Find Codes (private) | The secret code for each Companion | Only you |
 | Companion Holds (private) | Who's holding each Companion right now | Only you |
 
-Rows marked **Sample (delete before launch)** are placeholders.
+The real Companions are #0–#5. Each starts fresh at "Where they were made · Aurora, CO" and
+waits to be found. Their secret find codes are only in **Companion Find Codes (private)**:
+print those on the bottom labels. (`tool/print_codes.dart` only lists the made-up codes the app
+uses for testing before launch; they don't work on the real site.)
 
 ## For whoever maintains the code
 

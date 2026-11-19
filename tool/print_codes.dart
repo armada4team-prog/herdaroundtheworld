@@ -1,4 +1,6 @@
-// Lists every Companion's find code and QR address, for printing their bottom labels.
+// Lists the TEST find codes the app and website use before launch (sample mode).
+// The real Companions' codes are random and live only in the Wix dashboard list
+// "Companion Find Codes (private)": print those on the real labels.
 // Run from the project folder:  dart run tool/print_codes.dart
 // Keep this list private: anyone with a code can log a find for that Companion.
 
