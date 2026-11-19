@@ -65,8 +65,9 @@ export async function render({ root, go }) {
       </div>
       <div class="hero-art" aria-hidden="true">
         ${blob('#E7ECE5', 'fill')}
-        <svg class="route" viewBox="0 0 460 460"><path d="M70 330 C140 260 190 300 240 230 S 340 140 390 110" stroke="#6E8B7D" stroke-width="3" stroke-dasharray="2 11" stroke-linecap="round" fill="none"/><circle cx="390" cy="110" r="44" fill="#F6D3D3" opacity="0.9"/><circle cx="390" cy="110" r="10" fill="#5B7869"/><circle cx="240" cy="230" r="7" fill="#6E8B7D"/></svg>
-        <div class="hero-figs">${figure({ glaze: 'A8DCC9', size: 76 })}${figure({ glaze: 'F4C7C3', size: 104 })}${figure({ glaze: 'F6E3A1', size: 76 })}</div>
+        <div class="hero-pin"></div>
+        <svg class="route" viewBox="0 0 460 460"><path d="M70 330 C140 260 190 300 240 230 S 340 140 390 110" stroke="#6E8B7D" stroke-width="3" stroke-dasharray="2 11" stroke-linecap="round" fill="none"/><circle cx="390" cy="110" r="10" fill="#5B7869"/><circle cx="240" cy="230" r="7" fill="#6E8B7D"/></svg>
+        <div class="hero-figs">${figure({ glaze: 'A8DCC9', size: 100 })}${figure({ glaze: 'F4C7C3', size: 136 })}${figure({ glaze: 'F6E3A1', size: 100 })}</div>
       </div>
     </div>
   </section>

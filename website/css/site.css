@@ -183,7 +183,13 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.45; }
 .hero-art { position: relative; aspect-ratio: 1; max-width: 470px; justify-self: center; width: 100%; }
 .hero-art .blob { inset: 0; }
 .hero-art svg.route { position: absolute; inset: 0; width: 100%; height: 100%; }
-.hero-figs { position: absolute; left: 14%; right: 14%; bottom: 14%; display: flex; align-items: flex-end; justify-content: space-between; z-index: 1; }
+.hero-figs { position: absolute; left: 0; right: 0; bottom: 14%; display: flex; align-items: flex-end; justify-content: center; gap: 4px; z-index: 1; }
+/* Same sizes as the Page 3 design (100, 136, 100 px in a 460 px picture), shrinking with the picture on phones. */
+.hero-figs > * { width: 21.7% !important; height: auto; flex: none; }
+.hero-figs > :nth-child(2) { width: 29.6% !important; }
+.hero-figs > * svg, .hero-figs > svg { width: 100%; height: auto; display: block; }
+/* The soft pink blob at the end of the path (from the design). */
+.hero-pin { position: absolute; right: 6%; top: 8%; width: 26%; height: 22%; background: #F6D3D3; border-radius: 50% 50% 45% 55% / 60% 40% 60% 40%; }
 .find-box { display: flex; gap: 10px; flex-wrap: wrap; max-width: 470px; }
 .hash-input { display: flex; align-items: center; gap: 10px; background: var(--field); border-radius: 12px; padding: 0 16px; flex: 1; min-width: 200px; border: 2px solid transparent; }
 .hash-input:focus-within { border-color: var(--sage-dark); }
