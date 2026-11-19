@@ -36,8 +36,8 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .eyebrow.big { font-size: 20px; letter-spacing: 1.2px; }
 .muted { font-size: 13px; color: var(--body); }
 .lead { font-size: 17px; }
-.h-xl { font-size: clamp(56px, 6.4vw, 92px); line-height: 1.18; padding-bottom: 0.1em; }
-.h-lg { font-size: clamp(44px, 6vw, 76px); line-height: 1.18; padding-bottom: 0.12em; }
+.h-xl { font-size: clamp(56px, 6.4vw, 92px); line-height: 1.34; padding-bottom: 0.1em; }
+.h-lg { font-size: clamp(44px, 6vw, 76px); line-height: 1.3; padding-bottom: 0.12em; }
 .h-md { font-size: clamp(36px, 4.5vw, 56px); }
 .h-sm { font-size: 40px; }
 
@@ -560,4 +560,11 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.45; }
 @media (min-width: 900px) {
   .signin-card .signin-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 48px; align-items: start; max-width: none; }
   .signin-card .signin-cols .col-b { padding-top: 8px; }
+}
+
+/* Phones: the big handwritten headline a little smaller, so "Watch them go." fits one line
+   and the letters' tails never touch the line below. */
+@media (max-width: 600px) {
+  .h-xl { font-size: 46px; line-height: 1.4; }
+  .h-lg { font-size: 40px; line-height: 1.36; }
 }
