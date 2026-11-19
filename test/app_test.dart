@@ -34,7 +34,8 @@ void main() {
     expect(c.stops.length, stopsBefore + 2);
     expect(c.current!.photo, photo, reason: 'the photo is saved with the chapter');
     expect(c.current!.note, 'Hi');
-    expect(c.current!.byLine, 'Left by Sam');
+    expect(c.current!.byLine, 'Passed on by Sam', reason: 'handed to someone');
+    expect(model.activity.first.meta, 'Passed on by Sam · Just now');
     expect(c.current!.city, 'Boulder, CO');
     expect(model.stamps.length, stampsBefore + 2);
     model.setNextWish('07', 'I want to meet a dog.');
@@ -120,6 +121,8 @@ void main() {
     expect(model.farEnoughToPassOn('3', boulder), isTrue);
     model.passOn('3', city: 'Boulder, CO', handedToSomeone: false, chapter: '', nickname: 'Sam', grantedWish: false, exactPoint: boulder);
     expect(c.stops.length, stops + 1);
+    expect(c.current!.byLine, 'Left by Sam', reason: 'left somewhere');
+    expect(model.activity.first.meta, 'Left by Sam · Just now');
 
     // Handing a Companion to someone is a gift: fine right where it was found.
     model.tryFindCode('3', findCodeFor('3'));

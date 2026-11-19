@@ -298,6 +298,19 @@ class AppModel extends ChangeNotifier {
           when: 'Just now',
           note: chapter.isEmpty ? null : chapter,
           photo: photo,
+          handedOn: handedToSomeone,
+        ),
+      );
+      activity.insert(
+        0,
+        ActivityItem(
+          title: '#$number just arrived in $city!',
+          meta: '${c.current!.byLine} · Just now',
+          icon: Icons.place_outlined,
+          background: 'DDF0E8',
+          foreground: '2F4A3D',
+          route: CompanionRoute(number),
+          isToday: true,
         ),
       );
       c.status = handedToSomeone ? CompanionStatus.moving : CompanionStatus.waiting;
