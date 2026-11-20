@@ -39,7 +39,7 @@ jobs:
       - name: Put the website together
         run: |
           mkdir -p _site
-          cp -r website/index.html website/404.html website/css website/js website/data _site/
+          cp -r website/index.html website/404.html website/css website/js website/data website/img _site/
           # The shared rules live next to the website in the repo; on the site they sit in js/.
           cp shared/rules.js _site/js/shared-rules.js
           find _site/js -name '*.js' -exec sed -i \

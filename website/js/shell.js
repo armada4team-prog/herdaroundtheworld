@@ -83,7 +83,9 @@ function langMenu(current) {
 }
 
 function header(active) {
+  // Looks like The Herd's own site header: the logo, then the pages side by side in a mint pill.
   const links = [
+    ['home', '#/', 'Home'],
     ['map', '#/map', 'Map'],
     ['found', '#/found', 'Found a Companion'],
     ['care', '#/care', 'Companions in Your Care'],
@@ -91,20 +93,10 @@ function header(active) {
   ];
   const current = languages.find((l) => l.code === lang());
   return `<nav aria-label="${t('Main')}">
-    <a class="home-link" href="${HERD_SITE}">
-      <span class="back-hint">${icons.back}${t('The Herd')}</span>
-      <span class="wordmark">THE HERD</span>
-    </a>
+    <a class="herd-logo" href="${HERD_SITE}"><img src="img/herd-logo.png" alt="${t('The Herd')}" width="457" height="77"></a>
     <div class="menu-pill" id="menu">
       ${accountButton('account-btn in-menu')}
-      <a href="${HERD_SITE}">${t('Home')}</a>
-      <div class="hatw">
-        <a href="#/"${active === 'home' ? ' aria-current="page"' : ''}><span>${t('Herd Around the World')}</span></a>
-        <button class="hatw-toggle" type="button" aria-expanded="false" aria-controls="hatw-drop" aria-label="${t('More pages')}">${icons.chevronDown}</button>
-        <div class="hatw-drop" id="hatw-drop">
-          ${links.map(([k, href, text]) => `<a href="${href}"${active === k ? ' aria-current="page"' : ''}>${t(text)}</a>`).join('')}
-        </div>
-      </div>
+      ${links.map(([k, href, text]) => `<a href="${href}"${active === k ? ' aria-current="page"' : ''}>${t(text)}</a>`).join('')}
     </div>
     ${accountButton('account-btn in-bar')}
     ${langMenu(current)}
@@ -139,13 +131,6 @@ function bindHeader(el) {
     list.hidden = true;
     render(true);
   });
-  const hatw = el.querySelector('.hatw');
-  const toggle = el.querySelector('.hatw-toggle');
-  toggle?.addEventListener('click', () => {
-    const open = !hatw.classList.contains('open');
-    hatw.classList.toggle('open', open);
-    toggle.setAttribute('aria-expanded', String(open));
-  });
   const menuBtn = el.querySelector('.menu-btn');
   menuBtn?.addEventListener('click', () => {
     const open = !el.classList.contains('menu-open');
@@ -161,8 +146,6 @@ function closeMenusOnOutsideClick() {
     if (!el) return;
     const list = el.querySelector('.lang-list');
     if (list && !clickedInside(e, 'lang')) { list.hidden = true; el.querySelector('.lang-btn')?.setAttribute('aria-expanded', 'false'); }
-    const hatw = el.querySelector('.hatw');
-    if (hatw && !clickedInside(e, 'hatw')) { hatw.classList.remove('open'); el.querySelector('.hatw-toggle')?.setAttribute('aria-expanded', 'false'); }
   });
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
@@ -170,23 +153,39 @@ function closeMenusOnOutsideClick() {
     if (!el) return;
     const list = el.querySelector('.lang-list');
     if (list) list.hidden = true;
-    el.querySelector('.hatw')?.classList.remove('open');
     el.classList.remove('menu-open');
   });
 }
 
+const INSTAGRAM = 'https://www.instagram.com/growtheherdstudio';
+
 function footer() {
-  return `<div class="wrap">
-    <div>
-      <p class="script">${t('The Herd · Made to be part of the family.')}</p>
-      <p class="muted">${t('Share your find. Mention @growtheherdstudio and use #TheHerdCompanions')}</p>
+  // Laid out like The Herd's own site footer, with the Companions pages in the columns.
+  return `<div class="foot">
+    <div class="foot-brand">
+      <p class="foot-title">The Herd</p>
+      <p class="foot-tag">${t('Made to be part of the family.')}</p>
+      <p class="foot-copy">${t('© 2026 The Herd. Made to be part of the family.')}</p>
     </div>
-    <nav aria-label="${t('Footer')}">
-      <a href="#/map">${t('Map')}</a>
-      <a href="#/found">${t('Found a Companion')}</a>
-      <a href="#/passport">${t('Passport')}</a>
-      <a href="${HERD_SITE}">theherdstudio.com</a>
-      <span class="muted" style="display:inline-flex;align-items:center">© 2026 The Herd</span>
+    <nav class="foot-cols" aria-label="${t('Footer')}">
+      <div class="foot-col">
+        <h2>${t('Explore')}</h2>
+        <a href="#/map">${t('Map')}</a>
+        <a href="#/found">${t('Found a Companion')}</a>
+        <a href="#/passport">${t('Passport')}</a>
+      </div>
+      <div class="foot-col">
+        <h2>${t('Connect')}</h2>
+        <a href="${HERD_SITE}">${t('The Herd')}</a>
+        <div class="foot-social">
+          <a class="social" href="${INSTAGRAM}" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="4.5" width="15" height="15" rx="4.2" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.6" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="16.3" cy="7.7" r="1.05" fill="#fff"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h2>${t('Other')}</h2>
+        <a href="#/care">${t('Companions in Your Care')}</a>
+        <button type="button" class="foot-link" data-foot-account>${t('Sign up or sign in')}</button>
+      </div>
     </nav>
   </div>`;
 }
@@ -219,7 +218,10 @@ async function render(keepScroll = false) {
   headerEl.innerHTML = env.embedded ? embeddedBar(active) : header(active);
   bindHeader(headerEl);
   const footerEl = byId('footer');
-  if (footerEl) footerEl.innerHTML = env.embedded ? '' : footer();
+  if (footerEl) {
+    footerEl.innerHTML = env.embedded ? '' : footer();
+    footerEl.querySelector('[data-foot-account]')?.addEventListener('click', () => openSignInSheet());
+  }
   appBody().dataset.page = active || path.split('/').slice(0, 3).join('-').replace(/^-/, '') || 'home';
   banner();
   const key = path + '?' + query.toString();

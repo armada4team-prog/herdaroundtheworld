@@ -2,6 +2,11 @@
 // Keys are the English text; {0}, {1}… stand for names and numbers. Have a native speaker review these.
 export const webTranslations = {
   es: {
+    'Explore': 'Explora',
+    'Connect': 'Conecta',
+    'Other': 'Otros',
+    'Made to be part of the family.': 'Hechos para ser parte de la familia.',
+    '© 2026 The Herd. Made to be part of the family.': '© 2026 The Herd. Hechos para ser parte de la familia.',
     'Sign up or sign in': 'Regístrate o inicia sesión',
     'Signed in as {0}': 'Sesión iniciada como {0}',
     'Optional and free. Add your email to keep your Passport, stamps and the Companions in your care on any phone or computer.': 'Opcional y gratis. Añade tu correo para guardar tu Pasaporte, tus sellos y los Compañeros a tu cuidado en cualquier teléfono o computadora.',
@@ -160,6 +165,11 @@ export const webTranslations = {
     '{0} months ago': 'hace {0} meses',
   },
   fr: {
+    'Explore': 'Explorer',
+    'Connect': 'Nous suivre',
+    'Other': 'Autres',
+    'Made to be part of the family.': 'Faits pour faire partie de la famille.',
+    '© 2026 The Herd. Made to be part of the family.': '© 2026 The Herd. Faits pour faire partie de la famille.',
     'Sign up or sign in': 'Créer un compte ou se connecter',
     'Signed in as {0}': 'Connecté en tant que {0}',
     'Optional and free. Add your email to keep your Passport, stamps and the Companions in your care on any phone or computer.': 'Facultatif et gratuit. Ajoutez votre e-mail pour retrouver votre Passeport, vos tampons et les Compagnons dont vous prenez soin sur n’importe quel téléphone ou ordinateur.',
@@ -318,6 +328,11 @@ export const webTranslations = {
     '{0} months ago': 'il y a {0} mois',
   },
   ja: {
+    'Explore': '見てまわる',
+    'Connect': 'つながる',
+    'Other': 'その他',
+    'Made to be part of the family.': '家族の一員になるために作られました。',
+    '© 2026 The Herd. Made to be part of the family.': '© 2026 The Herd. 家族の一員になるために作られました。',
     'Sign up or sign in': '登録・サインイン',
     'Signed in as {0}': '{0} でサインイン中',
     'Optional and free. Add your email to keep your Passport, stamps and the Companions in your care on any phone or computer.': '任意・無料です。メールアドレスを登録すると、パスポート、スタンプ、預かっているコンパニオンをどのスマホやパソコンでも見られます。',
