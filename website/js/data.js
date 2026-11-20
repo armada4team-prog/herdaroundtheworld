@@ -20,7 +20,7 @@ const WIX_API = 'https://www.wixapis.com';
 // ▶ THE CHECKER ADDRESS (the Cloudflare Worker in worker/). Change it here once the Worker is
 // deployed; the app has the same address in lib/wix_api.dart (checkerBase). Until it answers, the
 // site stays in preview mode.
-const CHECKER = 'https://herd-checker.REPLACE-ME.workers.dev/';
+const CHECKER = 'https://herd-checker.growtheherd.workers.dev/';
 
 export const state = { mode: 'loading', companions: [], chats: {} };
 

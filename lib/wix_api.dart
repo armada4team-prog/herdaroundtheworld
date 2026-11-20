@@ -19,7 +19,7 @@ const wixApi = 'https://www.wixapis.com';
 /// ▶ THE CHECKER ADDRESS (the Cloudflare Worker in worker/). Change it here once the Worker is
 /// deployed; the website has the same address in website/js/data.js (CHECKER). Until it answers,
 /// the app stays in sample mode.
-const checkerBase = 'https://herd-checker.REPLACE-ME.workers.dev/';
+const checkerBase = 'https://herd-checker.growtheherd.workers.dev/';
 
 /// What the checker answered. [status] is 0 when The Herd couldn't be reached at all.
 class CheckerReply {

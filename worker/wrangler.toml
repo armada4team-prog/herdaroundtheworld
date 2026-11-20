@@ -1,6 +1,7 @@
 # Cloudflare Worker for the Herd Around the World checker (free plan is plenty).
 # Deploy from this folder:  npx wrangler@4 deploy     (see README.md; it builds first)
 name = "herd-checker"
+account_id = "8ada2829302c757f3bc9e8618a4e748d"
 main = "dist/worker.js"
 compatibility_date = "2025-10-01"
 workers_dev = true
