@@ -1,7 +1,7 @@
 /// Find codes: proof that someone is really holding a Companion.
 ///
 /// Every Companion has a short secret code (like "KX4P"). It's hidden inside the QR code on
-/// their bottom (https://theherdstudio.com/c/07?k=KX4P) and printed small under their number,
+/// their bottom (https://companions.theherdstudio.com/c/07?k=KX4P) and printed small under their number,
 /// for when the camera won't scan. Logging a find needs that code, so typing a number alone
 /// only lets you look at a Companion's page.
 ///
@@ -44,7 +44,7 @@ String cleanFindCode(String typed) => typed.toUpperCase().replaceAll(RegExp(r'[^
 bool isRightFindCode(String number, String typed) => cleanFindCode(typed) == findCodeFor(number);
 
 /// The web address to put in a Companion's QR code.
-String qrAddressFor(String number) => 'https://theherdstudio.com/c/$number?k=${findCodeFor(number)}';
+String qrAddressFor(String number) => 'https://companions.theherdstudio.com/c/$number?k=${findCodeFor(number)}';
 
 /// Reads the code out of a scanned QR address ("...?k=KX4P"), if it has one.
 String? codeFromScan(String payload) => RegExp(r'[?&]k=([A-Za-z0-9]+)').firstMatch(payload)?.group(1);

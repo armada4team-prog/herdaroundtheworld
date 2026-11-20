@@ -130,7 +130,7 @@ class Companion {
   Color get blobColor => hex(blob);
   Stop? get current => stops.isEmpty ? null : stops.last;
   String get wishSentence => 'I want to $wish.';
-  Uri get shareUrl => Uri.parse('https://theherdstudio.com/c/$number');
+  Uri get shareUrl => Uri.parse('https://companions.theherdstudio.com/c/$number');
 
   /// The first entry is the studio in Aurora, so it isn't counted as a stop.
   int get stopCount => math.max(stops.length - 1, 0);

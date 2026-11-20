@@ -1,0 +1,50 @@
+name: Companions website
+
+# Publishes the Companions website (website/ + shared/rules.js) to GitHub Pages whenever it
+# changes. Before The Herd's Wix site is published, the site runs in preview mode on its own.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'website/**'
+      - 'shared/**'
+      - '.github/workflows/website.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Put the website together
+        run: |
+          mkdir -p _site
+          cp -r website/index.html website/404.html website/css website/js website/data _site/
+          # The shared rules live next to the website in the repo; on the site they sit in js/.
+          cp shared/rules.js _site/js/shared-rules.js
+          find _site/js -name '*.js' -exec sed -i \
+            -e "s#'../../../shared/rules.js'#'../shared-rules.js'#g" \
+            -e "s#'../../shared/rules.js'#'./shared-rules.js'#g" {} +
+          if grep -rq "shared/rules.js" _site/js; then echo "an import still points outside the site" && exit 1; fi
+          touch _site/.nojekyll
+          ls -R _site | head -40
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

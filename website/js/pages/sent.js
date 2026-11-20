@@ -46,7 +46,7 @@ async function savePostcard(c, photoUrl) {
   g.fillText(tr(`Greetings from ${current(c)?.city || 'the road'}!`), 50, 740);
   g.fillStyle = '#566E62';
   g.font = '30px "Fira Sans", sans-serif';
-  g.fillText(tr(`${c.name ? c.name + ' · ' : ''}Companion #${c.number} · Stop ${c.stops.length} · theherdstudio.com/c/${c.number}`), 50, 810);
+  g.fillText(tr(`${c.name ? c.name + ' · ' : ''}Companion #${c.number} · Stop ${c.stops.length} · companions.theherdstudio.com/c/${c.number}`), 50, 810);
   const a = document.createElement('a');
   a.download = `companion-${c.number}-postcard.png`;
   a.href = canvas.toDataURL('image/png');
@@ -75,7 +75,7 @@ export async function render({ params, root }) {
           <span class="mark">#${esc(c.number)}</span>
         </div>
         <p class="script">${t(`Greetings from ${city || 'the road'}!`)}</p>
-        <p class="muted">${t(`${c.name ? c.name + ' · ' : ''}Companion #${c.number} · Stop ${c.stops.length} · theherdstudio.com/c/${c.number}`)}</p>
+        <p class="muted">${t(`${c.name ? c.name + ' · ' : ''}Companion #${c.number} · Stop ${c.stops.length} · companions.theherdstudio.com/c/${c.number}`)}</p>
       </div>
       <div class="two">
         <button type="button" class="btn soft" id="copy">${t('Copy caption')}</button>
