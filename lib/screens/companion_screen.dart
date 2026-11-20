@@ -59,6 +59,11 @@ class _CompanionScreenState extends State<CompanionScreen> {
                           children: [
                             Eyebrow('Art in Transit · No. ${c.number}'),
                             Text(c.displayName, style: HerdText.script(40)),
+                            if (c.blurb.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 4),
+                                child: Text('“${c.blurb}”', style: HerdText.body(15).copyWith(fontStyle: FontStyle.italic, color: Herd.body)),
+                              ),
                             InfoPill(c.status.label, background: retired ? hex('F8DCC8') : Herd.mintSoft),
                           ],
                         ),

@@ -93,6 +93,7 @@ export async function render({ params, query, root, go }) {
       <div>
         <p class="eyebrow big">${t(`Companion #${c.number}`)}</p>
         <h1 class="script guy-name">${esc(displayName(c))}</h1>
+        ${c.blurb ? `<p class="guy-blurb">“${esc(c.blurb)}”</p>` : ''}
         <div class="pills">
           ${pill(statusLabels[c.status] || c.status, retired ? 'retired' : 'mint')}
           ${cur ? `<span class="pill white">${icons.pin}${t(`Last seen in ${cur.city}`)}</span>` : ''}

@@ -294,6 +294,8 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.45; }
 .guy-art .figure, .guy-art img { position: relative; z-index: 1; }
 .guy-art img { width: 70%; height: 70%; object-fit: cover; border-radius: 50%; }
 .guy-name { font-size: clamp(56px, 7vw, 96px); line-height: 1.15; margin: 6px 0 18px; }
+.guy-name:has(+ .guy-blurb) { margin-bottom: 4px; }
+.guy-blurb { font-size: 19px; font-style: italic; color: var(--body); line-height: 1.45; margin: 0 0 18px; max-width: 34em; }
 .wish-card { background: var(--butter); border-radius: 22px; padding: 18px 22px; display: flex; gap: 16px; align-items: center; color: var(--butter-ink); }
 .wish-card .ic { width: 30px; height: 30px; }
 .wish-card .script { font-size: 32px; color: var(--wish-ink); }
@@ -462,6 +464,7 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.45; }
   .guy-hero { padding: 26px 0 40px; }
   .guy-art { max-width: 240px; }
   .guy-name { font-size: 56px; margin-bottom: 12px; }
+  .guy-blurb { font-size: 17px; margin-bottom: 14px; }
   .actions .btn { flex: 1 1 100%; }
   .journey-map { height: 300px; }
   .chapter { grid-template-columns: 1fr; gap: 12px; }
