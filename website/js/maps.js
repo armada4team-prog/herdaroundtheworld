@@ -1,5 +1,6 @@
 // Leaflet maps with OpenStreetMap tiles (softened to sit with The Herd's colours).
 import { t, esc } from './ui.js';
+import { asset } from './env.js';
 
 export const hasLeaflet = () => typeof window.L !== 'undefined';
 
@@ -15,6 +16,8 @@ export function makeMap(el, { interactive = true, center = [30, -30], zoom = 2, 
     zoomControl: false, dragging: interactive, scrollWheelZoom: false,
     doubleClickZoom: interactive, boxZoom: interactive, keyboard: interactive, touchZoom: interactive,
     attributionControl: true,
+    // Animated zooms can finish after a page has moved on and its map is gone (a Leaflet error), so zoom without the animation.
+    zoomAnimation: false,
   });
   map.attributionControl.setPrefix(false);
   if (interactive) L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -37,7 +40,7 @@ export function makeMap(el, { interactive = true, center = [30, -30], zoom = 2, 
 let landPromise = null;
 /** The world outline (Natural Earth, public domain), loaded once. */
 function worldLand() {
-  landPromise ??= fetch(new URL('../data/world-land.json', import.meta.url)).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  landPromise ??= fetch(asset('data/world-land.json')).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   return landPromise;
 }
 

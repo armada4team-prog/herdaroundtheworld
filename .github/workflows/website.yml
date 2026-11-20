@@ -1,7 +1,7 @@
 name: Companions website
 
-# Publishes the Companions website (website/ + shared/rules.js) to GitHub Pages whenever it
-# changes. Before The Herd's Wix site is published, the site runs in preview mode on its own.
+# Publishes the Companions website (website/ + shared/rules.js) and the Wix custom element
+# (herd-around-the-world.js) to GitHub Pages whenever they change. Before The Herd's Wix site is published, the site runs in preview mode on its own.
 on:
   push:
     branches: [main]
@@ -29,6 +29,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build the Wix custom element (one file with everything in it)
+        run: node website/tools/build-element.mjs
+
       - name: Put the website together
         run: |
           mkdir -p _site
@@ -39,6 +46,8 @@ jobs:
             -e "s#'../../../shared/rules.js'#'../shared-rules.js'#g" \
             -e "s#'../../shared/rules.js'#'./shared-rules.js'#g" {} +
           if grep -rq "shared/rules.js" _site/js; then echo "an import still points outside the site" && exit 1; fi
+          # The Wix custom element: Server URL …/herd-around-the-world.js, Tag Name herd-around-the-world.
+          cp website/dist/herd-around-the-world.js _site/herd-around-the-world.js
           touch _site/.nojekyll
           ls -R _site | head -40
 

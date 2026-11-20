@@ -1,6 +1,7 @@
 // One page per Companion (TGuy design, phone: the app's Companion screen). A QR scan opens it
 // with the hello card on top (THello design).
 import { companion, isHolding, unlockedCode, setUnlocked, checkFindCode, isFollowing, toggleFollow, chatFor } from '../data.js';
+import { activeElement } from '../env.js';
 import { t, esc, icons, figure, badge, blob, pill, share } from '../ui.js';
 import { tr } from '../i18n.js';
 import { displayName, label, current, wishSentence, stopCount, miles, byLine, statusLabels, formatThousands } from '../model.js';
@@ -137,7 +138,7 @@ export async function render({ params, query, root, go }) {
   <div id="hello-slot"></div>`;
 
   root.querySelector('#share').addEventListener('click', (e) =>
-    share(`Follow Companion #${c.number} around the world with The Herd:`, `https://companions.theherdstudio.com/c/${c.number}`, e.currentTarget));
+    share(`Follow Companion #${c.number} around the world with The Herd:`, `https://www.theherdstudio.com/herd-around-the-world#/c/${c.number}`, e.currentTarget));
   root.querySelector('#follow').addEventListener('click', (e) => {
     toggleFollow(c.number);
     e.currentTarget.setAttribute('aria-checked', String(isFollowing(c.number)));
@@ -146,7 +147,7 @@ export async function render({ params, query, root, go }) {
   const slot = root.querySelector('#hello-slot');
   let lastFocus = null;
   function openHello() {
-    lastFocus = document.activeElement;
+    lastFocus = activeElement();
     slot.innerHTML = helloCard(c);
     const overlay = slot.querySelector('#hello');
     overlay.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', closeHello));

@@ -4,6 +4,7 @@
 // pattern ("You found {0}!"). Travelers' own chapters and chat messages are never translated.
 import { appTranslations } from './translations.js';
 import { webTranslations } from './translations-web.js';
+import { env } from './env.js';
 
 export const languages = [
   { code: 'en', label: 'English' },
@@ -26,7 +27,8 @@ export function lang() { return current; }
 export function setLang(code) {
   current = code === 'en' || tables[code] ? code : 'en';
   try { localStorage.setItem('herd.lang', current); } catch (e) { /* ignore */ }
-  document.documentElement.lang = current;
+  if (env.embedded) env.host?.setAttribute('lang', current);
+  else document.documentElement.lang = current;
 }
 
 const patternCache = {};

@@ -7,6 +7,36 @@ the Page 3 designs and follows the same rules as the Herd Around the World app. 
 **It is not online yet.** Nothing here has been published, and the site reads and writes nothing
 until The Herd's Wix site (theherdstudio.com) is published with the checker installed.
 
+## On The Herd's Wix site (owner steps)
+
+The website lives inside theherdstudio.com, under Wix's own header and footer, as a Wix
+**Custom Element**:
+
+1. In the Wix editor, add a page called **Herd Around the World** (page address
+   `herd-around-the-world`).
+2. Add → Embed Code → **Custom Element**. Stretch it to the full width of the page.
+3. Choose **Server URL** and enter
+   `https://armada4team-prog.github.io/herdaroundtheworld/herd-around-the-world.js`
+4. **Tag Name**: `herd-around-the-world`
+5. Menu links (Site Menu → Add a link → Web address, open in the same window):
+   - Herd Around the World: `https://www.theherdstudio.com/herd-around-the-world`
+   - Map: `https://www.theherdstudio.com/herd-around-the-world#/map`
+   - Found a Companion: `https://www.theherdstudio.com/herd-around-the-world#/found`
+   - Companions in Your Care: `https://www.theherdstudio.com/herd-around-the-world#/care`
+   - Passport: `https://www.theherdstudio.com/herd-around-the-world#/passport`
+6. Publish the Wix site. The element grows with its page, so give it no fixed height.
+
+QR codes on the Companions point to
+`https://www.theherdstudio.com/herd-around-the-world?c=<number>&k=<code>` and share links to
+`https://www.theherdstudio.com/herd-around-the-world#/c/<number>`.
+
+The element is the same website in one file: `node website/tools/build-element.mjs` makes
+`website/dist/herd-around-the-world.js` (all the JavaScript, the shared rules and the CSS; esbuild
+is pinned in the script). The GitHub Pages workflow builds it and publishes it at the site's root,
+next to the data files it reads (`data/sample.json`, `data/world-land.json`). Inside Wix it draws in
+its own shadow root, so Wix's styles and the site's don't mix; the fonts are added to the page head
+and the map library is loaded from cdnjs.
+
 ## Try it on your computer (preview)
 
 From the repository folder (the one with `website/` and `shared/` in it):
@@ -33,8 +63,8 @@ falls back to preview by itself, so it never sends finds to a checker that isn't
 `#/c/07` (a Companion) · `#/c/07/found` · `#/c/07/pass-on` · `#/c/07/wish` · `#/c/07/sent` ·
 `#/c/07/something-happened` · `#/c/07/chat` · `#/c/07/story`.
 
-QR codes point to `/c/07?k=CODE`. `404.html` sends those addresses to `index.html#/c/07?k=CODE`,
-so the site works on any static host, from any folder.
+QR codes are `…?c=07&k=CODE`; the site turns that into `#/c/07?k=CODE`. Older `/c/07?k=CODE`
+addresses still work on a static host: `404.html` sends them to `index.html#/c/07?k=CODE`.
 
 ## How it connects to Wix
 

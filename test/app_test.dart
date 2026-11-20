@@ -11,6 +11,10 @@ import 'package:herd_around_the_world/models.dart';
 void main() {
   test('reads scanned codes and typed numbers', () {
     expect(AppModel.numberFromScan('https://theherdstudio.com/c/07'), '07');
+    expect(AppModel.numberFromScan('https://www.theherdstudio.com/herd-around-the-world?c=3&k=MHE6'), '3');
+    expect(AppModel.numberFromScan('https://www.theherdstudio.com/herd-around-the-world#/c/12'), '12');
+    expect(codeFromScan('https://www.theherdstudio.com/herd-around-the-world?c=3&k=MHE6'), 'MHE6');
+    expect(codeFromScan('https://companions.theherdstudio.com/c/07?k=KCVT'), 'KCVT');
     expect(AppModel.numberFromScan('07'), '07');
     expect(AppModel.numberFromScan('hello'), isNull);
     expect(AppModel.cleanNumber('007'), '7');

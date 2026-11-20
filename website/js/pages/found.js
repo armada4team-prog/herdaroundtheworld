@@ -1,6 +1,7 @@
 // Step 1 of 2: "I found them" (TScan design, the app's Found screen). Needs the Companion's find
 // code (from the QR link or typed on "Found a Companion") and the device's location.
 import { companion, send, isHolding, unlockedCode, setUnlocked, updateMine, mine, withSession, account } from '../data.js';
+import { scrollToAppTop } from '../env.js';
 import { t, badge } from '../ui.js';
 import { tr } from '../i18n.js';
 import { checkNickname, cleanNumber } from '../../../shared/rules.js';
@@ -112,7 +113,7 @@ export async function render({ params, root }) {
       <a class="btn block" href="#/c/${c.number}/pass-on">${t('I’m passing them on now')}</a>
       <a class="btn outline block" href="#/c/${c.number}/story">${t('See their full story')}</a>
     </div></section>`;
-    window.scrollTo(0, 0);
+    scrollToAppTop();
     root.querySelector('h1').setAttribute('tabindex', '-1');
     root.querySelector('h1').focus();
   }

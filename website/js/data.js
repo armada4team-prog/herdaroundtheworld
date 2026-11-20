@@ -12,6 +12,7 @@ import {
   blur, minMilesToLeave,
 } from '../../shared/rules.js';
 import { relativeTime, daysAgo } from './model.js';
+import { asset } from './env.js';
 
 const WIX_CLIENT_ID = '492b0619-e1c9-49e2-958c-b24c49fc5771';
 const WIX_API = 'https://www.wixapis.com';
@@ -211,7 +212,7 @@ function buildPreview() {
 
 async function loadSample() {
   if (!sample) {
-    const res = await fetch(new URL('../data/sample.json', import.meta.url));
+    const res = await fetch(asset('data/sample.json'));
     sample = await res.json();
   }
   const { list, chats } = buildPreview();

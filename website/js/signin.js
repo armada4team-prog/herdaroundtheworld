@@ -4,6 +4,7 @@
 import { account, signInStart, signInVerify, signOut, forgetMe, state } from './data.js';
 import { t, esc, icons, errorNote } from './ui.js';
 import { tr } from './i18n.js';
+import { portal, activeElement } from './env.js';
 import { isEmail } from '../../shared/rules.js';
 
 let flash = null; // a note that survives the page re-drawing after signing in or out
@@ -152,13 +153,13 @@ export function mountSignIn(el, opts = {}) {
 
 /** The small sheet (dialog) used by the header button and Companions in Your Care. */
 export function openSignInSheet() {
-  const last = document.activeElement;
+  const last = activeElement();
   const wrap = document.createElement('div');
   wrap.className = 'sheet-overlay';
   wrap.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(tr(account() ? 'Your sign-in' : 'Sign up or sign in'))}">
     <button type="button" class="circle-btn sheet-close" aria-label="${t('Close')}">${icons.close}</button>
     <div class="sheet-body"></div></div>`;
-  document.body.appendChild(wrap);
+  portal().appendChild(wrap);
   document.body.style.overflow = 'hidden';
   const close = () => {
     wrap.remove();

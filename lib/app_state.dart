@@ -1386,8 +1386,11 @@ class AppModel extends ChangeNotifier {
     return trimmed.isEmpty ? (digits.isEmpty ? '' : '0') : trimmed;
   }
 
-  /// Reads a scanned QR code ("https://companions.theherdstudio.com/c/07") or a typed number ("07").
+  /// Reads a scanned QR code ("https://www.theherdstudio.com/herd-around-the-world?c=07&k=KX4P",
+  /// or the older ".../c/07?k=KX4P") or a typed number ("07").
   static String? numberFromScan(String payload) {
+    final query = RegExp(r'[?&#]c=(\d+)').firstMatch(payload);
+    if (query != null) return query.group(1);
     final match = RegExp(r'/c/(\d+)').firstMatch(payload);
     if (match != null) return match.group(1);
     final digits = payload.replaceAll(RegExp(r'\D'), '');

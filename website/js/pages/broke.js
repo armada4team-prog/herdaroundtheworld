@@ -1,5 +1,6 @@
 // "Something happened" (TBroke design): broke, chipped or lost. Every journey deserves an ending.
 import { companion, send, mine, updateMine } from '../data.js';
+import { scrollToAppTop } from '../env.js';
 import { t, icons } from '../ui.js';
 import { tr } from '../i18n.js';
 import { checkPlaceFormat, checkPublicText, checkNickname, isEmail, cleanNumber } from '../../../shared/rules.js';
@@ -113,6 +114,6 @@ export async function render({ params, root }) {
     </div></section>`;
     root.querySelector('h1').setAttribute('tabindex', '-1');
     root.querySelector('h1').focus();
-    window.scrollTo(0, 0);
+    scrollToAppTop();
   });
 }

@@ -568,3 +568,23 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.45; }
   .h-xl { font-size: 46px; line-height: 1.4; }
   .h-lg { font-size: 40px; line-height: 1.36; }
 }
+
+/* Embedded in The Herd's Wix site (<herd-around-the-world>): Wix has the header and footer, so
+   the element only has a slim bar with the Companions pages, sign-in and language. */
+.herd-embedded { min-height: 200px; }
+.site-header.embedded { background: transparent; }
+.herd-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; max-width: 1248px; margin: 0 auto; padding: 12px 24px; }
+.herd-bar-links { display: flex; flex-wrap: wrap; gap: 2px 4px; background: var(--mint-soft); border-radius: 16px; padding: 4px 10px; margin-right: auto; }
+.herd-bar-links a { color: var(--sage-dark); text-decoration: none; padding: 0 10px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 10px; white-space: nowrap; }
+.herd-bar-links a:hover { color: var(--ink); background: rgba(255, 255, 255, 0.5); }
+.herd-bar-links a[aria-current="page"] { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 5px; }
+.herd-bar-tools { display: flex; align-items: center; gap: 10px; }
+.site-header.embedded .account-btn.in-bar { display: inline-flex; }
+@media (max-width: 640px) {
+  .herd-bar { padding: 8px 12px; gap: 8px; }
+  .herd-bar-links { flex-wrap: nowrap; overflow-x: auto; width: 100%; margin-right: 0; scrollbar-width: none; padding: 2px 6px; }
+  .herd-bar-links::-webkit-scrollbar { display: none; }
+  .herd-bar-tools { width: 100%; justify-content: space-between; }
+  .site-header.embedded .account-btn.in-bar { max-width: 220px; }
+  .herd-embedded .map-layout { height: calc(100svh - 150px); }
+}
