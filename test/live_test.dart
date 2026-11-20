@@ -76,9 +76,10 @@ class FakeWix {
         'dataItems': [for (final i in items) {'data': i}],
       });
     }
-    if (request.url.host == 'www.theherdstudio.com' && path.startsWith('/_functions/')) {
+    final base = Uri.parse(checkerBase).toString(); // the host comes back in lower case
+    if (request.url.toString().startsWith(base)) {
       if (!checker) return http.Response('<html>Not found</html>', 404);
-      final name = path.substring('/_functions/'.length);
+      final name = request.url.toString().substring(base.length);
       final b = jsonDecode(request.body) as Map<String, dynamic>;
       expect(request.headers['Content-Type'], startsWith('text/plain'));
       calls.add((name, b));

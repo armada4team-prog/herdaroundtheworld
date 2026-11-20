@@ -204,7 +204,7 @@ class Postcard extends StatelessWidget {
         Text(tr('Greetings from ${companion.current?.city ?? 'the road'}!'), style: HerdText.script(28)),
         Text(
           tr(
-            '${companion.name != null ? '${companion.name} · ' : ''}Companion #${companion.number} · Stop ${companion.stops.length} · theherdstudio.com/herd-around-the-world',
+            '${companion.name != null ? '${companion.name} · ' : ''}Companion #${companion.number} · Stop ${companion.stops.length} · companions.theherdstudio.com',
           ),
           style: HerdText.body(13),
         ),

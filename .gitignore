@@ -49,3 +49,6 @@ app.*.map.json
 
 # Built by website/tools/build-element.mjs (the Pages workflow builds it too)
 website/dist/
+
+# Built by worker/build.mjs (wrangler builds it before deploying)
+worker/dist/

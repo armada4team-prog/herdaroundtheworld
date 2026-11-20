@@ -5,22 +5,11 @@ piece of code on The Herd's Wix site. It checks the rules (find code, found → 
 5 miles to leave one somewhere, word filter, required photo) before anything is saved to
 the CMS lists, and it keeps the find codes private.
 
-**Nothing here is live until The Herd's Wix site is published.** Do these steps when you're
-ready to launch.
-
-## When you're ready to launch (about 10 minutes)
-
-1. Open The Herd's site in the Wix editor.
-2. Turn on coding:
-   - **Wix Editor:** click **Dev Mode** in the top bar, then **Turn on Dev Mode**.
-   - **Wix Studio:** click the **{ }** (Code) icon in the left sidebar.
-3. In the code panel, under **Backend & Public → Backend**, click **+** and choose
-   **Expose site API**. Wix creates a file called `http-functions.js`.
-4. Delete everything in that file, then paste in the whole of
-   [`backend/http-functions.js`](backend/http-functions.js) and save.
-5. Publish the site.
-
-That's it. The website and app start saving to your Wix lists right away.
+> **The checker now runs on Cloudflare, not on Wix.** The Herd's site uses the Wix Harmony
+> editor, which can't run custom code (no Velo, no `http-functions.js`). So the same checker runs
+> as a free Cloudflare Worker that reads and writes these same CMS lists with a Wix API key. Set-up
+> steps are in [`../worker/README.md`](../worker/README.md). The Velo paste-in file below is still
+> built and tested (the Worker is made from it), but you don't need to paste it anywhere.
 
 ## The lists in your Wix dashboard (CMS)
 
@@ -41,8 +30,10 @@ uses for testing before launch; they don't work on the real site.)
 ## For whoever maintains the code
 
 - The rules live in `shared/rules.js` (used by the website) and match `lib/validation.dart`
-  (used by the app). `wix/backend/handlers.src.js` is the checker.
-- After changing either, rebuild the paste-in file and run its tests:
+  (used by the app). `wix/backend/handlers.src.js` is the checker. The Cloudflare Worker
+  (`worker/`) is built from the same two files with Velo's modules swapped for Wix REST calls.
+- After changing either, rebuild the paste-in file and run its tests (and the Worker's,
+  `node worker/test/worker.test.mjs`):
 
 ```bash
 python3 tool/build_wix_backend.py

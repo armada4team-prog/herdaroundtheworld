@@ -90,10 +90,11 @@ launch switch to a tile provider with a free account tier (for example MapTiler 
 
 ## Scanning a Companion
 
-Each Companion’s QR code points to the Herd Around the World page on The Herd’s Wix site:
-`https://www.theherdstudio.com/herd-around-the-world?c=<number>&k=<code>` (for example
-`?c=07&k=KCVT`). It opens for anyone with a phone camera, and the app reads the same codes (older
-`/c/07?k=KCVT` codes still work). Share links are `https://www.theherdstudio.com/herd-around-the-world#/c/<number>`.
+Each Companion’s QR code points to the Herd Around the World website:
+`https://companions.theherdstudio.com/c/<number>?k=<code>` (for example `/c/07?k=KCVT`). It opens
+for anyone with a phone camera, and the app reads the same codes (the older
+`…/herd-around-the-world?c=07&k=KCVT` and `#/c/07` forms still work). Share links are
+`https://companions.theherdstudio.com/#/c/<number>`.
 
 ## Fonts
 
@@ -103,7 +104,7 @@ Fira Sans, Baloo 2 and Shadows Into Light Two, all under the SIL Open Font Licen
 ## Find codes (stops fake finds)
 
 Logging a find needs the Companion's secret 4-letter code. It's hidden in the QR code on their
-bottom (`https://www.theherdstudio.com/herd-around-the-world?c=07&k=KCVT`) and printed small under their number, for when the
+bottom (`https://companions.theherdstudio.com/c/07?k=KCVT`) and printed small under their number, for when the
 camera won't scan. Typing a number alone only shows the Companion's page.
 
 List every code and QR address for printing labels (keep this list private):
@@ -113,4 +114,5 @@ dart run tool/print_codes.dart 52
 ```
 
 In SAMPLE mode the codes are worked out inside the app. In LIVE mode they're checked by The
-Herd's checker on the Wix site, so nobody can dig them out of the app.
+Herd's checker (a small Cloudflare Worker that reads The Herd's Wix lists, see `worker/README.md`),
+so nobody can dig them out of the app.

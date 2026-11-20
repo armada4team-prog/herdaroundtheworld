@@ -15,6 +15,8 @@ void main() {
     expect(AppModel.numberFromScan('https://www.theherdstudio.com/herd-around-the-world#/c/12'), '12');
     expect(codeFromScan('https://www.theherdstudio.com/herd-around-the-world?c=3&k=MHE6'), 'MHE6');
     expect(codeFromScan('https://companions.theherdstudio.com/c/07?k=KCVT'), 'KCVT');
+    expect(AppModel.numberFromScan('https://companions.theherdstudio.com/c/07?k=KCVT'), '07');
+    expect(AppModel.numberFromScan('https://companions.theherdstudio.com/#/c/12'), '12');
     expect(AppModel.numberFromScan('07'), '07');
     expect(AppModel.numberFromScan('hello'), isNull);
     expect(AppModel.cleanNumber('007'), '7');
@@ -84,6 +86,7 @@ void main() {
     expect(c.stops.length, stopsBefore + 1);
     expect(codeFromScan(qrAddressFor('07')), code);
     expect(AppModel.numberFromScan(qrAddressFor('07')), '07');
+    expect(qrAddressFor('07'), startsWith('https://companions.theherdstudio.com/c/07?k='));
   });
 
   test('guessing codes pauses after 5 wrong tries', () {

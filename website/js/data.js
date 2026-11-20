@@ -1,9 +1,10 @@
 // Where the website's data comes from.
 //
 // LIVE: reads The Herd's Wix CMS lists with a Wix Headless visitor token, and sends every find,
-// pass-on, wish, chat message and report to The Herd's Wix checker (wix/backend/handlers.src.js).
+// pass-on, wish, chat message and report to The Herd's checker (wix/backend/handlers.src.js, run as
+// the Cloudflare Worker in worker/, which saves to the same Wix lists).
 // PREVIEW: used automatically when the live lists can't be read or the checker doesn't answer yet
-// (before the Wix site is published), or with ?preview=1. Reads the
+// (before the Worker is set up), or with ?preview=1. Reads the
 // bundled sample data (data/sample.json) and checks writes right here in the browser with the
 // same rules as the Wix checker. Nothing is saved anywhere but this browser.
 import {
@@ -16,7 +17,10 @@ import { asset } from './env.js';
 
 const WIX_CLIENT_ID = '492b0619-e1c9-49e2-958c-b24c49fc5771';
 const WIX_API = 'https://www.wixapis.com';
-const CHECKER = 'https://www.theherdstudio.com/_functions/';
+// ▶ THE CHECKER ADDRESS (the Cloudflare Worker in worker/). Change it here once the Worker is
+// deployed; the app has the same address in lib/wix_api.dart (checkerBase). Until it answers, the
+// site stays in preview mode.
+const CHECKER = 'https://herd-checker.REPLACE-ME.workers.dev/';
 
 export const state = { mode: 'loading', companions: [], chats: {} };
 

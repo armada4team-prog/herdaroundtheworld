@@ -1,0 +1,20 @@
+# Cloudflare Worker for the Herd Around the World checker (free plan is plenty).
+# Deploy from this folder:  npx wrangler@4 deploy     (see README.md; it builds first)
+name = "herd-checker"
+main = "dist/worker.js"
+compatibility_date = "2025-10-01"
+workers_dev = true
+# dist/worker.js is already one bundled file.
+no_bundle = true
+
+[build]
+command = "node build.mjs"
+watch_dir = ["src", "../shared"]
+
+[vars]
+# The Herd's Wix site. The Wix API key is NOT here: it's a secret (WIX_API_KEY) added in the
+# Cloudflare dashboard (Worker → Settings → Variables and Secrets), so nobody else sees it.
+WIX_SITE_ID = "84ee9f27-4b02-43aa-929d-1b05a51923a2"
+# How sign-in codes are emailed: "wix" = Wix Email Transmissions from The Herd's site.
+EMAIL_PROVIDER = "wix"
+EMAIL_SENDER_NAME = "The Herd"

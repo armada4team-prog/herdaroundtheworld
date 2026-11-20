@@ -138,7 +138,7 @@ export async function render({ params, query, root, go }) {
   <div id="hello-slot"></div>`;
 
   root.querySelector('#share').addEventListener('click', (e) =>
-    share(`Follow Companion #${c.number} around the world with The Herd:`, `https://www.theherdstudio.com/herd-around-the-world#/c/${c.number}`, e.currentTarget));
+    share(`Follow Companion #${c.number} around the world with The Herd:`, `https://companions.theherdstudio.com/#/c/${c.number}`, e.currentTarget));
   root.querySelector('#follow').addEventListener('click', (e) => {
     toggleFollow(c.number);
     e.currentTarget.setAttribute('aria-checked', String(isFollowing(c.number)));

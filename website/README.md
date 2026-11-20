@@ -5,11 +5,17 @@ The Companions website for The Herd: the world map, each Companion's page, "I fo
 the Page 3 designs and follows the same rules as the Herd Around the World app. Nothing is for sale.
 
 **It is not online yet.** Nothing here has been published, and the site reads and writes nothing
-until The Herd's Wix site (theherdstudio.com) is published with the checker installed.
+until the checker (the Cloudflare Worker in `worker/`, see `worker/README.md`) is running and its
+address is set in `js/data.js` (`CHECKER`).
 
-## On The Herd's Wix site (owner steps)
+The plan is a standalone site at `https://companions.theherdstudio.com` (GitHub Pages publishes
+`website/`). QR codes point to `https://companions.theherdstudio.com/c/<number>?k=<code>` and share
+links to `https://companions.theherdstudio.com/#/c/<number>`.
 
-The website lives inside theherdstudio.com, under Wix's own header and footer, as a Wix
+## Embedding in the Wix site (no longer the plan)
+
+The Herd's site uses the Wix Harmony editor, so this was set aside, but the element still builds.
+The website can live inside theherdstudio.com, under Wix's own header and footer, as a Wix
 **Custom Element**:
 
 1. In the Wix editor, add a page called **Herd Around the World** (page address
@@ -25,10 +31,6 @@ The website lives inside theherdstudio.com, under Wix's own header and footer, a
    - Companions in Your Care: `https://www.theherdstudio.com/herd-around-the-world#/care`
    - Passport: `https://www.theherdstudio.com/herd-around-the-world#/passport`
 6. Publish the Wix site. The element grows with its page, so give it no fixed height.
-
-QR codes on the Companions point to
-`https://www.theherdstudio.com/herd-around-the-world?c=<number>&k=<code>` and share links to
-`https://www.theherdstudio.com/herd-around-the-world#/c/<number>`.
 
 The element is the same website in one file: `node website/tools/build-element.mjs` makes
 `website/dist/herd-around-the-world.js` (all the JavaScript, the shared rules and the CSS; esbuild
@@ -54,7 +56,7 @@ preview, the "Where are you?" box also offers test spots (Aurora, Denver and Bou
 Try a QR link like <http://localhost:8000/website/index.html?preview=1#/c/07?k=KCVT>.
 
 Without `?preview=1` the site uses the live Wix data only when it can read the lists *and* The
-Herd's checker answers (`herdMine`); otherwise (for example before the Wix site is published) it
+Herd's checker answers (`herdMine`); otherwise (for example before the Worker is set up) it
 falls back to preview by itself, so it never sends finds to a checker that isn't there yet.
 
 ## Pages
@@ -63,8 +65,8 @@ falls back to preview by itself, so it never sends finds to a checker that isn't
 `#/c/07` (a Companion) · `#/c/07/found` · `#/c/07/pass-on` · `#/c/07/wish` · `#/c/07/sent` ·
 `#/c/07/something-happened` · `#/c/07/chat` · `#/c/07/story`.
 
-QR codes are `…?c=07&k=CODE`; the site turns that into `#/c/07?k=CODE`. Older `/c/07?k=CODE`
-addresses still work on a static host: `404.html` sends them to `index.html#/c/07?k=CODE`.
+QR codes are `/c/07?k=CODE`; on a static host `404.html` sends them to `index.html#/c/07?k=CODE`.
+The query form `…?c=07&k=CODE` still works too: the site turns it into `#/c/07?k=CODE`.
 
 ## How it connects to Wix
 
@@ -73,10 +75,11 @@ All of this is in `js/data.js`.
 - **Reading**: a Wix Headless visitor token (client ID `492b0619-…`), then the CMS lists
   `Companions`, `CompanionStops` and `CompanionChat`. Only photos marked `photoApproved` are shown,
   and chat messages marked `hidden` never are.
-- **Writing**: every find, pass-on, wish, chat message and report goes to The Herd's checker on the
-  Wix site (`https://www.theherdstudio.com/_functions/herdFind`, `herdPassOn`, `herdWish`,
-  `herdChat`, `herdReport`; see `wix/backend/handlers.src.js`). The checker has the final say, and
-  the field it names is marked in red on the form. Find codes never leave Wix.
+- **Writing**: every find, pass-on, wish, chat message and report goes to The Herd's checker, a
+  Cloudflare Worker (`CHECKER` in `js/data.js`, e.g. `https://herd-checker.<subdomain>.workers.dev/herdFind`,
+  `herdPassOn`, `herdWish`, `herdChat`, `herdReport`; see `worker/` and
+  `wix/backend/handlers.src.js`). It saves to the same Wix lists. The checker has the final say, and
+  the field it names is marked in red on the form. Find codes never leave Wix and the Worker.
 - What you hold (and the wish you get to choose) is remembered in this browser, which is how
   Companions in Your Care and the Passport work.
 

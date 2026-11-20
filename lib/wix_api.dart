@@ -2,8 +2,9 @@
 ///
 /// READING: the Companions, CompanionStops and CompanionChat lists in The Herd's Wix CMS, with a
 /// Wix Headless visitor token (the same as website/js/data.js).
-/// WRITING: every find, pass-on, wish, chat message, report and sign-in goes to The Herd's Wix
-/// checker (wix/backend/handlers.src.js), which checks the rules and keeps the find codes secret.
+/// WRITING: every find, pass-on, wish, chat message, report and sign-in goes to The Herd's checker
+/// (wix/backend/handlers.src.js, run as the Cloudflare Worker in worker/), which checks the rules,
+/// saves to the same Wix lists and keeps the find codes secret.
 library;
 
 import 'dart:async';
@@ -15,7 +16,10 @@ import 'models.dart';
 
 const wixClientId = '492b0619-e1c9-49e2-958c-b24c49fc5771';
 const wixApi = 'https://www.wixapis.com';
-const checkerBase = 'https://www.theherdstudio.com/_functions/';
+/// ▶ THE CHECKER ADDRESS (the Cloudflare Worker in worker/). Change it here once the Worker is
+/// deployed; the website has the same address in website/js/data.js (CHECKER). Until it answers,
+/// the app stays in sample mode.
+const checkerBase = 'https://herd-checker.REPLACE-ME.workers.dev/';
 
 /// What the checker answered. [status] is 0 when The Herd couldn't be reached at all.
 class CheckerReply {
