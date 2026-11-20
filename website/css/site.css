@@ -1,7 +1,7 @@
 /* Herd Around the World: colours, fonts and pieces from the Page 3 designs. */
 :root {
   --herd-bg: #F7F0E8; --herd-pill: #DDEFEA; --herd-text: #6A8B81; --herd-copy: #635D57;
-  --herd-nav: 'DM Sans', 'Fira Sans', Arial, sans-serif; --herd-link: 'Kanit', 'Fira Sans', Arial, sans-serif; --herd-script: 'Playwrite NZ', 'Shadows Into Light Two', cursive;
+  --herd-nav: 'DM Sans', 'Fira Sans', Arial, sans-serif; --herd-link: 'Kanit', 'Fira Sans', Arial, sans-serif; --herd-script: 'Playwrite AU QLD', 'Shadows Into Light Two', cursive;
   --cream: #FDF8F3; --beige: #F6EFE7; --field: #F1EAE3; --sage-bg: #E7ECE5;
   --sage: #6E8B7D; --sage-dark: #5B7869; --ink: #3F5A4C; --heading: #4F6B5D; --body: #566E62;
   --mint: #A8DCC9; --mint-soft: #DDF0E8; --mint-ink: #2F4A3D;
@@ -166,6 +166,8 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.45; }
 .test-locations { border-top: 1px dashed var(--border); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
 
 /* Footer: laid out like The Herd's own site footer */
+/* The handwriting font leans; this stands it up straight. */
+.foot-title, .foot-tag, .foot-col h2 { transform: skewX(12deg); transform-origin: left bottom; }
 .site-footer { background: var(--herd-bg); padding: 40px 0 34px; margin-top: 0; color: var(--herd-text); }
 .foot { max-width: 1800px; margin: 0 auto; padding: 0 40px; display: flex; flex-wrap: wrap; gap: 28px 40px; justify-content: space-between; }
 .foot-brand { display: flex; flex-direction: column; min-height: 200px; }
