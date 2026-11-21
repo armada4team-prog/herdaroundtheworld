@@ -171,7 +171,7 @@ class _SignInSheetState extends State<_SignInSheet> {
       if (!result.ok) {
         codeError = result.message ?? 'Something went wrong on our side. Please try again in a minute.';
       } else {
-        note = 'You’re signed in. Companions you found on this device came along.';
+        note = 'You’re signed in. Companions on this device have chosen to join you on your journey.';
         step = _SignInStep.signedIn;
       }
     });

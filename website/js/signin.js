@@ -122,7 +122,7 @@ export function mountSignIn(el, opts = {}) {
       const res = await signInVerify(email, code);
       busy = false;
       if (!res.ok) { error = { field: res.field === 'code' ? 'code' : 'code', message: res.message }; draw(); focus('.code-input'); return; }
-      step = 'in'; note = 'You’re signed in. Companions you found on this device came along.'; if (!opts.inSheet) flash = note;
+      step = 'in'; note = 'You’re signed in. Companions on this device have chosen to join you on your journey.'; if (!opts.inSheet) flash = note;
       draw();
       changed();
     });
