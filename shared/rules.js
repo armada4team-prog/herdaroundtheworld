@@ -181,9 +181,10 @@ export function milesBetween(lat1, lng1, lat2, lng2) {
   return 3958.8 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-/** Map dots are blurred: about 10 km ("just the city") or about 100 m (a public place). */
+/** Map dots: about 10 km ("just the city") for finds and hand-offs, or the exact spot (about 1 m)
+ *  where a Companion was left somewhere public, so the next person can find them. */
 export function blur(value, exactish) {
-  return Number(Number(value).toFixed(exactish ? 3 : 1));
+  return Number(Number(value).toFixed(exactish ? 5 : 1));
 }
 
 export const minMilesToLeave = 5;

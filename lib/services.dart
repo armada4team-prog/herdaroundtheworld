@@ -188,10 +188,10 @@ class HerePlace {
   final String city;
   final LatLng point;
 
-  /// The map dot, blurred on purpose: about 10 km for "just the city", about 100 m for a public place.
+  /// The map dot: about 10 km for "just the city", or the exact spot (about 1 m) where they were left.
   LatLng blurred({required bool exactish}) {
     double round(double v, int places) => double.parse(v.toStringAsFixed(places));
-    final digits = exactish ? 3 : 1;
+    final digits = exactish ? 5 : 1;
     return LatLng(round(point.latitude, digits), round(point.longitude, digits));
   }
 }

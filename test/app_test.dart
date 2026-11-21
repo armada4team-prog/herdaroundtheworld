@@ -99,10 +99,10 @@ void main() {
     expect(model.tryFindCode('07', findCodeFor('07')), CodeCheck.tooManyTries);
   });
 
-  test('map dots are blurred: about the city, or near a public place', () {
+  test('map dots: about the city for finds, the exact spot where they were left', () {
     const here = HerePlace('Aurora, CO', LatLng(39.72946, -104.83191));
     expect(here.blurred(exactish: false), const LatLng(39.7, -104.8));
-    expect(here.blurred(exactish: true), const LatLng(39.729, -104.832));
+    expect(here.blurred(exactish: true), const LatLng(39.72946, -104.83191));
   });
 
   test('a Companion must travel 5 miles before it is left somewhere (gifts are fine anywhere)', () {

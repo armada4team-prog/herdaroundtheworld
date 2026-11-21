@@ -118,9 +118,8 @@ class _PassOnScreenState extends State<PassOnScreen> {
     if (where == null) return;
     setState(() => saving = true);
     final city = where.city;
-    // A public place shows close to the spot (about 100 m); otherwise only roughly the city.
-    // Left somewhere: the dot shows close to the spot (about 100 m), with their hint, so the next
-    // person can find them. Handed to someone: only roughly the city.
+    // Left somewhere: the dot shows the exact spot, with their hint, so the next person can find
+    // them. Handed to someone: only roughly the city.
     final point = where.blurred(exactish: !handToSomeone);
     final place = handToSomeone ? null : description;
     final model = context.model;
