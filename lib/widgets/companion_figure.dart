@@ -192,12 +192,8 @@ class CompanionBadge extends StatelessWidget {
           width: size,
           height: size,
           variant: companion.number.length,
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: size * 0.08),
-              child: CompanionFigure(glaze: companion.glazeColor, waving: waving, happy: happy, showsShadow: false, height: size * 0.72),
-            ),
+          child: Center(
+            child: CompanionFigure(glaze: companion.glazeColor, waving: waving, happy: happy, showsShadow: false, height: size * 0.66),
           ),
         ),
       );
