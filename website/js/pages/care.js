@@ -22,7 +22,7 @@ export async function render({ root }) {
       <p style="font-size:18px;max-width:680px">${t('The Companions you’ve found and are carrying now. When you’re ready, pass them on so the next traveler can find them.')}</p>
     </div>
   </section>
-  <section class="section" style="padding-top:30px"><div class="wrap">
+  <section class="section" style="padding-top:0"><div class="wrap">
     ${wishes.map((c) => `<div class="card butter" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:16px">${icons.star}<p style="flex:1">${t(`You granted ${label(c)}’s wish! Choose their next one.`)}</p><a class="btn" href="#/c/${esc(c.number)}/wish">${t('Set their next wish →')}</a></div>`).join('')}
     ${held.length ? `<div class="care-list">${held.map(({ c, h }) => `<article class="care-card frame">
         <div class="top">${badge(c, 80, { waving: true, happy: true })}<div><h3>${esc(label(c))}</h3>

@@ -64,7 +64,7 @@ export function badge(c, size = 104, extra = {}) {
   const photo = c.profilePhoto
     ? `<img src="${esc(c.profilePhoto)}" alt="" class="badge-photo">`
     : figure({ glaze: c.glaze, size: Math.round(size * 0.55), ...extra });
-  return `<span class="badge" style="width:${size}px;height:${size}px;background:#${esc(c.blob)}">${photo}</span>`;
+  return `<span class="badge" style="width:${size}px;height:${size}px;padding-bottom:${c.profilePhoto ? 0 : Math.round(size * 0.06)}px;background:#${esc(c.blob)}">${photo}</span>`;
 }
 
 /** Soft background blob shapes from the designs. */

@@ -40,7 +40,7 @@ export async function render({ params, root }) {
       ${badge(c, 80)}
       <div><p class="eyebrow">${esc(label(c))}</p><h1 class="script h-md">${t('Their story')}</h1></div>
     </div>
-    <p style="margin-top:8px">${t('Started by The Herd. Every traveler they meet adds a chapter.')}</p>
+    <p style="margin-top:16px">${t('Started by The Herd. Every traveler they meet adds a chapter.')}</p>
     <div class="chapters">
       <div class="origin"><p class="eyebrow" style="color:var(--pink-ink)">${t('Chapter 1 · Their origin story, by The Herd')}</p><p class="script">${esc(c.originStory)}</p></div>
       ${list.join('')}
