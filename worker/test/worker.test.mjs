@@ -106,7 +106,7 @@ globalThis.fetch = async (input, init = {}) => {
     assert.equal(t.type, 'TRANSACTIONAL');
     assert.match(body.idempotencyKey, /^[0-9a-f-]{36}$/);
     const code = (t.emailTextContent.match(/\b(\d{6})\b/) || [])[1];
-    sentEmails.push({ to: t.toRecipients[0].emailAddress, code, subject: t.emailSubject });
+    sentEmails.push({ to: t.toRecipients[0].emailAddress, code, subject: t.emailSubject, html: t.emailHtmlContent });
     return reply(200, { emailTransmission: { ...t, id: 'tx' + sentEmails.length, status: 'ACCEPTED' } });
   }
   throw new Error(`pretend Wix: no ${method} ${url.pathname}`);
@@ -288,6 +288,35 @@ assert.ok(wixCalls.some((c) => c.method === 'DELETE'), 'forget me removes the tr
   db.CompanionHolds.find((h) => h._id === 'h10')._createdDate = daysAgo(80);
   await runCron();
   assert.equal(sentEmails.length, emailsBefore + 1, 'nudges "off" stops the emails');
+}
+
+// The daily email to The Herd: photos to approve (with a one-tap Approve link) and new reports.
+{
+  const runCron = async () => { const jobs = []; await worker.scheduled({}, { ...env, CHECKER_URL: 'https://checker.test' }, { waitUntil: (p) => jobs.push(p) }); await Promise.all(jobs); };
+  const waiting = db.CompanionStops.filter((st) => st.photo && !st.photoApproved);
+  assert.ok(waiting.length > 0, 'the earlier pass-ons left photos waiting');
+  const reportsBefore = db.CompanionReports.length;
+  assert.ok(reportsBefore > 0);
+  let count = sentEmails.length;
+  await runCron();
+  assert.equal(sentEmails.length, count, 'no ownerEmail yet: no daily email');
+  db.CompanionSettings.push({ _id: 's3', key: 'ownerEmail', value: 'owner@example.com' });
+  await runCron();
+  assert.equal(sentEmails.length, count + 1);
+  const mail = sentEmails.at(-1);
+  assert.equal(mail.to, 'owner@example.com');
+  assert.match(mail.subject, new RegExp(`${waiting.length} new photos? to approve, ${reportsBefore} new reports?`));
+  const fresh = (st) => db.CompanionStops.find((x) => x._id === st._id);
+  assert.ok(waiting.every((st) => /^[0-9a-f]{48}$/.test(fresh(st).approveToken) && fresh(st).ownerNotifiedAt));
+  assert.match(mail.html, /Approve photo/); assert.match(mail.html, /manage\.wix\.com\/dashboard\/.+\/database\/data\/CompanionStops/);
+  await runCron();
+  assert.equal(sentEmails.length, count + 1, 'nothing new: no email');
+  const get = async (path) => { const res = await worker.fetch(new Request('https://checker.test' + path), env); return { status: res.status, text: await res.text() }; };
+  let page = await get('/herdApprove?t=' + fresh(waiting[0]).approveToken);
+  assert.match(page.text, /Photo approved/);
+  assert.equal(fresh(waiting[0]).photoApproved, true);
+  page = await get('/herdApprove?t=' + 'a'.repeat(48));
+  assert.match(page.text, /didn’t work/);
 }
 
 // A Wix error becomes the friendly 500

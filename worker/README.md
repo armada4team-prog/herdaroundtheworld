@@ -165,3 +165,11 @@ Settings (in the **Companion Settings (private)** list in Wix):
 - Reminders only go out when emails are switched on (`signInEmailId` has a value).
 
 Travelers who never signed in have no email on file, so they don't get reminders.
+
+## Daily email to The Herd
+
+With the same daily cron, the checker emails The Herd when something new came in: travelers'
+photos waiting for approval (each with an **Approve photo** button and an **Open in Wix** link)
+and new Companion Reports (broke, chipped, lost, adopted). Nothing new, no email.
+Set the address in **Companion Settings (private)**: key `ownerEmail`. Emails must be on
+(`signInEmailId` has a value). Each photo and report appears in one email only.

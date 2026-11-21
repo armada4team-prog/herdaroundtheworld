@@ -84,3 +84,65 @@ export async function sendNudge(to, { name, nickname, days, passOnUrl, adoptUrl 
 </div>`;
   await sendEmail(to, { subject, text, html });
 }
+
+
+const WHAT = { broke: 'They broke', chipped: 'Chipped, still traveling', lost: 'They got lost', adopted: 'Found a forever home (adopted)' };
+
+/** The daily email to The Herd (see ../digest.js): photos to approve and new reports. */
+export async function sendDigest(to, { photos, reports, stopsUrl, reportsUrl }) {
+  const parts = [];
+  if (photos.length) parts.push(`${photos.length} new photo${photos.length === 1 ? '' : 's'} to approve`);
+  if (reports.length) parts.push(`${reports.length} new report${reports.length === 1 ? '' : 's'}`);
+  const subject = 'Herd Around the World: ' + parts.join(', ');
+  const line = (bits) => bits.filter(Boolean).join(' · ');
+
+  let text = subject + '\n\n';
+  for (const p of photos) {
+    text += `${line([p.title, p.where, p.by && 'by ' + p.by])}\n`;
+    if (p.chapter) text += `“${p.chapter}”\n`;
+    if (p.photo) text += `Photo: ${p.photo}\n`;
+    if (p.wishPhoto) text += `Wish photo: ${p.wishPhoto}\n`;
+    text += `Approve photo: ${p.approveUrl}\n\n`;
+  }
+  if (photos.length) text += `All photos in Wix: ${stopsUrl}\n\n`;
+  for (const r of reports) {
+    text += `${line([r.title, WHAT[r.what] || r.what, r.where, r.by && 'by ' + r.by])}\n`;
+    if (r.note) text += `“${r.note}”\n`;
+    if (r.sendPieces) text += `Wants to send the pieces home${r.email ? ': ' + r.email : ''}\n`;
+    else if (r.email) text += `Email: ${r.email}\n`;
+    text += '\n';
+  }
+  if (reports.length) text += `All reports in Wix: ${reportsUrl}\n`;
+
+  const btn = (href, label, bg, fg) => `<a href="${escHtml(href)}" style="display:inline-block;background:${bg};color:${fg};text-decoration:none;font-weight:bold;padding:10px 18px;border-radius:999px;margin:4px 6px 4px 0;font-size:14px">${label}</a>`;
+  const img = (src, alt) => src ? `<a href="${escHtml(src)}"><img src="${escHtml(src)}" alt="${escHtml(alt)}" width="260" style="display:block;width:260px;max-width:100%;border-radius:12px;margin:8px 0"></a>` : '';
+  let html = `<div style="font-family: 'Fira Sans', Arial, sans-serif; color: #566E62; line-height: 1.5; max-width: 560px">
+<h2 style="color:#3F5A4C;font-size:20px;margin:0 0 12px">${escHtml(subject)}</h2>`;
+  if (photos.length) {
+    html += '<h3 style="color:#3F5A4C;font-size:16px;margin:18px 0 6px">Photos to approve</h3>';
+    for (const p of photos) {
+      html += `<div style="border:2px solid #DDEFEA;border-radius:16px;padding:12px 14px;margin:10px 0">
+<p style="margin:0;font-weight:bold;color:#2F4A3D">${escHtml(line([p.title, p.where]))}</p>
+${p.by ? `<p style="margin:0;font-size:14px">by ${escHtml(p.by)}</p>` : ''}
+${p.chapter ? `<p style="margin:6px 0;font-style:italic">“${escHtml(p.chapter)}”</p>` : ''}
+${img(p.photo, 'Photo of ' + p.title)}${p.wishPhoto ? '<p style="margin:6px 0 0;font-size:14px">Wish photo:</p>' + img(p.wishPhoto, 'Wish photo of ' + p.title) : ''}
+<p style="margin:6px 0 0">${btn(p.approveUrl, 'Approve photo', '#5B7869', '#ffffff')}${btn(stopsUrl, 'Open in Wix', '#DDEFEA', '#2F4A3D')}</p>
+</div>`;
+    }
+    html += '<p style="font-size:13px;color:#8A9A91">Not okay? Leave it unapproved and it stays hidden. You can delete it in Wix.</p>';
+  }
+  if (reports.length) {
+    html += '<h3 style="color:#3F5A4C;font-size:16px;margin:18px 0 6px">New reports</h3>';
+    for (const r of reports) {
+      html += `<div style="border:2px solid #F6D3D3;border-radius:16px;padding:12px 14px;margin:10px 0">
+<p style="margin:0;font-weight:bold;color:#2F4A3D">${escHtml(r.title)} · ${escHtml(WHAT[r.what] || r.what)}</p>
+<p style="margin:0;font-size:14px">${escHtml(line([r.where, r.by && 'by ' + r.by]))}</p>
+${r.note ? `<p style="margin:6px 0;font-style:italic">“${escHtml(r.note)}”</p>` : ''}
+${r.sendPieces ? `<p style="margin:6px 0;font-size:14px"><strong>Wants to send the pieces home</strong>${r.email ? ': ' + escHtml(r.email) : ''}</p>` : r.email ? `<p style="margin:6px 0;font-size:14px">Email: ${escHtml(r.email)}</p>` : ''}
+</div>`;
+    }
+    html += `<p>${btn(reportsUrl, 'Open reports in Wix', '#DDEFEA', '#2F4A3D')}</p>`;
+  }
+  html += '<p style="font-size:13px;color:#8A9A91">Sent by your Herd Around the World checker. Change the address (ownerEmail) in Companion Settings in Wix.</p></div>';
+  await sendEmail(to, { subject, text, html });
+}

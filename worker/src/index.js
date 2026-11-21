@@ -10,6 +10,7 @@
 import * as checker from '../../wix/backend/http-functions.js';
 import { configure, isConfigured } from './wix-rest.js';
 import { nudgeLongHolds, adoptFromEmail } from './nudge.js';
+import { sendOwnerDigest, approveFromEmail } from './digest.js';
 
 const ROUTES = {
   herdFind: checker.post_herdFind,
@@ -60,7 +61,10 @@ export default {
   async scheduled(_event, env, ctx) {
     if (!isConfigured(env)) return;
     configure(env);
-    ctx.waitUntil(nudgeLongHolds({ checkerUrl: env.CHECKER_URL }).then((n) => console.log('reminders sent:', n)));
+    ctx.waitUntil((async () => {
+      try { console.log('reminders sent:', await nudgeLongHolds({ checkerUrl: env.CHECKER_URL })); } catch (err) { console.error('reminders:', err); }
+      try { console.log('daily email to The Herd:', JSON.stringify(await sendOwnerDigest({ checkerUrl: env.CHECKER_URL, siteId: env.WIX_SITE_ID }))); } catch (err) { console.error('daily email:', err); }
+    })());
   },
 
   async fetch(request, env) {
@@ -68,6 +72,20 @@ export default {
     const url = new URL(request.url);
     const name = url.pathname.replace(/^\/+|\/+$/g, '').replace(/^_functions\//, '');
     if (name === '') return json(200, { ok: true, name: 'Herd Around the World checker' });
+    // The "Approve photo" button in The Herd's daily email.
+    if (name === 'herdApprove' && request.method === 'GET') {
+      if (!isConfigured(env)) return page('Something went wrong', 'Please try the link again in a few minutes.');
+      configure(env);
+      try {
+        const what = await approveFromEmail(url.searchParams.get('t') || '');
+        return what
+          ? page('Photo approved', `The photo from ${what} now shows on the Companion’s page.`)
+          : page('This link didn’t work', 'The photo may have been removed. You can still approve photos in Wix: CMS, then Companion Stops.');
+      } catch (err) {
+        console.error(err);
+        return page('Something went wrong', 'Please try the link again in a few minutes.');
+      }
+    }
     // The "They're staying with me" link in the reminder email (a plain link, so a GET).
     if (name === 'herdAdopted' && request.method === 'GET') {
       if (!isConfigured(env)) return page('Something went wrong', 'Please try the link again in a few minutes.');
