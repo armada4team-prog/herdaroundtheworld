@@ -2,6 +2,16 @@
 // change the app's file and run the script again. Website-only text is in translations-web.js.
 export const appTranslations = {
  "es": {
+  "Earn stamps": "Gana sellos",
+  "Pass a Companion on or help a wish come true, and your stamps will be added to your Passport.": "Pasa un Compañero o ayuda a cumplir un deseo, y tus sellos se añadirán a tu Pasaporte.",
+  "1 stamp in your Passport!": "¡1 sello en tu Pasaporte!",
+  "{0} stamps in your Passport!": "¡{0} sellos en tu Pasaporte!",
+  "You passed {0} on and granted 1 wish. They’re in your Passport now.": "Pasaste a {0} y cumpliste 1 deseo. Ya están en tu Pasaporte.",
+  "You passed {0} on and granted {1} wishes. They’re in your Passport now.": "Pasaste a {0} y cumpliste {1} deseos. Ya están en tu Pasaporte.",
+  "You passed {0} on. It’s in your Passport now.": "Pasaste a {0}. Ya está en tu Pasaporte.",
+  "You passed {0} on. They’re in your Passport now.": "Pasaste a {0}. Ya están en tu Pasaporte.",
+  "You granted 1 wish. It’s in your Passport now.": "Cumpliste 1 deseo. Ya está en tu Pasaporte.",
+  "You granted {0} wishes. They’re in your Passport now.": "Cumpliste {0} deseos. Ya están en tu Pasaporte.",
   "{0} was found in {1}": "{0} fue encontrado en {1}",
   "No sightings yet. Be the first to find a Companion!": "Todavía no hay avistamientos. ¡Sé el primero en encontrar un Compañero!",
   "The Herd": "The Herd",
@@ -504,6 +514,16 @@ export const appTranslations = {
   "Preview: using sample Companions": "Vista previa: con Compañeros de muestra"
  },
  "fr": {
+  "Earn stamps": "Gagne des tampons",
+  "Pass a Companion on or help a wish come true, and your stamps will be added to your Passport.": "Fais voyager un Compagnon ou aide un vœu à se réaliser, et tes tampons s’ajouteront à ton Passeport.",
+  "1 stamp in your Passport!": "1 tampon dans ton Passeport !",
+  "{0} stamps in your Passport!": "{0} tampons dans ton Passeport !",
+  "You passed {0} on and granted 1 wish. They’re in your Passport now.": "Tu as fait voyager {0} et réalisé 1 vœu. Ils sont dans ton Passeport.",
+  "You passed {0} on and granted {1} wishes. They’re in your Passport now.": "Tu as fait voyager {0} et réalisé {1} vœux. Ils sont dans ton Passeport.",
+  "You passed {0} on. It’s in your Passport now.": "Tu as fait voyager {0}. C’est dans ton Passeport.",
+  "You passed {0} on. They’re in your Passport now.": "Tu as fait voyager {0}. Ils sont dans ton Passeport.",
+  "You granted 1 wish. It’s in your Passport now.": "Tu as réalisé 1 vœu. C’est dans ton Passeport.",
+  "You granted {0} wishes. They’re in your Passport now.": "Tu as réalisé {0} vœux. Ils sont dans ton Passeport.",
   "{0} was found in {1}": "{0} a été trouvé à {1}",
   "No sightings yet. Be the first to find a Companion!": "Aucune observation pour l’instant. Sois le premier à trouver un Compagnon !",
   "The Herd": "The Herd",
@@ -1006,6 +1026,16 @@ export const appTranslations = {
   "Preview: using sample Companions": "Aperçu : Compagnons d’exemple"
  },
  "ja": {
+  "Earn stamps": "スタンプを集めよう",
+  "Pass a Companion on or help a wish come true, and your stamps will be added to your Passport.": "コンパニオンを次の人に渡したり、願いをかなえたりすると、スタンプがパスポートに追加されます。",
+  "1 stamp in your Passport!": "パスポートにスタンプが1つ！",
+  "{0} stamps in your Passport!": "パスポートにスタンプが{0}個！",
+  "You passed {0} on and granted 1 wish. They’re in your Passport now.": "{0}を次の人に渡し、願いを1つかなえました。パスポートに追加されています。",
+  "You passed {0} on and granted {1} wishes. They’re in your Passport now.": "{0}を次の人に渡し、願いを{1}つかなえました。パスポートに追加されています。",
+  "You passed {0} on. It’s in your Passport now.": "{0}を次の人に渡しました。パスポートに追加されています。",
+  "You passed {0} on. They’re in your Passport now.": "{0}を次の人に渡しました。パスポートに追加されています。",
+  "You granted 1 wish. It’s in your Passport now.": "願いを1つかなえました。パスポートに追加されています。",
+  "You granted {0} wishes. They’re in your Passport now.": "願いを{0}つかなえました。パスポートに追加されています。",
   "{0} was found in {1}": "{0}が{1}で見つかりました",
   "No sightings yet. Be the first to find a Companion!": "まだ目撃情報はありません。最初にコンパニオンを見つけてみましょう！",
   "The Herd": "The Herd",

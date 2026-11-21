@@ -110,6 +110,8 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 22),
+              _stampsCard(model, router),
+              const SizedBox(height: 22),
               const ScriptHeading('Companions on Instagram'),
               const SizedBox(height: 6),
               Text.rich(TextSpan(style: HerdText.body(14, color: Herd.ink), children: [
@@ -198,6 +200,40 @@ class HomeScreen extends StatelessWidget {
           ]),
         ),
       );
+
+  /// Your stamps so far: what you've earned, or how to earn your first one.
+  Widget _stampsCard(AppModel model, dynamic router) {
+    final passed = <String>[];
+    for (final st in model.stamps.reversed) {
+      if (st.big.startsWith('#') && !passed.contains(st.big)) passed.add(st.big);
+    }
+    final wishes = model.wishesGranted;
+    final total = model.stamps.length;
+    final String title;
+    final String body;
+    if (total == 0) {
+      title = 'Earn stamps';
+      body = 'Pass a Companion on or help a wish come true, and your stamps will be added to your Passport.';
+    } else {
+      title = total == 1 ? '1 stamp in your Passport!' : '$total stamps in your Passport!';
+      final who = passed.join(' & ');
+      final one = total == 1;
+      if (passed.isNotEmpty && wishes > 0) {
+        body = wishes == 1
+            ? 'You passed $who on and granted 1 wish. They’re in your Passport now.'
+            : 'You passed $who on and granted $wishes wishes. They’re in your Passport now.';
+      } else if (passed.isNotEmpty) {
+        body = one ? 'You passed $who on. It’s in your Passport now.' : 'You passed $who on. They’re in your Passport now.';
+      } else {
+        body = wishes == 1 ? 'You granted 1 wish. It’s in your Passport now.' : 'You granted $wishes wishes. They’re in your Passport now.';
+      }
+    }
+    return HerdCard(color: Herd.pinkSoft, children: [
+      Text(tr(title), style: HerdText.chunky(22, color: Herd.pinkInk)),
+      Text(tr(body), style: HerdText.body(14, color: Herd.pinkInk)),
+      HerdButton('See my Passport', expand: false, onPressed: () => router.select(AppTab.passport)),
+    ]);
+  }
 
   /// The newest finds and stops across every Companion (newest first), from the live lists.
   static List<(Companion, Stop)> _latestSightings(List<Companion> companions, {int max = 8}) {
