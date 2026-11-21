@@ -2,7 +2,7 @@
 // code (from the QR link or typed on "Found a Companion") and the device's location.
 import { companion, send, isHolding, unlockedCode, setUnlocked, updateMine, mine, withSession, account } from '../data.js';
 import { scrollToAppTop } from '../env.js';
-import { t, badge } from '../ui.js';
+import { t, badge, icons } from '../ui.js';
 import { tr } from '../i18n.js';
 import { checkNickname, cleanNumber } from '../../../shared/rules.js';
 import { displayName } from '../model.js';
@@ -41,6 +41,7 @@ export async function render({ params, root }) {
       <div>
         <p class="field-label" id="where-label" style="margin-bottom:8px">${t('Where are you? *')}</p>
         <div data-field="where" id="where" role="group" aria-labelledby="where-label"></div>
+        <p class="location-note">${icons.pin}<span>${t('Heads up: the exact spot where you log this find will be shown on their map.')}</span></p>
       </div>
       ${textField({ id: 'nickname', label: 'Your name or nickname *', placeholder: 'Shown on their page', max: 30, value: mine().nickname, autocomplete: 'nickname' })}
       <div id="fix"></div>

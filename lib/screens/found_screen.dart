@@ -74,7 +74,7 @@ class _FoundScreenState extends State<FoundScreen> {
       nickname: nickname.text.trim(),
       checkIn: checkIn,
       email: checkIn == CheckIn.email ? email.text.trim() : null,
-      point: where.blurred(exactish: false),
+      point: where.blurred(exactish: true),
       exactPoint: where.point,
     );
     if (!mounted) return;
@@ -162,6 +162,11 @@ class _FoundScreenState extends State<FoundScreen> {
         if (place != null) cityError = null;
       }),
     ),
+    const SizedBox(height: 8),
+    Row(crossAxisAlignment: CrossAxisAlignment.start, spacing: 8, children: [
+      const Padding(padding: EdgeInsets.only(top: 2), child: Icon(Icons.place_outlined, size: 18, color: Herd.sageDark)),
+      Expanded(child: Text(tr('Heads up: the exact spot where you log this find will be shown on their map.'), style: HerdText.body(14, color: Herd.ink))),
+    ]),
     const SizedBox(height: 20),
     FieldLabel('Your name or nickname *', key: kNickname),
     const SizedBox(height: 8),

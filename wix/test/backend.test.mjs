@@ -58,7 +58,7 @@ assert.equal(r.status, 400, 'cannot pass on before finding');
 r = await call('post_herdFind', { number: '7', code: 'kcvt', nickname: 'Sam', ...aurora });
 assert.equal(r.status, 200); const hold = r.body.holdToken;
 assert.equal(db.CompanionStops.at(-1).kind, 'found');
-assert.equal(db.CompanionStops.at(-1).latitude, 39.7, 'find dot blurred to about the city');
+assert.equal(db.CompanionStops.at(-1).latitude, 39.7294, 'find dot is the exact spot');
 r = await call('post_herdFind', { number: '7', code: 'kcvt', nickname: 'Sam', holdToken: hold, ...aurora });
 assert.equal(r.status, 400, 'cannot find twice in a row');
 r = await call('post_herdPassOn', { number: '07', holdToken: hold, handedOn: false, hint: 'by the window', nickname: 'Sam', photo, ...near });

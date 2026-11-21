@@ -110,6 +110,8 @@ h1:focus, main:focus, [tabindex="-1"]:focus { box-shadow: none; outline: none; }
 .form-hero .script { font-size: clamp(40px, 6vw, 52px); }
 .form-body { padding: 26px 0 60px; }
 .form-body .narrow > * + * { margin-top: 20px; }
+.location-note { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: var(--ink); margin-top: 10px; }
+.location-note svg { flex: none; margin-top: 2px; color: var(--sage-dark); }
 /* Forms that use the full desktop width (phones keep the single column). */
 .desk-col > * + * { margin-top: 20px; }
 .desk-cols > * + * { margin-top: 20px; }

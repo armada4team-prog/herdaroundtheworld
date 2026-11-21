@@ -159,7 +159,7 @@ r = await call('herdFind', { number: '7', code: 'kcvt', nickname: 'Sam', ...auro
 assert.equal(r.status, 200); const hold = r.body.holdToken;
 assert.match(hold, /^[0-9a-f]{48}$/);
 assert.equal(db.CompanionStops.at(-1).kind, 'found');
-assert.equal(db.CompanionStops.at(-1).latitude, 39.7, 'find dot blurred to about the city');
+assert.equal(db.CompanionStops.at(-1).latitude, 39.7294, 'find dot is the exact spot');
 assert.equal(db.Companions[0].status, 'moving');
 assert.ok(db.Companions[0]._createdDate, 'a full update keeps the item');
 r = await call('herdFind', { number: '7', code: 'kcvt', nickname: 'Sam', holdToken: hold, ...aurora });

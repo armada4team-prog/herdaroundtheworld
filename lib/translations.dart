@@ -4,6 +4,7 @@
 
 const Map<String, Map<String, String>> translations = {
   'es': {
+    'Heads up: the exact spot where you log this find will be shown on their map.': 'Aviso: el lugar exacto donde registres este hallazgo se mostrará en su mapa.',
     'Earn stamps': 'Gana sellos',
     'Pass a Companion on or help a wish come true, and your stamps will be added to your Passport.': 'Pasa un Compañero o ayuda a cumplir un deseo, y tus sellos se añadirán a tu Pasaporte.',
     '1 stamp in your Passport!': '¡1 sello en tu Pasaporte!',
@@ -517,6 +518,7 @@ const Map<String, Map<String, String>> translations = {
     'Preview: using sample Companions': 'Vista previa: con Compañeros de muestra',
   },
   'fr': {
+    'Heads up: the exact spot where you log this find will be shown on their map.': 'À savoir : l’endroit exact où tu enregistres cette trouvaille sera affiché sur sa carte.',
     'Earn stamps': 'Gagne des tampons',
     'Pass a Companion on or help a wish come true, and your stamps will be added to your Passport.': 'Fais voyager un Compagnon ou aide un vœu à se réaliser, et tes tampons s’ajouteront à ton Passeport.',
     '1 stamp in your Passport!': '1 tampon dans ton Passeport !',
@@ -1030,6 +1032,7 @@ const Map<String, Map<String, String>> translations = {
     'Preview: using sample Companions': 'Aperçu : Compagnons d’exemple',
   },
   'ja': {
+    'Heads up: the exact spot where you log this find will be shown on their map.': 'ご注意：この発見を記録した正確な場所が、地図に表示されます。',
     'Earn stamps': 'スタンプを集めよう',
     'Pass a Companion on or help a wish come true, and your stamps will be added to your Passport.': 'コンパニオンを次の人に渡したり、願いをかなえたりすると、スタンプがパスポートに追加されます。',
     '1 stamp in your Passport!': 'パスポートにスタンプが1つ！',

@@ -320,8 +320,8 @@ export async function post_herdFind(request) {
       companionNumber: companion.number,
       kind: 'found',
       city: String(b.city).trim(),
-      latitude: blur(b.latitude, false),
-      longitude: blur(b.longitude, false),
+      latitude: blur(b.latitude, true), // the exact spot: the finder was told it will be shown
+      longitude: blur(b.longitude, true),
       byName: String(b.nickname).trim(),
       travelerId: traveler ? traveler._id : null,
     }, ADMIN);

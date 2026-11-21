@@ -401,7 +401,7 @@ const previewServer = {
       wishToken: null, travelerId: traveler ? traveler.id : null, city: String(b.city).trim(), createdAt: new Date().toISOString(),
     };
     (db.stops[n] ||= []).push({
-      kind: 'found', city: String(b.city).trim(), latitude: blur(b.latitude, false), longitude: blur(b.longitude, false),
+      kind: 'found', city: String(b.city).trim(), latitude: blur(b.latitude, true), longitude: blur(b.longitude, true),
       byName: String(b.nickname).trim(), createdAt: new Date().toISOString(), travelerId: traveler ? traveler.id : null,
     });
     if (traveler && !traveler.nickname) traveler.nickname = String(b.nickname).trim();
