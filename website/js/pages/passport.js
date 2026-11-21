@@ -57,7 +57,7 @@ export async function render({ root }) {
   document.title = `${tr('Passport')} · ${tr('Herd Around the World')}`;
   const { m, all, stamps, carried, milesCarried, herd, countries } = passportData();
   const name = m.nickname ? `${m.nickname}’s travels` : 'Your travels';
-  const allStamps = [...stamps, { empty: true, label: 'Your next Companion' }, { empty: true, label: 'Grant another wish' }];
+  const allStamps = [...stamps, { empty: true, label: 'Add a Companion' }, { empty: true, label: 'Grant a wish' }];
   const tilts = [-6, 5, -3, 4, -2, 3];
   const travels = [...all].reverse().map((j) => {
     const p = j.type === 'wish' ? wishPalette : j.type === 'found' ? palettes[2] : j.type === 'left' ? palettes[1] : palettes[0];

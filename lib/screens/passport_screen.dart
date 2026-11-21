@@ -72,8 +72,8 @@ class PassportScreen extends StatelessWidget {
               return Wrap(spacing: 12, runSpacing: 18, children: [
                 for (final s in [
                   ...model.stamps,
-                  const Stamp(big: '?', small: 'Next', label: 'Your next Companion', background: 'FDF8F3', ring: 'B9C9BF', ink: '566E62', tilt: 0, isEmpty: true),
-                  const Stamp(big: '?', small: 'Next', label: 'Grant another wish', background: 'FDF8F3', ring: 'B9C9BF', ink: '566E62', tilt: 0, isEmpty: true),
+                  const Stamp(big: '?', small: 'Next', label: 'Add a Companion', background: 'FDF8F3', ring: 'B9C9BF', ink: '566E62', tilt: 0, isEmpty: true),
+                  const Stamp(big: '?', small: 'Next', label: 'Grant a wish', background: 'FDF8F3', ring: 'B9C9BF', ink: '566E62', tilt: 0, isEmpty: true),
                 ])
                   SizedBox(width: width, child: StampView(stamp: s, size: width.clamp(70, 100).toDouble())),
               ]);
