@@ -110,6 +110,19 @@ h1:focus, main:focus, [tabindex="-1"]:focus { box-shadow: none; outline: none; }
 .form-hero .script { font-size: clamp(40px, 6vw, 52px); }
 .form-body { padding: 26px 0 60px; }
 .form-body .narrow > * + * { margin-top: 20px; }
+/* Forms that use the full desktop width (phones keep the single column). */
+.desk-col > * + * { margin-top: 20px; }
+.desk-cols > * + * { margin-top: 20px; }
+@media (min-width: 900px) {
+  .narrow.desk-wide { max-width: 1100px; padding: 0 24px; }
+  .form-hero .narrow.desk-wide .script { font-size: 56px; }
+  .form-hero .narrow.desk-wide p { max-width: 760px; }
+  .desk-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; align-items: start; }
+  .desk-cols > * + * { margin-top: 0; }
+  .broke-form .choices { flex-direction: row; }
+  .broke-form .choice { flex: 1 1 0; }
+  .broke-form #note { min-height: 230px; }
+}
 .field { display: flex; flex-direction: column; gap: 8px; }
 .field > label:not(.photo-box), .field-label { font-weight: 600; color: var(--sage-dark); font-size: 16px; }
 .help { font-size: 13px; color: var(--body); }

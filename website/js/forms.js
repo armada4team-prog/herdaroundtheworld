@@ -4,10 +4,10 @@ import { tr } from './i18n.js';
 import { preparePhoto } from './photo.js';
 
 /** The beige band at the top of a form page (eyebrow, script title, the Companion on a blob). */
-export function formHero({ eyebrow, title, c, intro }) {
+export function formHero({ eyebrow, title, c, intro, wide = false }) {
   return `<section class="form-hero">
     ${blob('#F9EBB5', 'b-tr')}
-    <div class="narrow">
+    <div class="narrow${wide ? ' desk-wide' : ''}">
       ${c ? badge(c, 92) : ''}
       <div>
         ${eyebrow ? `<p class="eyebrow">${t(eyebrow)}</p>` : ''}

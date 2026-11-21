@@ -29,15 +29,17 @@ export async function render({ params, root }) {
   let sendHome = true;
 
   root.innerHTML = `
-    ${formHero({ eyebrow: `Companion #${c.number}`, title: `Oh no, did something happen to ${name}?`, c, intro: 'Clay is fragile, and accidents happen on the road. Thank you for letting everyone know. Every journey deserves an ending.' })}
-    <section class="form-body"><div class="narrow">
+    ${formHero({ eyebrow: `Companion #${c.number}`, title: `Oh no, did something happen to ${name}?`, c, intro: 'Clay is fragile, and accidents happen on the road. Thank you for letting everyone know. Every journey deserves an ending.', wide: true })}
+    <section class="form-body"><div class="narrow desk-wide broke-form">
       ${choices('what', 'What happened? *', [
         { value: 'broke', title: 'They broke', detail: 'Their journey ends here.' },
         { value: 'chipped', title: 'They got chipped, but can keep traveling', detail: 'Their journey continues.' },
         { value: 'lost', title: 'They got lost', detail: 'Their journey ends where they were last seen.' },
       ], 'broke')}
+      <div class="desk-cols"><div class="desk-col">
       ${textField({ id: 'where', label: 'Where? *', placeholder: 'City, State or Country, like Lisbon, Portugal' })}
       <div id="note-wrap">${textField({ id: 'note', label: 'Write their last chapter', placeholder: 'What happened, and what did they mean to you?', max: 500, multiline: true, counter: true })}</div>
+      </div><div class="desk-col">
       <div class="card mint" id="pieces">
         <h2 class="chunky" style="font-size:18px;color:var(--mint-ink)">${t('Want to send the pieces home?')}</h2>
         <p style="font-size:14px">${t('If you can, The Herd would love to have them back in the studio. We’ll email you how.')}</p>
@@ -48,6 +50,7 @@ export async function render({ params, root }) {
       <p class="card" style="font-size:14px" id="retire-note">${t(`Everyone who followed ${name} will get a note, and their page will show a Retired badge with their whole journey kept safe.`)}</p>
       <div id="fix"></div>
       <button type="button" class="btn block" id="submit">${t('Share their last chapter')}</button>
+      </div></div>
     </div></section>`;
 
   const button = root.querySelector('#submit');
