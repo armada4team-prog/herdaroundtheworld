@@ -27,8 +27,7 @@ function texts(code) {
 }
 
 const providers = {
-  async wix({ to, code, env }) {
-    const { subject, text, html } = texts(code);
+  async wix({ to, subject, text, html, env }) {
     const emailTransmission = {
       emailSubject: subject,
       emailHtmlContent: html,
@@ -48,10 +47,40 @@ const providers = {
   // EMAIL_PROVIDER to its name.
 };
 
-export async function sendSignInCode(to, code) {
+async function sendEmail(to, { subject, text, html }) {
   const { env } = config();
   const name = String(env.EMAIL_PROVIDER || 'wix').toLowerCase();
   const send = providers[name];
   if (!send) throw new Error('Unknown EMAIL_PROVIDER: ' + name);
-  await send({ to, code, env });
+  await send({ to, subject, text, html, env });
+}
+
+export async function sendSignInCode(to, code) {
+  await sendEmail(to, texts(code));
+}
+
+const escHtml = (s) => String(s).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+
+/**
+ * The gentle reminder to someone who has held a Companion for a long time (see ../nudge.js):
+ * pass them on, or tell The Herd they found a forever home.
+ */
+export async function sendNudge(to, { name, nickname, days, passOnUrl, adoptUrl }) {
+  const hi = nickname ? `Hi ${nickname},` : 'Hi there,';
+  const subject = `${name} misses the road!`;
+  const text = `${hi}\n\n${name} has been with you for ${days} days. Ready to send them on their next adventure? ` +
+    `Leave them somewhere new or hand them to a friend, and log it so their story keeps going:\n${passOnUrl}\n\n` +
+    `Or did ${name} find a forever home with you? That's a happy ending too. Let us know here:\n${adoptUrl}\n\n` +
+    'The Herd · companions.theherdstudio.com\nYou’re getting this because you signed in to Herd Around the World with this email.';
+  const button = (href, label, bg, fg) => `<a href="${escHtml(href)}" style="display:inline-block;background:${bg};color:${fg};text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:999px;margin:4px 0">${label}</a>`;
+  const html = `<div style="font-family: 'Fira Sans', Arial, sans-serif; color: #566E62; line-height: 1.5; max-width: 520px">
+<p>${escHtml(hi)}</p>
+<p><strong style="color:#2F4A3D">${escHtml(name)}</strong> has been with you for ${days} days. Ready to send them on their next adventure? Leave them somewhere new or hand them to a friend, and log it so their story keeps going.</p>
+<p>${button(passOnUrl, 'Pass them on', '#5B7869', '#ffffff')}</p>
+<p>Or did ${escHtml(name)} find a forever home with you? That’s a happy ending too.</p>
+<p>${button(adoptUrl, 'They’re staying with me', '#DDEFEA', '#2F4A3D')}</p>
+<p>The Herd · <a href="https://companions.theherdstudio.com" style="color: #5B7869">companions.theherdstudio.com</a></p>
+<p style="color: #8A9A91; font-size: 13px">You’re getting this because you signed in to Herd Around the World with this email.</p>
+</div>`;
+  await sendEmail(to, { subject, text, html });
 }

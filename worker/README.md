@@ -150,3 +150,18 @@ Good to know:
 ```bash
 node worker/test/worker.test.mjs
 ```
+
+## Reminder emails for long-time holders
+
+Once a day (10:23am Colorado time, a free Cloudflare cron trigger in `wrangler.toml`) the checker
+looks at who is holding each Companion. Anyone signed in with their email who has held one for
+60 days gets **one** friendly email: "Pass them on" (opens the pass-on page) or "They're staying
+with me". That second link marks the Companion **Adopted** and adds an `adopted` line to
+**Companion Reports**, so you can see it in the Wix dashboard.
+
+Settings (in the **Companion Settings (private)** list in Wix):
+- `nudgeDays`: how many days before the reminder (default 60).
+- `nudges`: set to `off` to stop the reminders.
+- Reminders only go out when emails are switched on (`signInEmailId` has a value).
+
+Travelers who never signed in have no email on file, so they don't get reminders.

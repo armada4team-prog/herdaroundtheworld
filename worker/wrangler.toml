@@ -19,3 +19,10 @@ WIX_SITE_ID = "84ee9f27-4b02-43aa-929d-1b05a51923a2"
 # How sign-in codes are emailed: "wix" = Wix Email Transmissions from The Herd's site.
 EMAIL_PROVIDER = "wix"
 EMAIL_SENDER_NAME = "The Herd"
+# This checker's own address, for the "They're staying with me" link in reminder emails.
+CHECKER_URL = "https://herd-checker.growtheherd.workers.dev"
+
+# Once a day at 17:23 UTC (about 10am in Colorado): remind long-time holders to pass their
+# Companion on (src/nudge.js). Cron triggers are free.
+[triggers]
+crons = ["23 17 * * *"]

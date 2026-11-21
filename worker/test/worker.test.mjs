@@ -252,6 +252,44 @@ assert.equal(r.status, 200); assert.equal(db.CompanionTravelers.length, 0);
 assert.ok(db.CompanionStops.every((st) => !st.travelerId), 'chapters stay, unlinked');
 assert.ok(wixCalls.some((c) => c.method === 'DELETE'), 'forget me removes the traveler');
 
+// The reminder email: someone signed in who has held a Companion for 60+ days gets one email,
+// and "They're staying with me" marks the Companion Adopted and tells The Herd.
+{
+  const daysAgo = (n) => ({ $date: new Date(Date.now() - n * 864e5).toISOString() });
+  db.CompanionTravelers.push({ _id: 't9', email: 'kim@example.com', nickname: 'Kim', following: [], sessions: [] });
+  db.Companions.push({ _id: 'c3', number: '3', name: 'Angel', status: 'moving', wish: 'meet a dog', _createdDate: now() });
+  db.Companions.push({ _id: 'c4', number: '4', name: 'Sprout', status: 'moving', wish: 'smell the roses', _createdDate: now() });
+  db.CompanionHolds.push({ _id: 'h9', companionNumber: '3', token: 'tok9', active: true, travelerId: 't9', city: 'Denver, CO', byName: 'Kim', _createdDate: daysAgo(70) });
+  db.CompanionHolds.push({ _id: 'h10', companionNumber: '4', token: 'tok10', active: true, travelerId: 't9', city: 'Denver, CO', byName: 'Kim', _createdDate: daysAgo(10) });
+  db.CompanionHolds.push({ _id: 'h11', companionNumber: '4', token: 'tok11', active: true, travelerId: null, byName: 'Anon', _createdDate: daysAgo(90) });
+  const runCron = async () => { const jobs = []; await worker.scheduled({}, { ...env, CHECKER_URL: 'https://checker.test/' }, { waitUntil: (p) => jobs.push(p) }); await Promise.all(jobs); };
+  const emailsBefore = sentEmails.length;
+  await runCron();
+  assert.equal(sentEmails.length, emailsBefore + 1, 'only the 70-day hold with an email gets a reminder');
+  assert.equal(sentEmails.at(-1).to, 'kim@example.com');
+  assert.equal(sentEmails.at(-1).subject, 'Angel misses the road!');
+  const hold = db.CompanionHolds.find((h) => h._id === 'h9');
+  assert.ok(hold.nudgedAt && /^[0-9a-f]{48}$/.test(hold.nudgeToken));
+  await runCron();
+  assert.equal(sentEmails.length, emailsBefore + 1, 'one reminder per hold');
+  const get = async (path) => { const res = await worker.fetch(new Request('https://checker.test' + path), env); return { status: res.status, text: await res.text() }; };
+  let page = await get('/herdAdopted?t=' + 'f'.repeat(48));
+  assert.match(page.text, /expired/);
+  page = await get('/herdAdopted?t=' + hold.nudgeToken);
+  assert.equal(page.status, 200);
+  assert.match(page.text, /Angel found a forever home/);
+  assert.equal(db.Companions.find((c) => c._id === 'c3').status, 'adopted');
+  const report = db.CompanionReports.at(-1);
+  assert.equal(report.what, 'adopted'); assert.equal(report.companionNumber, '3'); assert.equal(report.email, 'kim@example.com');
+  page = await get('/herdAdopted?t=' + hold.nudgeToken);
+  assert.match(page.text, /forever home/, 'clicking twice is fine');
+  assert.equal(db.CompanionReports.filter((r) => r.what === 'adopted').length, 1, 'and reports once');
+  db.CompanionSettings.push({ _id: 's2', key: 'nudges', value: 'off' });
+  db.CompanionHolds.find((h) => h._id === 'h10')._createdDate = daysAgo(80);
+  await runCron();
+  assert.equal(sentEmails.length, emailsBefore + 1, 'nudges "off" stops the emails');
+}
+
 // A Wix error becomes the friendly 500
 const before = globalThis.fetch;
 globalThis.fetch = async () => new Response('{"message":"PERMISSION_DENIED"}', { status: 403 });

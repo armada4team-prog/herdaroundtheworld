@@ -9,6 +9,7 @@
 // Send a POST with a JSON body (Content-Type text/plain is fine, so browsers skip the preflight).
 import * as checker from '../../wix/backend/http-functions.js';
 import { configure, isConfigured } from './wix-rest.js';
+import { nudgeLongHolds, adoptFromEmail } from './nudge.js';
 
 const ROUTES = {
   herdFind: checker.post_herdFind,
@@ -42,11 +43,45 @@ function withCors(res) {
   return new Response(res.body, { status: res.status, headers });
 }
 
+const escHtml = (s) => String(s).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+
+/** The small page someone sees after clicking "They're staying with me" in the reminder email. */
+function page(title, message) {
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${escHtml(title)}</title></head>
+<body style="margin:0;background:#FDF8F3;font-family:'Fira Sans',Arial,sans-serif;color:#566E62;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px;box-sizing:border-box">
+<div style="max-width:460px;text-align:center"><h1 style="color:#3F5A4C;font-size:28px">${escHtml(title)}</h1><p style="font-size:17px;line-height:1.5">${escHtml(message)}</p>
+<p><a href="https://companions.theherdstudio.com" style="display:inline-block;background:#5B7869;color:#fff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:999px">Herd Around the World</a></p></div></body></html>`;
+  return new Response(html, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+}
+
 export default {
+  // Once a day (wrangler.toml [triggers]): remind long-time holders to pass their Companion on.
+  async scheduled(_event, env, ctx) {
+    if (!isConfigured(env)) return;
+    configure(env);
+    ctx.waitUntil(nudgeLongHolds({ checkerUrl: env.CHECKER_URL }).then((n) => console.log('reminders sent:', n)));
+  },
+
   async fetch(request, env) {
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
-    const name = new URL(request.url).pathname.replace(/^\/+|\/+$/g, '').replace(/^_functions\//, '');
+    const url = new URL(request.url);
+    const name = url.pathname.replace(/^\/+|\/+$/g, '').replace(/^_functions\//, '');
     if (name === '') return json(200, { ok: true, name: 'Herd Around the World checker' });
+    // The "They're staying with me" link in the reminder email (a plain link, so a GET).
+    if (name === 'herdAdopted' && request.method === 'GET') {
+      if (!isConfigured(env)) return page('Something went wrong', 'Please try the link again in a few minutes.');
+      configure(env);
+      try {
+        const who = await adoptFromEmail(url.searchParams.get('t') || '');
+        return who
+          ? page(`${who} found a forever home`, `Thank you for letting us know! ${who}’s page now shows they’ve been adopted, and their whole journey stays safe for everyone to see.`)
+          : page('This link has expired', 'Someone may have found this Companion since. Thank you for being part of their journey!');
+      } catch (err) {
+        console.error(err);
+        return page('Something went wrong', 'Please try the link again in a few minutes.');
+      }
+    }
     const handler = Object.prototype.hasOwnProperty.call(ROUTES, name) ? ROUTES[name] : null;
     if (!handler) return json(404, { ok: false, message: 'Not found.' });
     if (request.method !== 'POST') return json(405, { ok: false, message: 'Please send a POST.' });
