@@ -186,15 +186,26 @@ class CompanionBadge extends StatelessWidget {
   final bool waving, happy;
 
   @override
-  Widget build(BuildContext context) => ExcludeSemantics(
-        child: Blob(
-          color: companion.blobColor,
-          width: size,
-          height: size,
-          variant: companion.number.length,
-          child: Center(
-            child: CompanionFigure(glaze: companion.glazeColor, waving: waving, happy: happy, showsShadow: false, height: size * 0.66),
-          ),
-        ),
-      );
+  Widget build(BuildContext context) {
+    final drawing = Center(
+      child: CompanionFigure(glaze: companion.glazeColor, waving: waving, happy: happy, showsShadow: false, height: size * 0.66),
+    );
+    final photo = companion.profilePhoto;
+    final shape = BlobBorder(variant: companion.number.length);
+    return ExcludeSemantics(
+      child: Blob(
+        color: companion.blobColor,
+        width: size,
+        height: size,
+        variant: companion.number.length,
+        // A real photo from Wix when The Herd has added one; the drawing until then (or if it won't load).
+        child: photo == null
+            ? drawing
+            : ClipPath(
+                clipper: ShapeBorderClipper(shape: shape),
+                child: Image.network(photo, width: size, height: size, fit: BoxFit.cover, errorBuilder: (_, _, _) => drawing),
+              ),
+      ),
+    );
+  }
 }

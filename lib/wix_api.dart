@@ -316,6 +316,7 @@ Companion companionFromWix(Map<String, dynamic> c, List<Map<String, dynamic>> st
   final origin = _text(c['originStory']);
   if (blurb != null) companion.blurb = blurb;
   if (origin != null) companion.originStory = origin;
+  companion.profilePhoto = wixImageUrl(c['profilePhoto']);
   return companion;
 }
 

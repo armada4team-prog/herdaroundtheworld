@@ -122,6 +122,8 @@ class Companion {
   int travelers;
   String blurb = 'A short blurb about this Companion, written by The Herd.';
   String originStory = 'Their origin story, written by The Herd.';
+  /// A real photo of this Companion, set by The Herd in Wix (profilePhoto). Shown instead of the drawing.
+  String? profilePhoto;
 
   String get displayName => name ?? '#$number';
   String get label => name == null ? '#$number' : '#$number · $name';

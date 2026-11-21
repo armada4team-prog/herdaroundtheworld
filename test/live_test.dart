@@ -154,6 +154,12 @@ void main() {
     expect(sample.companions.length, AppModel().companions.length);
   });
 
+  test('a profile photo set in Wix is shown instead of the drawing', () {
+    final withPhoto = companionFromWix({'number': '4', 'name': 'Sprout', 'profilePhoto': 'wix:image://v1/abc_123~mv2.jpg/sprout.jpg#originWidth=800&originHeight=800'}, const []);
+    expect(withPhoto.profilePhoto, 'https://static.wixstatic.com/media/abc_123~mv2.jpg');
+    expect(companionFromWix({'number': '5', 'name': 'Bubba'}, const []).profilePhoto, isNull);
+  });
+
   test('reads Companions and their stops from the Wix lists', () async {
     final model = await started(FakeWix());
     final c = model.companion('7')!;

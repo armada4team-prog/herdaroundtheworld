@@ -191,9 +191,12 @@ class HomeScreen extends StatelessWidget {
               height: 90,
               width: double.infinity,
               color: c.blobColor,
-              alignment: Alignment.bottomCenter,
-              padding: const EdgeInsets.only(bottom: 6),
-              child: CompanionFigure(glaze: c.glazeColor, showsShadow: false, height: 62),
+              alignment: c.profilePhoto == null ? Alignment.bottomCenter : Alignment.center,
+              padding: EdgeInsets.only(bottom: c.profilePhoto == null ? 6 : 0),
+              child: c.profilePhoto == null
+                  ? CompanionFigure(glaze: c.glazeColor, showsShadow: false, height: 62)
+                  : Image.network(c.profilePhoto!, width: double.infinity, height: 90, fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => CompanionFigure(glaze: c.glazeColor, showsShadow: false, height: 62)),
             ),
             Text(c.label, style: HerdText.chunky(15, extraBold: false, color: Herd.sageDark)),
             Text(c.current?.city ?? '', maxLines: 1, overflow: TextOverflow.ellipsis, style: HerdText.body(12)),
