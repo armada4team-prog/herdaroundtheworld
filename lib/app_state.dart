@@ -481,15 +481,35 @@ class AppModel extends ChangeNotifier {
   int get companionsCarried => stamps.where((s) => s.big.startsWith('#')).length;
   int get wishesGranted => stamps.where((s) => s.big == 'Wish').length;
   int get milesCarried => isLive ? journal.fold(0, (sum, j) => sum + j.miles) : 640;
-  int get herdSize {
-    if (!isLive) return 14;
+  int get herdSize => _herd().$1;
+
+  /// How many countries your herd (everyone else who carried your Companions) has been in.
+  int get herdCountries => _herd().$2;
+
+  /// Everyone else who carried the Companions you carried, and the countries they were in
+  /// (same as the website's Passport).
+  (int, int) _herd() {
+    if (!isLive) return (14, 5);
     final names = <String>{};
+    final countries = <String>{};
     for (final n in fullJournal.map((j) => j.number).toSet()) {
       for (final s in companion(n)?.stops ?? const <Stop>[]) {
-        if (s.leftBy != null && s.kind != 'made' && s.leftBy != nickname) names.add(s.leftBy!);
+        if (s.leftBy != null && s.kind != 'made' && s.leftBy != nickname) {
+          names.add(s.leftBy!);
+          countries.add(countryOf(s.city));
+        }
       }
     }
-    return names.length;
+    countries.remove('');
+    return (names.length, countries.length);
+  }
+
+  /// "Denver, CO" → USA; "Lisbon, Portugal" → Portugal (as on the website).
+  static String countryOf(String city) {
+    final parts = city.split(',').map((x) => x.trim()).toList();
+    if (parts.length < 2) return parts.first;
+    final last = parts.last;
+    return RegExp(r'^[A-Z]{2}$').hasMatch(last) ? 'USA' : last;
   }
 
   /// Your Passport history: this phone's plus your sign-in's, without doubles, oldest first.

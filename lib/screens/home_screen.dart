@@ -82,14 +82,21 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 22),
               const ScriptHeading('Latest sightings'),
               const SizedBox(height: 10),
-              SizedBox(
-                height: 225,
-                child: ListView(scrollDirection: Axis.horizontal, children: [
-                  _sighting(context, '#07 arrived in Santa Fe', '“On a café windowsill, watching the street.”', Herd.mintSoft, '07'),
-                  const SizedBox(width: 12),
-                  _sighting(context, '#2’s wish came true!', 'They saw the ocean in Lisbon.', Herd.butter, '2'),
-                ]),
-              ),
+              Builder(builder: (context) {
+                final sightings = _latestSightings(model.companions);
+                if (sightings.isEmpty) {
+                  return Text(tr('No sightings yet. Be the first to find a Companion!'), style: HerdText.body(14));
+                }
+                return SizedBox(
+                  height: 225,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: sightings.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 12),
+                    itemBuilder: (context, i) => _sighting(context, sightings[i].$1, sightings[i].$2),
+                  ),
+                );
+              }),
               const SizedBox(height: 22),
               LinkRow(
                 title: 'How it works & where to pass one on',
@@ -103,20 +110,8 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 22),
-              HerdCard(color: Herd.pinkSoft, children: [
-                Text(tr('Two new stamps!'), style: HerdText.chunky(22, color: Herd.pinkInk)),
-                Text(tr('You passed #3 on and granted their wish. Both stamps are in your Passport now.'), style: HerdText.body(14, color: Herd.pinkInk)),
-                HerdButton('See my Passport', expand: false, onPressed: () => router.select(AppTab.passport)),
-              ]),
-              const SizedBox(height: 22),
               const ScriptHeading('Companions on Instagram'),
-              const SizedBox(height: 10),
-              Row(spacing: 8, children: [
-                _tile('#07 in Santa Fe', Herd.mintSoft),
-                _tile('#3 in Tokyo', Herd.pinkSoft),
-                _tile('#2 in Lisbon', Herd.butter),
-              ]),
-              const SizedBox(height: 10),
+              const SizedBox(height: 6),
               Text.rich(TextSpan(style: HerdText.body(14, color: Herd.ink), children: [
                 TextSpan(text: tr('Mention ')),
                 TextSpan(text: tr('@growtheherdstudio'), style: HerdText.body(14, weight: FontWeight.w600, color: Herd.ink)),
@@ -204,27 +199,58 @@ class HomeScreen extends StatelessWidget {
         ),
       );
 
-  Widget _sighting(BuildContext context, String title, String text, Color color, String number) => GestureDetector(
-        onTap: () => context.router.push(CompanionRoute(number)),
+  /// The newest finds and stops across every Companion (newest first), from the live lists.
+  static List<(Companion, Stop)> _latestSightings(List<Companion> companions, {int max = 8}) {
+    final all = <(Companion, Stop, int)>[];
+    for (final c in companions) {
+      for (var i = 0; i < c.stops.length; i++) {
+        if (c.stops[i].kind != 'made') all.add((c, c.stops[i], i));
+      }
+    }
+    all.sort((a, b) {
+      final da = a.$2.date, db = b.$2.date;
+      if (da != null && db != null) return db.compareTo(da);
+      if (da != null) return -1;
+      if (db != null) return 1;
+      return b.$3.compareTo(a.$3); // no dates (sample data): later stops first
+    });
+    return all.take(max).map((e) => (e.$1, e.$2)).toList();
+  }
+
+  Widget _sighting(BuildContext context, Companion c, Stop stop) {
+    final title = stop.kind == 'found' ? '${c.label} was found in ${stop.city}' : '${c.label} arrived in ${stop.city}';
+    final text = stop.note != null && stop.note!.trim().isNotEmpty
+        ? '“${stop.note!.trim()}”'
+        : [stop.byLine, stop.when].whereType<String>().where((x) => x.isNotEmpty).map(tr).join(' · ');
+    final photo = stop.photoUrl;
+    final drawing = Container(
+      height: 110,
+      width: double.infinity,
+      decoration: BoxDecoration(color: c.blobColor, borderRadius: BorderRadius.circular(12)),
+      alignment: Alignment.center,
+      child: CompanionFigure(glaze: c.glazeColor, showsShadow: false, height: 78),
+    );
+    return Semantics(
+      button: true,
+      label: tr(title),
+      child: GestureDetector(
+        onTap: () => context.router.push(CompanionRoute(c.number)),
         child: Container(
           width: 220,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Herd.sage, width: 2)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 6, children: [
-            PhotoPlaceholder(color: color, height: 110),
-            Text(tr(title), style: HerdText.chunky(15, extraBold: false, color: Herd.sageDark)),
-            Text(tr(text), maxLines: 2, overflow: TextOverflow.ellipsis, style: HerdText.body(13, color: Herd.ink)),
+            photo == null
+                ? drawing
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(photo, height: 110, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, _, _) => drawing),
+                  ),
+            Text(tr(title), maxLines: 1, overflow: TextOverflow.ellipsis, style: HerdText.chunky(15, extraBold: false, color: Herd.sageDark)),
+            Text(text, maxLines: 2, overflow: TextOverflow.ellipsis, style: HerdText.body(13, color: Herd.ink)),
           ]),
         ),
-      );
-
-  Widget _tile(String text, Color color) => Expanded(
-        child: Container(
-          height: 100,
-          color: color,
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(6),
-          child: Text(tr(text), textAlign: TextAlign.center, style: HerdText.body(12, color: Herd.ink)),
-        ),
-      );
+      ),
+    );
+  }
 }

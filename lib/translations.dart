@@ -4,6 +4,8 @@
 
 const Map<String, Map<String, String>> translations = {
   'es': {
+    '{0} was found in {1}': '{0} fue encontrado en {1}',
+    'No sightings yet. Be the first to find a Companion!': 'Todavía no hay avistamientos. ¡Sé el primero en encontrar un Compañero!',
     'The Herd': 'The Herd',
     'Map': 'Mapa',
     'Scan': 'Escanear',
@@ -97,7 +99,7 @@ const Map<String, Map<String, String>> translations = {
     'Found one?': '¿Encontraste uno?',
     'Scan a Companion': 'Escanea un Compañero',
     'Stamps': 'Sellos',
-    'Your herd: {0} travelers in 5 countries': 'Tu manada: {0} viajeros en 5 países',
+    'Your herd: {0} travelers in {1} countries': 'Tu manada: {0} viajeros en {1} países',
     'Everyone who carried the same Companions as you. You’re connected, even if you’ve never met.': 'Todas las personas que llevaron a los mismos Compañeros que tú. Están conectados, aunque nunca se hayan visto.',
     'Share': 'Compartir',
     'I’m part of The Herd’s Companions project! Find one, carry one, watch them go. https://theherdstudio.com': '¡Soy parte del proyecto Companions de The Herd! Encuentra uno, llévalo, míralo viajar. https://theherdstudio.com',
@@ -505,6 +507,8 @@ const Map<String, Map<String, String>> translations = {
     'Preview: using sample Companions': 'Vista previa: con Compañeros de muestra',
   },
   'fr': {
+    '{0} was found in {1}': '{0} a été trouvé à {1}',
+    'No sightings yet. Be the first to find a Companion!': 'Aucune observation pour l’instant. Sois le premier à trouver un Compagnon !',
     'The Herd': 'The Herd',
     'Map': 'Carte',
     'Scan': 'Scanner',
@@ -598,7 +602,7 @@ const Map<String, Map<String, String>> translations = {
     'Found one?': 'Tu en as trouvé un ?',
     'Scan a Companion': 'Scanne un Compagnon',
     'Stamps': 'Tampons',
-    'Your herd: {0} travelers in 5 countries': 'Ta tribu : {0} voyageurs dans 5 pays',
+    'Your herd: {0} travelers in {1} countries': 'Ta tribu : {0} voyageurs dans {1} pays',
     'Everyone who carried the same Companions as you. You’re connected, even if you’ve never met.': 'Tous ceux qui ont porté les mêmes Compagnons que toi. Vous êtes liés, même sans vous être jamais rencontrés.',
     'Share': 'Partager',
     'I’m part of The Herd’s Companions project! Find one, carry one, watch them go. https://theherdstudio.com': 'Je participe au projet Companions de The Herd ! Trouve-en un, emporte-le, regarde-le voyager. https://theherdstudio.com',
@@ -1006,6 +1010,8 @@ const Map<String, Map<String, String>> translations = {
     'Preview: using sample Companions': 'Aperçu : Compagnons d’exemple',
   },
   'ja': {
+    '{0} was found in {1}': '{0}が{1}で見つかりました',
+    'No sightings yet. Be the first to find a Companion!': 'まだ目撃情報はありません。最初にコンパニオンを見つけてみましょう！',
     'The Herd': 'The Herd',
     'Map': 'マップ',
     'Scan': 'スキャン',
@@ -1099,7 +1105,7 @@ const Map<String, Map<String, String>> translations = {
     'Found one?': '見つけた？',
     'Scan a Companion': 'Companionをスキャン',
     'Stamps': 'スタンプ',
-    'Your herd: {0} travelers in 5 countries': 'あなたの仲間：5か国の旅人{0}人',
+    'Your herd: {0} travelers in {1} countries': 'あなたの仲間：{1}か国の旅人{0}人',
     'Everyone who carried the same Companions as you. You’re connected, even if you’ve never met.': 'あなたと同じCompanionを運んだ人たち。会ったことがなくても、つながっています。',
     'Share': '共有',
     'I’m part of The Herd’s Companions project! Find one, carry one, watch them go. https://theherdstudio.com': 'The HerdのCompanionsプロジェクトに参加しています！見つけて、運んで、旅を見守ろう。https://theherdstudio.com',

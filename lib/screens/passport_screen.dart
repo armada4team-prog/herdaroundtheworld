@@ -80,7 +80,7 @@ class PassportScreen extends StatelessWidget {
             }),
             const SizedBox(height: 18),
             HerdCard(children: [
-              Text(tr('Your herd: ${model.herdSize} travelers in 5 countries'), style: HerdText.chunky(18, extraBold: false)),
+              Text(tr('Your herd: ${model.herdSize} travelers in ${model.herdCountries} countries'), style: HerdText.chunky(18, extraBold: false)),
               Text(tr('Everyone who carried the same Companions as you. You’re connected, even if you’ve never met.'), style: HerdText.body(14)),
             ]),
             if (!model.isLive) ...[
