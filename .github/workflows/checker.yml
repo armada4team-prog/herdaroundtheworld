@@ -1,0 +1,54 @@
+name: Companions checker (Cloudflare)
+
+# Uploads the checker (worker/, built from wix/backend/handlers.src.js + shared/rules.js) to
+# Cloudflare whenever it changes, after its tests pass. Needs one repository secret:
+#   CLOUDFLARE_API_TOKEN  (Settings → Secrets and variables → Actions; a token from the
+#                          "Edit Cloudflare Workers" template)
+# The Wix API key stays a secret on the Worker itself (WIX_API_KEY); it is never needed here.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'worker/**'
+      - 'shared/**'
+      - 'wix/backend/handlers.src.js'
+      - 'tool/build_wix_backend.py'
+      - '.github/workflows/checker.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checker
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test the checker
+        run: |
+          node wix/test/backend.test.mjs
+          node worker/test/worker.test.mjs
+
+      - name: Upload to Cloudflare
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
+        working-directory: worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 8ada2829302c757f3bc9e8618a4e748d
+          WRANGLER_SEND_METRICS: 'false'
+        run: npx --yes wrangler@4 deploy
+
+      - name: No Cloudflare token yet
+        if: ${{ env.CLOUDFLARE_API_TOKEN == '' }}
+        run: echo "::warning::Add the CLOUDFLARE_API_TOKEN secret (repository Settings → Secrets and variables → Actions) so the checker uploads itself."
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
