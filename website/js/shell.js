@@ -158,6 +158,7 @@ function closeMenusOnOutsideClick() {
 }
 
 const INSTAGRAM = 'https://www.instagram.com/growtheherdstudio';
+const FACEBOOK = 'https://www.facebook.com/profile.php?id=61596177873995';
 
 function footer() {
   // Laid out like The Herd's own site footer, with the Companions pages in the columns.
@@ -178,6 +179,7 @@ function footer() {
         <h2>${t('Connect')}</h2>
         <a href="${HERD_SITE}">${t('The Herd')}</a>
         <div class="foot-social">
+          <a class="social" href="${FACEBOOK}" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M13.4 20v-6.6h2.2l.35-2.6H13.4V9.2c0-.75.21-1.26 1.3-1.26h1.37V5.6a18 18 0 0 0-2-.1c-1.98 0-3.33 1.2-3.33 3.42v1.9H8.5v2.6h2.24V20z"/></svg></a>
           <a class="social" href="${INSTAGRAM}" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="4.5" width="15" height="15" rx="4.2" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.6" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="16.3" cy="7.7" r="1.05" fill="#fff"/></svg></a>
         </div>
       </div>
