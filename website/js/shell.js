@@ -93,7 +93,7 @@ function header(active) {
   ];
   const current = languages.find((l) => l.code === lang());
   return `<nav aria-label="${t('Main')}">
-    <a class="herd-logo" href="${HERD_SITE}"><img src="img/herd-logo.png" alt="${t('The Herd')}" width="457" height="77"></a>
+    <a class="herd-logo" href="${HERD_SITE}"><img src="img/herd-logo.svg" alt="${t('The Herd')}" width="457" height="72"></a>
     <div class="menu-pill" id="menu">
       ${accountButton('account-btn in-menu')}
       ${links.map(([k, href, text]) => `<a href="${href}"${active === k ? ' aria-current="page"' : ''}>${t(text)}</a>`).join('')}
