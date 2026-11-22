@@ -25,4 +25,4 @@ CHECKER_URL = "https://herd-checker.growtheherd.workers.dev"
 # Once a day at 17:23 UTC (about 10am in Colorado): remind long-time holders to pass their
 # Companion on (src/nudge.js). Cron triggers are free.
 [triggers]
-crons = ["23 17 * * *", "*/2 * * * *"]
+crons = ["23 17 * * *"]
