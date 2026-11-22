@@ -5,7 +5,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Scan the code on a Companion’s bottom to see who they are and where they’ve been.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Fill in the city where you found or left a Companion. Only the city is ever shown.</string>
+	<string>Logs where you found, handed on or left a Companion. You choose whether their map shows the exact spot or just the general area.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Add a photo of your time with a Companion to their story.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>

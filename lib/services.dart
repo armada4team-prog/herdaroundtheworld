@@ -29,15 +29,15 @@ class Services {
       if (permission == LocationPermission.denied) permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.deniedForever) return const HereResult(problem: HereProblem.blocked);
       if (permission == LocationPermission.denied) return const HereResult(problem: HereProblem.notAllowed);
-      // A fresh position, or one the phone found in the last few minutes (much faster indoors).
+      // A fresh, precise position (pins can show the exact spot), or one from the last 2 minutes.
       Position? position;
       try {
         position = await Geolocator.getCurrentPosition(
-          locationSettings: const LocationSettings(accuracy: LocationAccuracy.low, timeLimit: Duration(seconds: 25)),
+          locationSettings: const LocationSettings(accuracy: LocationAccuracy.high, timeLimit: Duration(seconds: 25)),
         );
       } catch (_) {
         final last = await Geolocator.getLastKnownPosition();
-        if (last != null && DateTime.now().difference(last.timestamp) < const Duration(minutes: 30)) position = last;
+        if (last != null && DateTime.now().difference(last.timestamp) < const Duration(minutes: 2)) position = last;
       }
       if (position == null) return const HereResult(problem: HereProblem.unavailable);
       // Apps that fake your location are turned away.
