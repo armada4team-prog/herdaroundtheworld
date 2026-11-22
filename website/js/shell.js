@@ -1,6 +1,6 @@
 // Herd Around the World website: header, footer, preview banner and the page router (#/map, #/c/07, …).
 // Used by the standalone page (app.js) and by the Wix custom element (element.js).
-import { load, state, resetPreview, account, syncAccount } from './data.js';
+import { load, state, resetPreview, account, syncAccount, refresh } from './data.js';
 import { openSignInSheet } from './signin.js';
 import { tr, lang, setLang, languages } from './i18n.js';
 import { esc, t, icons } from './ui.js';
@@ -271,6 +271,15 @@ export async function startApp(opts = {}) {
   main = byId('main');
   readQrQuery();
   window.addEventListener('hashchange', () => render());
+  // Coming back to a tab left open: fetch the latest finds, stops and photos (at most once a
+  // minute). Pages with a form being filled in keep what's typed and just get the new data.
+  let lastRefresh = Date.now();
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState !== 'visible' || state.mode !== 'live' || Date.now() - lastRefresh < 60000) return;
+    lastRefresh = Date.now();
+    await refresh();
+    if (!/\/(found|pass-on|wish|something-happened|chat)$/.test(parseHash().path)) render(true);
+  });
   window.addEventListener('herd:account', () => render(true));
   closeMenusOnOutsideClick();
   setLang(lang());

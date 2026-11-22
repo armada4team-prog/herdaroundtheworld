@@ -71,10 +71,15 @@ class _HerdAppState extends State<HerdApp> {
   String _language = 'en';
   late final router = AppRouter(pageFor: pageFor);
   bool showSplash = startScreen.isEmpty || startScreen == 'splash';
+  AppLifecycleListener? _lifecycle;
 
   @override
   void initState() {
     super.initState();
+    // Coming back to the app: fetch the latest finds, stops and photos from The Herd's lists.
+    _lifecycle = AppLifecycleListener(onResume: () {
+      if (model.isLive) model.refreshLive();
+    });
     // Switching language redraws every screen in the new language, keeping your place.
     model.addListener(() {
       if (model.language != _language) {
@@ -88,6 +93,12 @@ class _HerdAppState extends State<HerdApp> {
     if (kIsWeb && startScreen.isNotEmpty) Services.previewHere = const HerePlace('Aurora, CO', LatLng(39.7294, -104.8319));
     final startLang = kIsWeb ? Uri.base.queryParameters['lang'] : null;
     if (startLang != null) model.setLanguage(startLang);
+  }
+
+  @override
+  void dispose() {
+    _lifecycle?.dispose();
+    super.dispose();
   }
 
   void _openStartScreen() {
