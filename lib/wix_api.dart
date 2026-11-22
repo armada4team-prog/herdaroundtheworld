@@ -158,6 +158,7 @@ class WixApi {
           who: '${m['author'] ?? ''}',
           text: '${m['message'] ?? ''}',
           kind: '${m['author']}'.startsWith('The Herd') ? ChatKind.herd : ChatKind.traveler,
+          id: _text(m['_id']),
         ),
     ];
   }
@@ -289,6 +290,7 @@ Companion companionFromWix(Map<String, dynamic> c, List<Map<String, dynamic>> st
         handedOn: s['kind'] == 'passedOn',
         kind: '${s['kind'] ?? 'left'}',
         date: dateOf(s['_createdDate']),
+        id: _text(s['_id']),
       ),
   ];
   final moves = mapped.where((s) => s.kind != 'made').toList();

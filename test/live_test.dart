@@ -154,6 +154,13 @@ void main() {
     expect(sample.companions.length, AppModel().companions.length);
   });
 
+  test('stops keep their Wix id so they can be reported', () {
+    final c = companionFromWix({'number': '4', 'name': 'Sprout'}, [
+      {'_id': 'stop-1', 'kind': 'found', 'city': 'Denver, CO', 'latitude': 39.7, 'longitude': -105, 'byName': 'Kim'},
+    ]);
+    expect(c.stops.single.id, 'stop-1');
+  });
+
   test('a profile photo set in Wix is shown instead of the drawing', () {
     final withPhoto = companionFromWix({'number': '4', 'name': 'Sprout', 'profilePhoto': 'wix:image://v1/abc_123~mv2.jpg/sprout.jpg#originWidth=800&originHeight=800'}, const []);
     expect(withPhoto.profilePhoto, 'https://static.wixstatic.com/media/abc_123~mv2.jpg');

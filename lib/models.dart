@@ -22,7 +22,11 @@ class Stop {
     this.handedOn = false,
     String? kind,
     this.date,
+    this.id,
   }) : kind = kind ?? (found ? 'found' : (handedOn ? 'passedOn' : 'left'));
+
+  /// The stop's id in The Herd's Wix lists (live data only), for "Report".
+  final String? id;
 
   final String city;
   final String? place;
@@ -266,7 +270,9 @@ class ActivityItem {
 enum ChatKind { herd, traveler, me }
 
 class ChatMessage {
-  ChatMessage({required this.who, required this.text, required this.kind});
+  ChatMessage({required this.who, required this.text, required this.kind, this.id});
+  /// The message's id in The Herd's Wix lists (live data only), for "Report".
+  final String? id;
   final String who;
   final String text;
   final ChatKind kind;

@@ -2,6 +2,11 @@
 // change the app's file and run the script again. Website-only text is in translations-web.js.
 export const appTranslations = {
  "es": {
+  "Cancel": "Cancelar",
+  "Report": "Reportar",
+  "Report this to The Herd? They’ll take a look and remove it if it breaks the rules.": "¿Reportar esto a The Herd? Lo revisarán y lo quitarán si no cumple las normas.",
+  "Reported. Thank you!": "Reportado. ¡Gracias!",
+  "That didn’t go through. Please try again.": "No se pudo enviar. Inténtalo de nuevo.",
   "Heads up: the exact spot where you hand them on will be shown on their map.": "Aviso: el lugar exacto donde lo entregues se mostrará en su mapa.",
   "The exact spot where you leave them will be shown on their map, so the next traveler can find them.": "El lugar exacto donde lo dejes se mostrará en su mapa, para que el próximo viajero pueda encontrarlo.",
   "Only the general area (within about 3 miles) will be shown on their map.": "Solo se mostrará la zona general (a unas 3 millas) en su mapa.",
@@ -519,6 +524,11 @@ export const appTranslations = {
   "Preview: using sample Companions": "Vista previa: con Compañeros de muestra"
  },
  "fr": {
+  "Cancel": "Annuler",
+  "Report": "Signaler",
+  "Report this to The Herd? They’ll take a look and remove it if it breaks the rules.": "Signaler ceci à The Herd ? Ils vérifieront et le retireront s’il enfreint les règles.",
+  "Reported. Thank you!": "Signalé. Merci !",
+  "That didn’t go through. Please try again.": "Ça n’a pas fonctionné. Réessaie.",
   "Heads up: the exact spot where you hand them on will be shown on their map.": "À savoir : l’endroit exact où tu le confies sera affiché sur sa carte.",
   "The exact spot where you leave them will be shown on their map, so the next traveler can find them.": "L’endroit exact où tu le laisses sera affiché sur sa carte, pour que le prochain voyageur puisse le trouver.",
   "Only the general area (within about 3 miles) will be shown on their map.": "Seule la zone générale (à environ 5 km) sera affichée sur sa carte.",
@@ -1036,6 +1046,11 @@ export const appTranslations = {
   "Preview: using sample Companions": "Aperçu : Compagnons d’exemple"
  },
  "ja": {
+  "Cancel": "キャンセル",
+  "Report": "報告する",
+  "Report this to The Herd? They’ll take a look and remove it if it breaks the rules.": "The Herdに報告しますか？確認して、ルール違反なら削除します。",
+  "Reported. Thank you!": "報告しました。ありがとうございます！",
+  "That didn’t go through. Please try again.": "送信できませんでした。もう一度お試しください。",
   "Heads up: the exact spot where you hand them on will be shown on their map.": "ご注意：手渡した正確な場所が地図に表示されます。",
   "The exact spot where you leave them will be shown on their map, so the next traveler can find them.": "置いた正確な場所が地図に表示され、次の旅人が見つけられます。",
   "Only the general area (within about 3 miles) will be shown on their map.": "地図には大まかなエリア（約5km以内）だけが表示されます。",

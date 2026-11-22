@@ -177,6 +177,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               child: Text(m.text, style: HerdText.body(15, color: fg)),
             ),
+            if (!mine && m.id != null) ReportButton(number: widget.number, kind: 'chat', id: m.id!),
           ],
         ),
       ),
@@ -303,8 +304,60 @@ class StoryScreen extends StatelessWidget {
           if (stop.place != null) Text(stop.place!, style: HerdText.body(14, color: Herd.ink)),
           if (meta.isNotEmpty) Text(meta, style: HerdText.body(13)),
           if (stop.note != null) Text('“${tr(stop.note!)}”', style: HerdText.body(15, color: Herd.ink)),
+          if (stop.id != null && stop.kind != 'made') ReportButton(number: number, kind: 'stop', id: stop.id!),
         ],
       ),
+    );
+  }
+}
+
+
+/// "Report": flags a chat message or stop for The Herd to look at (it shows in their daily email).
+class ReportButton extends StatefulWidget {
+  const ReportButton({super.key, required this.number, required this.kind, required this.id});
+  final String number;
+  final String kind;
+  final String id;
+
+  @override
+  State<ReportButton> createState() => _ReportButtonState();
+}
+
+class _ReportButtonState extends State<ReportButton> {
+  bool sending = false;
+  bool done = false;
+
+  Future<void> _report() async {
+    final model = context.model;
+    final messenger = ScaffoldMessenger.of(context);
+    final yes = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content: Text(tr('Report this to The Herd? They’ll take a look and remove it if it breaks the rules.')),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(tr('Cancel'))),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(tr('Report'))),
+        ],
+      ),
+    );
+    if (yes != true || !mounted) return;
+    setState(() => sending = true);
+    final ok = await model.reportItem(widget.number, kind: widget.kind, id: widget.id);
+    if (!mounted) return;
+    setState(() {
+      sending = false;
+      done = ok;
+    });
+    if (!ok) messenger.showSnackBar(SnackBar(content: Text(tr('That didn’t go through. Please try again.'))));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (done) return Text(tr('Reported. Thank you!'), style: HerdText.body(13, color: Herd.sageDark));
+    return TextButton(
+      style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(48, 36), alignment: Alignment.centerLeft),
+      onPressed: sending ? null : _report,
+      child: Text(tr('Report'), style: HerdText.body(13).copyWith(decoration: TextDecoration.underline)),
     );
   }
 }

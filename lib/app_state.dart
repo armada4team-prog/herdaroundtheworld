@@ -1143,6 +1143,14 @@ class AppModel extends ChangeNotifier {
     return const WriteResult.ok();
   }
 
+  /// "Report": flags a chat message or stop for The Herd to look at. True when it went through.
+  Future<bool> reportItem(String number, {required String kind, required String id}) async {
+    final api = this.api;
+    if (!isLive || api == null) return true;
+    final res = await api.send('herdFlag', {'number': number, 'kind': kind, 'id': id});
+    return res.ok;
+  }
+
   void dismissReminder() {
     reminderFrom = null;
     notifyListeners();
