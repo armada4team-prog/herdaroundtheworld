@@ -483,6 +483,40 @@ export async function post_herdReport(request) {
   }
 }
 
+// ── Report something (a chat message or a stop) ───────────────────────────────────────────
+// { number, kind: 'chat' | 'stop', id } → a "flagged" line in Companion Reports for The Herd to look at.
+export async function post_herdFlag(request) {
+  try {
+    const b = await readBody(request);
+    if (!b) return problem('Something was missing. Please try again.');
+    const companion = await findCompanion(b.number);
+    if (!companion) return problem('We couldn’t find that Companion.', 'number');
+    const collection = b.kind === 'chat' ? 'CompanionChat' : b.kind === 'stop' ? 'CompanionStops' : null;
+    if (!collection || !b.id || typeof b.id !== 'string') return problem('We couldn’t find that.', 'id');
+    const found = await wixData.query(collection).eq('_id', b.id).find(ADMIN);
+    const item = found.items[0];
+    if (!item || String(item.companionNumber) !== String(companion.number)) return problem('We couldn’t find that.', 'id');
+    const already = await wixData.query('CompanionReports').eq('flaggedId', b.id).find(ADMIN);
+    if (already.items.length === 0) {
+      const what = b.kind === 'chat'
+        ? 'Chat message by ' + (item.author || 'someone') + ': “' + String(item.message || '').slice(0, 300) + '”'
+        : 'Stop by ' + (item.byName || 'someone') + (item.chapter ? ': “' + String(item.chapter).slice(0, 300) + '”' : '') + (item.photo ? ' (with a photo)' : '');
+      await wixData.insert('CompanionReports', {
+        companionNumber: companion.number,
+        what: 'flagged',
+        city: item.city || null,
+        note: 'Reported by a traveler. ' + what,
+        flaggedId: b.id,
+        flaggedKind: b.kind,
+        sendPieces: false,
+      }, ADMIN);
+    }
+    return reply({ ok: true });
+  } catch (err) {
+    return oops(err);
+  }
+}
+
 // ── Optional sign-in: an emailed 6-digit code, no password ────────────────────────────
 // Everything above works without signing in. Signing in keeps a traveler's Passport,
 // Companions in their care and the Companions they follow on every device.

@@ -18,6 +18,7 @@ const ROUTES = {
   herdWish: checker.post_herdWish,
   herdChat: checker.post_herdChat,
   herdReport: checker.post_herdReport,
+  herdFlag: checker.post_herdFlag,
   herdSignInStart: checker.post_herdSignInStart,
   herdSignInVerify: checker.post_herdSignInVerify,
   herdMine: checker.post_herdMine,

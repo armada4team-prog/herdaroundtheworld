@@ -5,6 +5,7 @@ import { t, esc, badge, icons, pill } from '../ui.js';
 import { tr } from '../i18n.js';
 import { label, byLine } from '../model.js';
 import { notFound } from './companion.js';
+import { reportLink, bindReports } from '../report.js';
 
 const tints = ['#FBE4E2', '#DDF0E8', '#F9F1D6', '#E7ECE5'];
 
@@ -21,6 +22,7 @@ function chapter(stop, index, isNow) {
       ${meta ? `<p class="meta">${esc(meta)}</p>` : ''}
       ${stop.place ? `<p class="place">${icons.pin.replace('class="ic"', 'class="ic" style="width:15px;height:15px;vertical-align:-2px"')} ${esc(stop.place)}</p>` : ''}
       ${stop.chapter ? `<p class="text">“${esc(stop.chapter)}”</p>` : ''}
+      ${reportLink('stop', stop.id)}
     </div>
   </article>`;
 }
@@ -50,4 +52,5 @@ export async function render({ params, root }) {
     </a>
     ${c.status !== 'retired' ? `<p style="margin-top:10px"><a class="link-btn" href="#/c/${c.number}/something-happened">${t('Something happened to them?')}</a></p>` : ''}
   </div></section>`;
+  bindReports(root.firstElementChild, c.number);
 }

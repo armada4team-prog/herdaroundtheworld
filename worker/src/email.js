@@ -86,7 +86,7 @@ export async function sendNudge(to, { name, nickname, days, passOnUrl, adoptUrl 
 }
 
 
-const WHAT = { broke: 'They broke', chipped: 'Chipped, still traveling', lost: 'They got lost', adopted: 'Found a forever home (adopted)' };
+const WHAT = { broke: 'They broke', chipped: 'Chipped, still traveling', lost: 'They got lost', adopted: 'Found a forever home (adopted)', flagged: 'Reported by a traveler: please take a look' };
 
 /** The daily email to The Herd (see ../digest.js): photos to approve and new reports. */
 export async function sendDigest(to, { photos, reports, stopsUrl, reportsUrl }) {

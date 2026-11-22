@@ -198,7 +198,20 @@ r = await call('herdReport', { number: '07', what: 'chipped', city: 'Bali' });
 assert.equal(r.body.field, 'where');
 r = await call('herdReport', { number: '07', what: 'chipped', city: 'Denver, CO' });
 assert.equal(r.status, 200); assert.equal(db.Companions[0].status, 'moving');
-assert.equal(db.CompanionReports.length, 1);
+// Report a chat message: one "flagged" report, even if reported twice; unknown ids are refused
+{
+  const msg = db.CompanionChat.find((m) => m.companionNumber === '07');
+  const before = db.CompanionReports.length;
+  r = await call('herdFlag', { number: '07', kind: 'chat', id: msg._id });
+  assert.equal(r.status, 200);
+  r = await call('herdFlag', { number: '07', kind: 'chat', id: msg._id });
+  assert.equal(r.status, 200);
+  assert.equal(db.CompanionReports.length, before + 1, 'reported once');
+  assert.equal(db.CompanionReports.at(-1).what, 'flagged');
+  r = await call('herdFlag', { number: '07', kind: 'chat', id: 'nope' });
+  assert.equal(r.status, 400);
+}
+assert.equal(db.CompanionReports.filter((x) => x.what !== 'flagged').length, 1);
 assert.ok(JSON.stringify(db).includes('KCVT'));
 // ── Optional sign-in ──
 r = await call('herdSignInStart', { email: 'sam@example.com' });

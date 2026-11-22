@@ -2,6 +2,10 @@
 // Keys are the English text; {0}, {1}… stand for names and numbers. Have a native speaker review these.
 export const webTranslations = {
   es: {
+    'Report': 'Reportar',
+    'Report this to The Herd? They’ll take a look and remove it if it breaks the rules.': '¿Reportar esto a The Herd? Lo revisarán y lo quitarán si no cumple las normas.',
+    'Reported. Thank you!': 'Reportado. ¡Gracias!',
+    'That didn’t go through. Please try again.': 'No se pudo enviar. Inténtalo de nuevo.',
     'Explore': 'Explora',
     'Connect': 'Conecta',
     'Other': 'Otros',
@@ -165,6 +169,10 @@ export const webTranslations = {
     '{0} months ago': 'hace {0} meses',
   },
   fr: {
+    'Report': 'Signaler',
+    'Report this to The Herd? They’ll take a look and remove it if it breaks the rules.': 'Signaler ceci à The Herd ? Ils vérifieront et le retireront s’il enfreint les règles.',
+    'Reported. Thank you!': 'Signalé. Merci !',
+    'That didn’t go through. Please try again.': 'Ça n’a pas fonctionné. Réessaie.',
     'Explore': 'Explorer',
     'Connect': 'Nous suivre',
     'Other': 'Autres',
@@ -328,6 +336,10 @@ export const webTranslations = {
     '{0} months ago': 'il y a {0} mois',
   },
   ja: {
+    'Report': '報告する',
+    'Report this to The Herd? They’ll take a look and remove it if it breaks the rules.': 'The Herdに報告しますか？確認して、ルール違反なら削除します。',
+    'Reported. Thank you!': '報告しました。ありがとうございます！',
+    'That didn’t go through. Please try again.': '送信できませんでした。もう一度お試しください。',
     'Explore': '見てまわる',
     'Connect': 'つながる',
     'Other': 'その他',

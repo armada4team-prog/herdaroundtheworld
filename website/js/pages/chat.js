@@ -7,11 +7,12 @@ import { checkNickname, checkPublicText } from '../../../shared/rules.js';
 import { displayName } from '../model.js';
 import { textField, setError, bindTyping, showProblems, busy } from '../forms.js';
 import { notFound } from './companion.js';
+import { reportLink, bindReports } from '../report.js';
 
 function bubble(m) {
   const cls = m.mine ? ' mine' : '';
   const kind = m.herd ? ' herd' : '';
-  return `<li class="bubble-wrap${cls}"><p class="bubble-who">${esc(m.author)}${m.when ? ' · ' + esc(tr(m.when)) : ''}</p><p class="bubble${kind}">${esc(m.message)}</p></li>`;
+  return `<li class="bubble-wrap${cls}"><p class="bubble-who">${esc(m.author)}${m.when ? ' · ' + esc(tr(m.when)) : ''}</p><p class="bubble${kind}">${esc(m.message)}</p>${m.mine ? '' : reportLink('chat', m.id)}</li>`;
 }
 
 export async function render({ params, root }) {
@@ -39,6 +40,7 @@ export async function render({ params, root }) {
       <button class="btn block" type="submit" id="send">${t('Send')} ${icons.arrow}</button>
     </form>
   </div></section>`;
+  bindReports(root.firstElementChild, c.number);
 
   const form = root.querySelector('#chat-form');
   const fix = root.querySelector('#fix');

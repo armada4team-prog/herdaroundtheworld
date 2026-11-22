@@ -117,6 +117,7 @@ function liveCompanion(c, stops) {
     return (dateOf(a._createdDate)?.getTime() || 0) - (dateOf(b._createdDate)?.getTime() || 0);
   });
   const mapped = sorted.map((s) => ({
+    id: s._id || null,
     kind: s.kind || 'left',
     city: s.city || '',
     place: s.place || null,
@@ -287,7 +288,7 @@ export async function chatFor(number) {
     const sorted = items
       .filter((m) => !m.hidden)
       .sort((a, b) => (dateOf(a._createdDate)?.getTime() || 0) - (dateOf(b._createdDate)?.getTime() || 0));
-    state.chats[n] = sorted.map((m) => ({ author: m.author, message: m.message, when: dateOf(m._createdDate) ? relativeTime(dateOf(m._createdDate)) : '' }));
+    state.chats[n] = sorted.map((m) => ({ id: m._id || null, author: m.author, message: m.message, when: dateOf(m._createdDate) ? relativeTime(dateOf(m._createdDate)) : '' }));
   } catch (e) {
     state.chats[n] = [];
   }
@@ -314,7 +315,7 @@ export async function send(name, body) {
     let json = {};
     try { json = await res.json(); } catch (e) { /* not JSON */ }
     if (res.status === 200 && json.ok !== false) {
-      if (!/^herd(SignIn|Mine|Follow|SignOut|ForgetMe)/.test(name)) await refresh(); // sign-in calls don't change the map
+      if (!/^herd(SignIn|Mine|Follow|SignOut|ForgetMe|Flag)/.test(name)) await refresh(); // sign-in calls don't change the map
       return { ...json, ok: true, status: 200 };
     }
     if (res.status === 400) return { ok: false, status: 400, field: json.field || null, message: json.message || 'Something was missing. Please try again.' };
@@ -496,6 +497,9 @@ const previewServer = {
     return ok({ id: randomToken(), message });
   },
 
+  async herdFlag() {
+    return ok({});
+  },
   async herdReport(b) {
     if (!b) return problem('Something was missing. Please try again.');
     const c = sampleCompanion(b.number);

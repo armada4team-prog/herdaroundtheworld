@@ -628,3 +628,8 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.45; }
   .site-header.embedded .account-btn.in-bar { max-width: 220px; }
   .herd-embedded .map-layout { height: calc(100svh - 150px); }
 }
+
+/* Report a chat message or stop */
+.report-link { background: none; border: 0; padding: 4px 0; min-height: 32px; font-size: 13px; color: var(--body); text-decoration: underline; cursor: pointer; }
+.report-link:hover { color: var(--error); }
+.report-done { display: inline-block; font-size: 13px; color: var(--sage-dark); padding: 4px 0; }
