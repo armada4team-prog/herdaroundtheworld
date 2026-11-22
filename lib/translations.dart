@@ -4,6 +4,7 @@
 
 const Map<String, Map<String, String>> translations = {
   'es': {
+    'Heads up: the exact spot where you hand them on will be shown on their map.': 'Aviso: el lugar exacto donde lo entregues se mostrará en su mapa.',
     'The exact spot where you leave them will be shown on their map, so the next traveler can find them.': 'El lugar exacto donde lo dejes se mostrará en su mapa, para que el próximo viajero pueda encontrarlo.',
     'Only the general area (within about 3 miles) will be shown on their map.': 'Solo se mostrará la zona general (a unas 3 millas) en su mapa.',
     'Show my exact spot on the map': 'Mostrar mi lugar exacto en el mapa',
@@ -231,7 +232,7 @@ const Map<String, Map<String, String>> translations = {
     'Leaving them somewhere': 'Dejándolo en algún lugar',
     'A café shelf, a hostel lobby, a little free library. Somewhere they’ll be found.': 'Un estante de café, el vestíbulo de un hostal, una pequeña biblioteca libre. Un lugar donde lo encuentren.',
     'Which city? *': '¿Qué ciudad? *',
-    'Please never use a home address. We only ever show a place name and city, never a street address.': 'Nunca uses una dirección de casa. Solo mostramos el nombre del lugar y la ciudad, nunca una dirección.',
+    'Please never use a home address. A street address is never written out.': 'Por favor, nunca uses la dirección de una casa. Nunca se escribe una dirección.',
     'Use my location': 'Usar mi ubicación',
     'Finding your location…': 'Buscando tu ubicación…',
     'Where in the city? (optional)': '¿En qué parte de la ciudad? (opcional)',
@@ -521,6 +522,7 @@ const Map<String, Map<String, String>> translations = {
     'Preview: using sample Companions': 'Vista previa: con Compañeros de muestra',
   },
   'fr': {
+    'Heads up: the exact spot where you hand them on will be shown on their map.': 'À savoir : l’endroit exact où tu le confies sera affiché sur sa carte.',
     'The exact spot where you leave them will be shown on their map, so the next traveler can find them.': 'L’endroit exact où tu le laisses sera affiché sur sa carte, pour que le prochain voyageur puisse le trouver.',
     'Only the general area (within about 3 miles) will be shown on their map.': 'Seule la zone générale (à environ 5 km) sera affichée sur sa carte.',
     'Show my exact spot on the map': 'Afficher mon emplacement exact sur la carte',
@@ -748,7 +750,7 @@ const Map<String, Map<String, String>> translations = {
     'Leaving them somewhere': 'En le laissant quelque part',
     'A café shelf, a hostel lobby, a little free library. Somewhere they’ll be found.': 'Une étagère de café, le hall d’une auberge, une petite bibliothèque libre. Un endroit où on le trouvera.',
     'Which city? *': 'Quelle ville ? *',
-    'Please never use a home address. We only ever show a place name and city, never a street address.': 'N’indique jamais une adresse personnelle. Nous montrons seulement le nom du lieu et la ville, jamais une adresse.',
+    'Please never use a home address. A street address is never written out.': 'N’utilise jamais l’adresse d’un domicile. Aucune adresse n’est jamais écrite.',
     'Use my location': 'Utiliser ma position',
     'Finding your location…': 'Recherche de ta position…',
     'Where in the city? (optional)': 'Où dans la ville ? (facultatif)',
@@ -1038,6 +1040,7 @@ const Map<String, Map<String, String>> translations = {
     'Preview: using sample Companions': 'Aperçu : Compagnons d’exemple',
   },
   'ja': {
+    'Heads up: the exact spot where you hand them on will be shown on their map.': 'ご注意：手渡した正確な場所が地図に表示されます。',
     'The exact spot where you leave them will be shown on their map, so the next traveler can find them.': '置いた正確な場所が地図に表示され、次の旅人が見つけられます。',
     'Only the general area (within about 3 miles) will be shown on their map.': '地図には大まかなエリア（約5km以内）だけが表示されます。',
     'Show my exact spot on the map': '地図に正確な場所を表示する',
@@ -1265,7 +1268,7 @@ const Map<String, Map<String, String>> translations = {
     'Leaving them somewhere': 'どこかに置いていく',
     'A café shelf, a hostel lobby, a little free library. Somewhere they’ll be found.': 'カフェの棚、ホステルのロビー、小さな無料図書館など。見つけてもらえる場所に。',
     'Which city? *': 'どの市ですか？＊',
-    'Please never use a home address. We only ever show a place name and city, never a street address.': '自宅の住所は絶対に入れないでください。表示するのは場所の名前と市だけで、住所は表示しません。',
+    'Please never use a home address. A street address is never written out.': '自宅の住所は使わないでください。住所が書かれることはありません。',
     'Use my location': '現在地を使う',
     'Finding your location…': '現在地を探しています…',
     'Where in the city? (optional)': '市内のどこ？（任意）',

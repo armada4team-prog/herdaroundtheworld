@@ -442,7 +442,7 @@ const previewServer = {
     if (b.wishGranted && !wishPhoto) return problem('That wish photo couldn’t be used. Please try a different one.', 'wishPhoto');
     const stop = {
       kind: handedOn ? 'passedOn' : 'left', city: String(b.city).trim(),
-      latitude: blur(b.latitude, !handedOn && b.exactSpot !== false), longitude: blur(b.longitude, !handedOn && b.exactSpot !== false),
+      latitude: blur(b.latitude, b.exactSpot !== false), longitude: blur(b.longitude, b.exactSpot !== false),
       byName: String(b.nickname).trim(), photo, photoApproved: false, createdAt: new Date().toISOString(),
       travelerId: hold.travelerId || null,
     };

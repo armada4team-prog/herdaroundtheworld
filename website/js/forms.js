@@ -153,7 +153,7 @@ export function busy(button, on, label) {
 export function spotChoice(kind) {
   return `<div class="spot-choice" data-kind="${kind}">
     <button type="button" class="switch" role="switch" id="exact-spot" aria-checked="true"><span class="track" aria-hidden="true"></span><span>${t('Show my exact spot on the map')}</span></button>
-    <p class="location-note">${icons.pin}<span id="spot-note">${t(kind === 'leave' ? 'The exact spot where you leave them will be shown on their map, so the next traveler can find them.' : 'Heads up: the exact spot where you log this find will be shown on their map.')}</span></p>
+    <p class="location-note">${icons.pin}<span id="spot-note">${t(spotNote(kind, true))}</span></p>
   </div>`;
 }
 
@@ -161,11 +161,24 @@ export function spotChoice(kind) {
 export function bindSpotChoice(root, onChange) {
   const btn = root.querySelector('#exact-spot');
   if (!btn) return;
-  const kind = btn.closest('.spot-choice').dataset.kind;
   btn.addEventListener('click', () => {
     const exact = btn.getAttribute('aria-checked') !== 'true';
     btn.setAttribute('aria-checked', String(exact));
-    root.querySelector('#spot-note').textContent = tr(exact ? (kind === 'leave' ? 'The exact spot where you leave them will be shown on their map, so the next traveler can find them.' : 'Heads up: the exact spot where you log this find will be shown on their map.') : 'Only the general area (within about 3 miles) will be shown on their map.');
+    root.querySelector('#spot-note').textContent = tr(spotNote(btn.closest('.spot-choice').dataset.kind, exact));
     onChange(exact);
   });
+}
+
+const SPOT_NOTES = { find: 'Heads up: the exact spot where you log this find will be shown on their map.', leave: 'The exact spot where you leave them will be shown on their map, so the next traveler can find them.', hand: 'Heads up: the exact spot where you hand them on will be shown on their map.' };
+function spotNote(kind, exact) {
+  return exact ? SPOT_NOTES[kind] || SPOT_NOTES.find : 'Only the general area (within about 3 miles) will be shown on their map.';
+}
+
+/** Switches the note between "hand them on" and "leave them" (pass-on form). */
+export function setSpotKind(root, kind) {
+  const box = root.querySelector('.spot-choice');
+  if (!box) return;
+  box.dataset.kind = kind;
+  const exact = root.querySelector('#exact-spot').getAttribute('aria-checked') === 'true';
+  root.querySelector('#spot-note').textContent = tr(spotNote(kind, exact));
 }

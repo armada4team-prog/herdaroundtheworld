@@ -34,7 +34,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
   final email = TextEditingController();
   final sampleKey = GlobalKey();
   bool handToSomeone = true;
-  bool exactSpot = true; // leaving them: show the exact spot, or only the general area
+  bool exactSpot = true; // show the exact spot on the map, or only the general area
   bool shareOK = true;
   bool grantedWish = false;
   bool alertMe = true;
@@ -119,9 +119,9 @@ class _PassOnScreenState extends State<PassOnScreen> {
     if (where == null) return;
     setState(() => saving = true);
     final city = where.city;
-    // Left somewhere: the dot shows the exact spot (unless they chose the general area), with their
-    // hint, so the next person can find them. Handed to someone: only the general area.
-    final point = where.blurred(exactish: !handToSomeone && exactSpot);
+    // The dot shows the exact spot (unless they chose the general area). Left somewhere, it comes
+    // with their hint, so the next person can find them.
+    final point = where.blurred(exactish: exactSpot);
     final place = handToSomeone ? null : description;
     final model = context.model;
     final result = await model.submitPassOn(
@@ -281,16 +281,21 @@ class _PassOnScreenState extends State<PassOnScreen> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        tr('Please never use a home address. We only ever show a place name and city, never a street address.'),
+                        tr('Please never use a home address. A street address is never written out.'),
                         style: HerdText.body(13),
                       ),
+                      const SizedBox(height: 12),
+                      LabeledSwitch(label: 'Show my exact spot on the map', value: exactSpot, onChanged: (v) => setState(() => exactSpot = v)),
+                      Row(crossAxisAlignment: CrossAxisAlignment.start, spacing: 8, children: [
+                        const Padding(padding: EdgeInsets.only(top: 2), child: Icon(Icons.place_outlined, size: 18, color: Herd.sageDark)),
+                        Expanded(
+                          child: Text(
+                            tr(!exactSpot ? 'Only the general area (within about 3 miles) will be shown on their map.' : handToSomeone ? 'Heads up: the exact spot where you hand them on will be shown on their map.' : 'The exact spot where you leave them will be shown on their map, so the next traveler can find them.'),
+                            style: HerdText.body(14, color: Herd.ink),
+                          ),
+                        ),
+                      ]),
                       if (!handToSomeone) ...[
-                        const SizedBox(height: 12),
-                        LabeledSwitch(label: 'Show my exact spot on the map', value: exactSpot, onChanged: (v) => setState(() => exactSpot = v)),
-                        Row(crossAxisAlignment: CrossAxisAlignment.start, spacing: 8, children: [
-                          const Padding(padding: EdgeInsets.only(top: 2), child: Icon(Icons.place_outlined, size: 18, color: Herd.sageDark)),
-                          Expanded(child: Text(tr(exactSpot ? 'The exact spot where you leave them will be shown on their map, so the next traveler can find them.' : 'Only the general area (within about 3 miles) will be shown on their map.'), style: HerdText.body(14, color: Herd.ink))),
-                        ]),
                         const SizedBox(height: 20),
                         FieldLabel('Where in the city? *', key: kPlace),
                         const SizedBox(height: 8),

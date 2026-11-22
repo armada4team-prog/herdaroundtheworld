@@ -7,7 +7,7 @@ import { tr } from '../i18n.js';
 import { checkNickname, checkPublicText, checkHint, milesBetween, minMilesToLeave, cleanNumber } from '../../../shared/rules.js';
 import { displayName, wishSentence } from '../model.js';
 import { mountHere } from '../here.js';
-import { formHero, textField, setError, bindTyping, choices, bindChoices, photoField, bindPhoto, showProblems, outOfOrder, busy, spotChoice, bindSpotChoice } from '../forms.js';
+import { formHero, textField, setError, bindTyping, choices, bindChoices, photoField, bindPhoto, showProblems, outOfOrder, busy, spotChoice, bindSpotChoice, setSpotKind } from '../forms.js';
 import { notFound } from './companion.js';
 
 /** Photos chosen on this page, kept for the postcard on the "sent" page. */
@@ -48,9 +48,9 @@ export async function render({ params, root, go }) {
       <div>
         <p class="field-label" id="where-label" style="margin-bottom:8px">${t('Where are you? *')}</p>
         <div data-field="where" id="where" role="group" aria-labelledby="where-label"></div>
-        <p class="help" style="margin-top:6px">${t('Please never use a home address. We only ever show a place name and city, never a street address.')}</p>
+        <p class="help" style="margin-top:6px">${t('Please never use a home address. A street address is never written out.')}</p>
       </div>
-      <div id="spot-wrap" hidden>${spotChoice('leave')}</div>
+      <div id="spot-wrap">${spotChoice('hand')}</div>
       <div id="hint-wrap" hidden>
         ${textField({ id: 'hint', label: 'Where in the city? *', placeholder: 'Like a café on the plaza, or a hostel lobby', max: 120, help: 'This is the hint the next traveler uses to find them, and their dot on the map shows close to this spot. Be specific, like “bookshelf by the window at Bean Café.”' })}
       </div>
@@ -118,7 +118,7 @@ export async function render({ params, root, go }) {
   bindChoices(root, 'how', (v) => {
     handOn = v === 'hand';
     hintWrap.hidden = handOn;
-    root.querySelector('#spot-wrap').hidden = handOn;
+    setSpotKind(root, handOn ? 'hand' : 'leave');
     if (handOn) setErr('hint', null);
     const prompt = root.querySelector('#photo-prompt');
     if (prompt) prompt.textContent = tr(handOn ? 'A photo from your time together, or their new spot' : 'A photo of the spot helps the next traveler find them');
