@@ -83,7 +83,7 @@ async function savePhoto(photo, companionNumber, label) {
 }
 
 // ── Found ───────────────────────────────────────────────────────────────────────────────
-// { number, code, nickname, city, latitude, longitude, holdToken? }
+// { number, code, nickname, city, latitude, longitude, holdToken?, exactSpot? }
 export async function post_herdFind(request) {
   try {
     const b = await readBody(request);
@@ -128,8 +128,9 @@ export async function post_herdFind(request) {
       companionNumber: companion.number,
       kind: 'found',
       city: String(b.city).trim(),
-      latitude: blur(b.latitude, true), // the exact spot: the finder was told it will be shown
-      longitude: blur(b.longitude, true),
+      // The exact spot unless the finder chose "general area" (exactSpot: false).
+      latitude: blur(b.latitude, b.exactSpot !== false),
+      longitude: blur(b.longitude, b.exactSpot !== false),
       byName: String(b.nickname).trim(),
       travelerId: traveler ? traveler._id : null,
     }, ADMIN);
@@ -182,8 +183,8 @@ export async function post_herdPassOn(request) {
       companionNumber: companion.number,
       kind: handedOn ? 'passedOn' : 'left',
       city: String(b.city).trim(),
-      latitude: blur(b.latitude, !handedOn),
-      longitude: blur(b.longitude, !handedOn),
+      latitude: blur(b.latitude, !handedOn && b.exactSpot !== false),
+      longitude: blur(b.longitude, !handedOn && b.exactSpot !== false),
       byName: String(b.nickname).trim(),
       photo,
       photoApproved: false,

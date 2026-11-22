@@ -188,11 +188,12 @@ class HerePlace {
   final String city;
   final LatLng point;
 
-  /// The map dot: about 10 km for "just the city", or the exact spot (about 1 m) where they were left.
+  /// The map dot: the exact spot (about 1 m), or the general area: rounded to a 0.05° grid, so it's
+  /// always within about 3 miles (same as shared/rules.js).
   LatLng blurred({required bool exactish}) {
-    double round(double v, int places) => double.parse(v.toStringAsFixed(places));
-    final digits = exactish ? 5 : 1;
-    return LatLng(round(point.latitude, digits), round(point.longitude, digits));
+    double exact(double v) => double.parse(v.toStringAsFixed(5));
+    double general(double v) => double.parse(((v * 20).round() / 20).toStringAsFixed(2));
+    return exactish ? LatLng(exact(point.latitude), exact(point.longitude)) : LatLng(general(point.latitude), general(point.longitude));
   }
 }
 

@@ -48,7 +48,7 @@ class _HereCardState extends State<HereCard> {
 
   String get problemText => switch (problem) {
     HereProblem.off => 'Location is turned off. Turn it on so we can log where you are.',
-    HereProblem.notAllowed => 'Please allow location so we can log where you are. We only use your city.',
+    HereProblem.notAllowed => 'Please allow location so we can log where you are.',
     HereProblem.blocked => 'Location is blocked for this app. Open Settings and allow location.',
     HereProblem.faked => 'Your location looks like it’s coming from a location-changing app. Please turn it off and try again.',
     _ => 'We couldn’t find where you are. Check your signal and try again.',
@@ -114,7 +114,7 @@ class _HereCardState extends State<HereCard> {
                 ),
         ),
         Text(
-          tr('We use your phone’s location so travelers know where to look. A street address is never shown.'),
+          tr('We use your phone’s location so travelers know where to look. A street address is never written out.'),
           style: HerdText.body(13),
         ),
         if (widget.errorText != null) ErrorNote(widget.errorText!),

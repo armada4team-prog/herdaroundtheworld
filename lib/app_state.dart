@@ -801,6 +801,7 @@ class AppModel extends ChangeNotifier {
     String? email,
     LatLng? point,
     required LatLng exactPoint,
+    bool exactSpot = true,
   }) async {
     final api = this.api;
     if (!isLive || api == null) {
@@ -816,6 +817,7 @@ class AppModel extends ChangeNotifier {
         'city': city,
         'latitude': exactPoint.latitude,
         'longitude': exactPoint.longitude,
+        'exactSpot': exactSpot,
       }),
     );
     if (!res.ok) {
@@ -983,6 +985,7 @@ class AppModel extends ChangeNotifier {
     Uint8List? wishPhoto,
     LatLng? point,
     required LatLng exactPoint,
+    bool exactSpot = true,
     Future<Uint8List?> Function(Uint8List bytes)? shrink,
   }) async {
     final api = this.api;
@@ -1012,6 +1015,7 @@ class AppModel extends ChangeNotifier {
         'city': city,
         'latitude': exactPoint.latitude,
         'longitude': exactPoint.longitude,
+        'exactSpot': exactSpot,
         'hint': handedToSomeone ? '' : (place ?? ''),
         'chapter': chapter,
         'nickname': nickname,

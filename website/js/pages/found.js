@@ -7,7 +7,7 @@ import { tr } from '../i18n.js';
 import { checkNickname, cleanNumber } from '../../../shared/rules.js';
 import { displayName } from '../model.js';
 import { mountHere } from '../here.js';
-import { formHero, textField, setError, bindTyping, showProblems, outOfOrder, busy } from '../forms.js';
+import { formHero, textField, setError, bindTyping, showProblems, outOfOrder, busy, spotChoice, bindSpotChoice } from '../forms.js';
 import { notFound } from './companion.js';
 
 export async function render({ params, root }) {
@@ -41,7 +41,7 @@ export async function render({ params, root }) {
       <div>
         <p class="field-label" id="where-label" style="margin-bottom:8px">${t('Where are you? *')}</p>
         <div data-field="where" id="where" role="group" aria-labelledby="where-label"></div>
-        <p class="location-note">${icons.pin}<span>${t('Heads up: the exact spot where you log this find will be shown on their map.')}</span></p>
+        ${spotChoice('find')}
       </div>
       ${textField({ id: 'nickname', label: 'Your name or nickname *', placeholder: 'Shown on their page', max: 30, value: mine().nickname, autocomplete: 'nickname' })}
       <div id="fix"></div>
@@ -49,6 +49,8 @@ export async function render({ params, root }) {
     </div></section>`;
 
   let here = null;
+  let exactSpot = true;
+  bindSpotChoice(root, (v) => { exactSpot = v; });
   const where = mountHere(root.querySelector('#where'), (place) => {
     here = place;
     if (place) where.setError(null);
@@ -70,7 +72,7 @@ export async function render({ params, root }) {
     fix.innerHTML = '';
     busy(button, true, t('Logging…'));
     const res = await send('herdFind', withSession({
-      number: c.number, code, nickname, city: here.city, latitude: here.latitude, longitude: here.longitude,
+      number: c.number, code, nickname, city: here.city, latitude: here.latitude, longitude: here.longitude, exactSpot,
     }));
     busy(button, false, t('Log my find →'));
     if (!res.ok) {

@@ -99,9 +99,9 @@ void main() {
     expect(model.tryFindCode('07', findCodeFor('07')), CodeCheck.tooManyTries);
   });
 
-  test('map dots: about the city for finds, the exact spot where they were left', () {
+  test('map dots: the exact spot, or the general area (within about 3 miles)', () {
     const here = HerePlace('Aurora, CO', LatLng(39.72946, -104.83191));
-    expect(here.blurred(exactish: false), const LatLng(39.7, -104.8));
+    expect(here.blurred(exactish: false), const LatLng(39.75, -104.85));
     expect(here.blurred(exactish: true), const LatLng(39.72946, -104.83191));
   });
 

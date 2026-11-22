@@ -34,6 +34,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
   final email = TextEditingController();
   final sampleKey = GlobalKey();
   bool handToSomeone = true;
+  bool exactSpot = true; // leaving them: show the exact spot, or only the general area
   bool shareOK = true;
   bool grantedWish = false;
   bool alertMe = true;
@@ -118,9 +119,9 @@ class _PassOnScreenState extends State<PassOnScreen> {
     if (where == null) return;
     setState(() => saving = true);
     final city = where.city;
-    // Left somewhere: the dot shows the exact spot, with their hint, so the next person can find
-    // them. Handed to someone: only roughly the city.
-    final point = where.blurred(exactish: !handToSomeone);
+    // Left somewhere: the dot shows the exact spot (unless they chose the general area), with their
+    // hint, so the next person can find them. Handed to someone: only the general area.
+    final point = where.blurred(exactish: !handToSomeone && exactSpot);
     final place = handToSomeone ? null : description;
     final model = context.model;
     final result = await model.submitPassOn(
@@ -135,6 +136,7 @@ class _PassOnScreenState extends State<PassOnScreen> {
       wishPhoto: grantedWish ? wishPhoto : null,
       point: point,
       exactPoint: where.point,
+      exactSpot: exactSpot,
       shrink: Services.shrinkPhoto,
     );
     if (!mounted) return;
@@ -283,6 +285,12 @@ class _PassOnScreenState extends State<PassOnScreen> {
                         style: HerdText.body(13),
                       ),
                       if (!handToSomeone) ...[
+                        const SizedBox(height: 12),
+                        LabeledSwitch(label: 'Show my exact spot on the map', value: exactSpot, onChanged: (v) => setState(() => exactSpot = v)),
+                        Row(crossAxisAlignment: CrossAxisAlignment.start, spacing: 8, children: [
+                          const Padding(padding: EdgeInsets.only(top: 2), child: Icon(Icons.place_outlined, size: 18, color: Herd.sageDark)),
+                          Expanded(child: Text(tr(exactSpot ? 'The exact spot where you leave them will be shown on their map, so the next traveler can find them.' : 'Only the general area (within about 3 miles) will be shown on their map.'), style: HerdText.body(14, color: Herd.ink))),
+                        ]),
                         const SizedBox(height: 20),
                         FieldLabel('Where in the city? *', key: kPlace),
                         const SizedBox(height: 8),

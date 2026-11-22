@@ -52,7 +52,7 @@ export function devicePoint() {
 
 const problemText = {
   off: 'Location is turned off. Turn it on so we can log where you are.',
-  notAllowed: 'Please allow location so we can log where you are. We only use your city.',
+  notAllowed: 'Please allow location so we can log where you are.',
   unavailable: 'We couldn’t find where you are. Check your signal and try again.',
 };
 
@@ -86,7 +86,7 @@ export function mountHere(el, onChange) {
       : '';
     el.className = 'field' + (error ? ' has-error' : '');
     el.innerHTML = `<div class="here">${inner}${tests}</div>
-      <p class="help">${t('We use your phone’s location so travelers know where to look. A street address is never shown.')}</p>
+      <p class="help">${t('We use your phone’s location so travelers know where to look. A street address is never written out.')}</p>
       ${error ? errorNote(error) : ''}`;
   }
 

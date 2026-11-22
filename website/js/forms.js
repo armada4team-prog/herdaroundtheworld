@@ -147,3 +147,25 @@ export function busy(button, on, label) {
   button.setAttribute('aria-busy', String(on));
   if (label) button.innerHTML = label;
 }
+
+
+/** "Show my exact spot on the map" (on by default), with a note saying what will be shown. */
+export function spotChoice(kind) {
+  return `<div class="spot-choice" data-kind="${kind}">
+    <button type="button" class="switch" role="switch" id="exact-spot" aria-checked="true"><span class="track" aria-hidden="true"></span><span>${t('Show my exact spot on the map')}</span></button>
+    <p class="location-note">${icons.pin}<span id="spot-note">${t(kind === 'leave' ? 'The exact spot where you leave them will be shown on their map, so the next traveler can find them.' : 'Heads up: the exact spot where you log this find will be shown on their map.')}</span></p>
+  </div>`;
+}
+
+/** Wires the switch; calls onChange(exact) and keeps the note in step. */
+export function bindSpotChoice(root, onChange) {
+  const btn = root.querySelector('#exact-spot');
+  if (!btn) return;
+  const kind = btn.closest('.spot-choice').dataset.kind;
+  btn.addEventListener('click', () => {
+    const exact = btn.getAttribute('aria-checked') !== 'true';
+    btn.setAttribute('aria-checked', String(exact));
+    root.querySelector('#spot-note').textContent = tr(exact ? (kind === 'leave' ? 'The exact spot where you leave them will be shown on their map, so the next traveler can find them.' : 'Heads up: the exact spot where you log this find will be shown on their map.') : 'Only the general area (within about 3 miles) will be shown on their map.');
+    onChange(exact);
+  });
+}

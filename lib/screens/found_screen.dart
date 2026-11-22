@@ -25,6 +25,7 @@ class _FoundScreenState extends State<FoundScreen> {
   final email = TextEditingController();
   CheckIn checkIn = CheckIn.appAlert;
   bool alsoTellMe = true;
+  bool exactSpot = true; // show the exact spot on the map, or only the general area
   bool done = false;
   bool? alreadyHolding; // checked once when the screen opens
   bool? needsCode;
@@ -74,8 +75,9 @@ class _FoundScreenState extends State<FoundScreen> {
       nickname: nickname.text.trim(),
       checkIn: checkIn,
       email: checkIn == CheckIn.email ? email.text.trim() : null,
-      point: where.blurred(exactish: true),
+      point: where.blurred(exactish: exactSpot),
       exactPoint: where.point,
+      exactSpot: exactSpot,
     );
     if (!mounted) return;
     if (!result.ok) {
@@ -163,9 +165,10 @@ class _FoundScreenState extends State<FoundScreen> {
       }),
     ),
     const SizedBox(height: 8),
+    LabeledSwitch(label: 'Show my exact spot on the map', value: exactSpot, onChanged: (v) => setState(() => exactSpot = v)),
     Row(crossAxisAlignment: CrossAxisAlignment.start, spacing: 8, children: [
       const Padding(padding: EdgeInsets.only(top: 2), child: Icon(Icons.place_outlined, size: 18, color: Herd.sageDark)),
-      Expanded(child: Text(tr('Heads up: the exact spot where you log this find will be shown on their map.'), style: HerdText.body(14, color: Herd.ink))),
+      Expanded(child: Text(tr(exactSpot ? 'Heads up: the exact spot where you log this find will be shown on their map.' : 'Only the general area (within about 3 miles) will be shown on their map.'), style: HerdText.body(14, color: Herd.ink))),
     ]),
     const SizedBox(height: 20),
     FieldLabel('Your name or nickname *', key: kNickname),

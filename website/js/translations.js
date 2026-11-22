@@ -2,6 +2,9 @@
 // change the app's file and run the script again. Website-only text is in translations-web.js.
 export const appTranslations = {
  "es": {
+  "The exact spot where you leave them will be shown on their map, so the next traveler can find them.": "El lugar exacto donde lo dejes se mostrará en su mapa, para que el próximo viajero pueda encontrarlo.",
+  "Only the general area (within about 3 miles) will be shown on their map.": "Solo se mostrará la zona general (a unas 3 millas) en su mapa.",
+  "Show my exact spot on the map": "Mostrar mi lugar exacto en el mapa",
   "Heads up: the exact spot where you log this find will be shown on their map.": "Aviso: el lugar exacto donde registres este hallazgo se mostrará en su mapa.",
   "Earn stamps": "Gana sellos",
   "Pass a Companion on or help a wish come true, and your stamps will be added to your Passport.": "Pasa un Compañero o ayuda a cumplir un deseo, y tus sellos se añadirán a tu Pasaporte.",
@@ -440,7 +443,7 @@ export const appTranslations = {
   "You’re in {0}": "Estás en {0}",
   "Refresh": "Actualizar",
   "Location is turned off. Turn it on so we can log where you are.": "La ubicación está desactivada. Actívala para registrar dónde estás.",
-  "Please allow location so we can log where you are. We only use your city.": "Permite la ubicación para registrar dónde estás. Solo usamos tu ciudad.",
+  "Please allow location so we can log where you are.": "Permite la ubicación para que podamos registrar dónde estás.",
   "Location is blocked for this app. Open Settings and allow location.": "La ubicación está bloqueada para esta app. Abre Ajustes y permite la ubicación.",
   "Your location looks like it’s coming from a location-changing app. Please turn it off and try again.": "Parece que tu ubicación viene de una app que la cambia. Desactívala e inténtalo de nuevo.",
   "We couldn’t find where you are. Check your signal and try again.": "No pudimos encontrar dónde estás. Revisa tu señal e inténtalo de nuevo.",
@@ -464,7 +467,7 @@ export const appTranslations = {
   "A photo of the spot helps the next traveler find them": "Una foto del lugar ayuda al próximo viajero a encontrarlo",
   "Add a photo *": "Añade una foto *",
   "Please add a photo.": "Añade una foto.",
-  "We use your phone’s location so travelers know where to look. A street address is never shown.": "Usamos la ubicación de tu teléfono para que los viajeros sepan dónde buscar. Nunca se muestra una dirección.",
+  "We use your phone’s location so travelers know where to look. A street address is never written out.": "Usamos la ubicación de tu teléfono para que los viajeros sepan dónde buscar. Nunca se escribe una dirección.",
   "Almost there! Please fix these first:": "¡Ya casi! Primero corrige esto:",
   "Found by {0}": "Encontrado por {0}",
   "Passed on by {0}": "Pasado por {0}",
@@ -515,6 +518,9 @@ export const appTranslations = {
   "Preview: using sample Companions": "Vista previa: con Compañeros de muestra"
  },
  "fr": {
+  "The exact spot where you leave them will be shown on their map, so the next traveler can find them.": "L’endroit exact où tu le laisses sera affiché sur sa carte, pour que le prochain voyageur puisse le trouver.",
+  "Only the general area (within about 3 miles) will be shown on their map.": "Seule la zone générale (à environ 5 km) sera affichée sur sa carte.",
+  "Show my exact spot on the map": "Afficher mon emplacement exact sur la carte",
   "Heads up: the exact spot where you log this find will be shown on their map.": "À savoir : l’endroit exact où tu enregistres cette trouvaille sera affiché sur sa carte.",
   "Earn stamps": "Gagne des tampons",
   "Pass a Companion on or help a wish come true, and your stamps will be added to your Passport.": "Fais voyager un Compagnon ou aide un vœu à se réaliser, et tes tampons s’ajouteront à ton Passeport.",
@@ -953,7 +959,7 @@ export const appTranslations = {
   "You’re in {0}": "Tu es à {0}",
   "Refresh": "Actualiser",
   "Location is turned off. Turn it on so we can log where you are.": "La localisation est désactivée. Active-la pour qu’on puisse noter où tu es.",
-  "Please allow location so we can log where you are. We only use your city.": "Autorise la localisation pour qu’on puisse noter où tu es. Nous utilisons seulement ta ville.",
+  "Please allow location so we can log where you are.": "Autorise la localisation pour que nous puissions enregistrer où tu es.",
   "Location is blocked for this app. Open Settings and allow location.": "La localisation est bloquée pour cette appli. Ouvre les Réglages et autorise-la.",
   "Your location looks like it’s coming from a location-changing app. Please turn it off and try again.": "Ta position semble venir d’une appli qui la modifie. Désactive-la et réessaie.",
   "We couldn’t find where you are. Check your signal and try again.": "Nous n’avons pas trouvé où tu es. Vérifie ton signal et réessaie.",
@@ -977,7 +983,7 @@ export const appTranslations = {
   "A photo of the spot helps the next traveler find them": "Une photo de l’endroit aide le prochain voyageur à le trouver",
   "Add a photo *": "Ajoute une photo *",
   "Please add a photo.": "Ajoute une photo.",
-  "We use your phone’s location so travelers know where to look. A street address is never shown.": "Nous utilisons la position de ton téléphone pour que les voyageurs sachent où chercher. Aucune adresse n’est jamais affichée.",
+  "We use your phone’s location so travelers know where to look. A street address is never written out.": "Nous utilisons la position de ton téléphone pour que les voyageurs sachent où chercher. Aucune adresse n’est jamais écrite.",
   "Almost there! Please fix these first:": "Presque fini ! Corrige d’abord ceci :",
   "Found by {0}": "Trouvé par {0}",
   "Passed on by {0}": "Transmis par {0}",
@@ -1028,6 +1034,9 @@ export const appTranslations = {
   "Preview: using sample Companions": "Aperçu : Compagnons d’exemple"
  },
  "ja": {
+  "The exact spot where you leave them will be shown on their map, so the next traveler can find them.": "置いた正確な場所が地図に表示され、次の旅人が見つけられます。",
+  "Only the general area (within about 3 miles) will be shown on their map.": "地図には大まかなエリア（約5km以内）だけが表示されます。",
+  "Show my exact spot on the map": "地図に正確な場所を表示する",
   "Heads up: the exact spot where you log this find will be shown on their map.": "ご注意：この発見を記録した正確な場所が、地図に表示されます。",
   "Earn stamps": "スタンプを集めよう",
   "Pass a Companion on or help a wish come true, and your stamps will be added to your Passport.": "コンパニオンを次の人に渡したり、願いをかなえたりすると、スタンプがパスポートに追加されます。",
@@ -1466,7 +1475,7 @@ export const appTranslations = {
   "You’re in {0}": "現在地：{0}",
   "Refresh": "更新",
   "Location is turned off. Turn it on so we can log where you are.": "位置情報がオフです。現在地を記録できるようにオンにしてください。",
-  "Please allow location so we can log where you are. We only use your city.": "現在地を記録できるよう、位置情報を許可してください。使うのは市の情報だけです。",
+  "Please allow location so we can log where you are.": "現在地を記録できるよう、位置情報を許可してください。",
   "Location is blocked for this app. Open Settings and allow location.": "このアプリでは位置情報がブロックされています。設定を開いて許可してください。",
   "Your location looks like it’s coming from a location-changing app. Please turn it off and try again.": "位置情報を変更するアプリが使われているようです。オフにしてもう一度試してください。",
   "We couldn’t find where you are. Check your signal and try again.": "現在地が見つかりませんでした。電波を確認してもう一度試してください。",
@@ -1490,7 +1499,7 @@ export const appTranslations = {
   "A photo of the spot helps the next traveler find them": "場所の写真があると、次の旅人が見つけやすくなります",
   "Add a photo *": "写真を追加＊",
   "Please add a photo.": "写真を追加してください。",
-  "We use your phone’s location so travelers know where to look. A street address is never shown.": "旅人が探す場所がわかるよう、スマホの位置情報を使います。住所が表示されることはありません。",
+  "We use your phone’s location so travelers know where to look. A street address is never written out.": "旅人が探す場所がわかるよう、スマートフォンの位置情報を使います。住所が書かれることはありません。",
   "Almost there! Please fix these first:": "あと少し！先にこちらを直してね：",
   "Found by {0}": "{0}さんが見つけた",
   "Passed on by {0}": "{0}さんが手渡した",
