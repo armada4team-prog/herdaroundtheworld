@@ -6,6 +6,7 @@ import 'package:material_ui/material_ui.dart';
 import 'l10n.dart';
 
 import 'app_state.dart';
+import 'store_shots.dart';
 import 'models.dart';
 import 'screens/activity_screen.dart';
 import 'screens/broke_screen.dart';
@@ -36,7 +37,9 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // The real app connects to The Herd's Wix site (or uses the sample data until it's published)
   // and keeps what's yours on the phone. Screenshot runs (SCREEN=…) always use the sample data.
-  final model = startScreen.isEmpty ? (AppModel(api: WixApi(), store: PrefsStore())..start()) : AppModel();
+  final model = startScreen.isEmpty
+      ? (AppModel(api: WixApi(), store: PrefsStore())..start())
+      : (storeShots ? (AppModel()..start()) : AppModel());
   runApp(HerdApp(model: model));
 }
 
@@ -99,12 +102,12 @@ class _HerdAppState extends State<HerdApp> {
       case 'activity':
         router.select(AppTab.activity);
       case 'companion':
-        router.open(const CompanionRoute('07'), inTab: AppTab.home);
+        router.open(CompanionRoute(storeShots ? '0' : '07'), inTab: AppTab.home);
       case 'hello':
-        router.open(const CompanionRoute('07', showHello: true), inTab: AppTab.home);
+        router.open(CompanionRoute(storeShots ? '0' : '07', showHello: true), inTab: AppTab.home);
       case 'found':
-        model.unlocked.add('07'); // preview as someone who scanned #07
-        router.open(const FoundRoute('07'), inTab: AppTab.home);
+        model.unlocked.add(storeShots ? '0' : '07'); // preview as someone who scanned them
+        router.open(FoundRoute(storeShots ? '0' : '07'), inTab: AppTab.home);
       case 'passon-near': // preview the 5-mile rule: found #07 right here
         model.holding.add('07');
         model.foundAt['07'] = const LatLng(39.74, -104.84);
@@ -121,7 +124,7 @@ class _HerdAppState extends State<HerdApp> {
       case 'chat':
         router.open(const ChatRoute('07'), inTab: AppTab.home);
       case 'story':
-        router.open(const StoryRoute('07'), inTab: AppTab.home);
+        router.open(StoryRoute(storeShots ? '0' : '07'), inTab: AppTab.home);
       case 'learn':
         router.open(const LearnRoute(), inTab: AppTab.home);
       case 'settings':

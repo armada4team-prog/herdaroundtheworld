@@ -122,7 +122,7 @@ class AppModel extends ChangeNotifier {
 
   bool get isLive => mode == DataMode.live;
 
-  List<Companion> companions = applyStoreShots(sampleCompanions());
+  List<Companion> companions = sampleCompanions();
   final Set<String> following = {'07', '2'};
   final Set<String> holding = {}; // found and not passed on yet
   final Set<String> unlocked = {}; // find code checked, find not logged yet
@@ -259,6 +259,13 @@ class AppModel extends ChangeNotifier {
   /// Decides LIVE or SAMPLE, then loads the data and what's saved on this phone.
   /// LIVE only when The Herd's checker answers; otherwise SAMPLE (nothing changes until launch).
   Future<void> start() async {
+    if (storeShots) {
+      // Google Play screenshots: the real Companions, as a brand-new traveler sees them.
+      _useLive(storeShotLists(), offline: false);
+      following.clear();
+      notifyListeners();
+      return;
+    }
     try {
       final api = this.api;
       final lastMode = await store?.read(_lastModeKey);
