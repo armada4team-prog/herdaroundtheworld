@@ -9,6 +9,7 @@ import 'package:material_ui/material_ui.dart';
 import 'find_codes.dart';
 import 'models.dart';
 import 'sample_data.dart';
+import 'store_shots.dart';
 import 'storage.dart';
 import 'validation.dart';
 import 'wix_api.dart';
@@ -121,7 +122,7 @@ class AppModel extends ChangeNotifier {
 
   bool get isLive => mode == DataMode.live;
 
-  List<Companion> companions = sampleCompanions();
+  List<Companion> companions = applyStoreShots(sampleCompanions());
   final Set<String> following = {'07', '2'};
   final Set<String> holding = {}; // found and not passed on yet
   final Set<String> unlocked = {}; // find code checked, find not logged yet
